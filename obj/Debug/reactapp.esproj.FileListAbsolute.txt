@@ -1,0 +1,2 @@
+E:\Programing\MinecraftServerList\reactapp\obj\Debug\reactapp.esproj.SuggestedBindingRedirects.cache
+E:\Programing\MinecraftServerList\reactapp\obj\Debug\reactapp.esproj.CoreCompileInputs.cache
