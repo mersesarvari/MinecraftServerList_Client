@@ -1,4 +1,4 @@
-import axios from "axios";
+﻿import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -6,6 +6,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Avatar from '@mui/material/Avatar';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
@@ -69,7 +70,7 @@ export default function Home() {
                     <Grid item xs={1} md={1}>
 
                     </Grid>
-                    <Grid item xs={5} md={5} style={{ backgroundColor: 'white', color: 'black', alignItems: 'center', align: 'center' }}>
+                    <Grid item xs={5} md={5} style={{ backgroundColor: 'white', color: 'black' }}>
                         <video
                             style={{ height: "60px", width: "468px", margin: "0", padding: '25px 20px' }}
                             autoPlay
@@ -81,22 +82,32 @@ export default function Home() {
                             ref={videoEl}
                         />
                     </Grid>
-                    <Grid item xs={4} md={4} style={{ backgroundColor: 'white', color: 'black', alignItems: 'center', align: 'center' }} >
-                        <Grid item xs={12} md={12} height="40px" style={{ backgroundColor: 'white', color: 'black', alignItems: 'center', align: 'center' }} >
+                    <Grid item xs={4} md={4} style={{ backgroundColor: 'white', color: 'black' }} >
+                        <Grid item xs={12} md={12} height="40px" style={{ backgroundColor: 'white', color: 'black' }} >
                         </Grid>
-                        <Grid item xs={12} md={12} height="40px" style={{ backgroundColor: 'white', color: 'black', alignItems: 'center', align: 'center' }} >
-                            <img src={ping_image} width="30px" style={{ marginTop: 'auto', marginBottom: 'auto' }} />
-                            {server.currentPlayers}/{server.maxPlayer} playing now
+                        <Grid item xs={12} md={12} height="40px" style={{ backgroundColor: 'white', color: 'black'}} >
+                            <Grid item xs={12} style={{ color: 'black', verticalAlign: 'middle', display:'inline-block', float:'felt' }}>
+                                {server.currentPlayers}/{server.maxPlayer} playing now
+                                <Avatar alt="Remy Sharp" src={ping_image} />
+                                
+                            </Grid>
                         </Grid>
-                        <Grid item xs={12} md={12} height="40px"  style={{ backgroundColor: 'white', color: 'black', alignItems: 'center', align: 'center' }} >
+                        <Grid item xs={12} md={12} height="40px" style={{ backgroundColor: 'white', color: 'black', whiteSpace: 'nowrap', }} >
+                            { server.id}
                         </Grid>
                         
                     </Grid>
-                    <Grid item xs={2} md={2} style={{ backgroundColor: '#292826' }}>
-                        <Grid item xs={12} md={12} style={{ backgroundColor: '#292826', height: '50%' }}>
+                    <Grid item xs={2} md={2} style={{ backgroundColor: '#292826', textAlign: 'center'}}>
+                        <Grid item xs={12} md={12} style={{ backgroundColor: '#292826', height: '50%', textAlign: 'center' }}>
                             {server.serverVersion}
                         </Grid>
-                        <Grid item xs={12} md={12} style={{ backgroundColor: '#128f0b', height: '50%' }}>
+                        <Grid item xs={12} md={12} style={
+                            {
+                                backgroundColor: '#128f0b',
+                                height: '50%',
+                                textAlign: 'center',
+                            }}>
+
                             {server.ip}
                         </Grid>
 

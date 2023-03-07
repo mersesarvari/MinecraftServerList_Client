@@ -8,6 +8,9 @@ export default function RootLayout() {
                     <h1>MCMania.com</h1>
                     <NavLink to="/">Home</NavLink>
                     <NavLink to="about">About</NavLink>
+                    <NavLink to="login">Login</NavLink>
+                    <NavLink to="register">Register</NavLink>
+                    <NavLink to="create">Create</NavLink>
                 </nav>
             </header>
             <main>
