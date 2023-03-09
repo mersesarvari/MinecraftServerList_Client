@@ -52,7 +52,7 @@ export default function Home() {
         <div className="home">
             <Grid container spacing={0} style={{ backgroundColor: '#3d4491' }} width="120">
                 <Grid item xs={12} md={12}>
-                    <h2>Welcome to server information:</h2>
+
                 </Grid>
             </Grid>
             <Server servers={servers}></Server>
