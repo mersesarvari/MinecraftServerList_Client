@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Avatar from '@mui/material/Avatar';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
+import Cookies from 'js-cookie'
 
 
 
@@ -18,6 +19,7 @@ export default function Home() {
     const [url, setURL] = useState('..\\Resources\\Files\\ServerThumbnails\\');
     const [servers, setServers] = useState(null);
     const videoEl = useRef(null);
+    const [loaded, setloaded] = useState(false);
 
     const attemptPlay = () => {
         videoEl &&
@@ -28,22 +30,23 @@ export default function Home() {
     };
 
     useEffect(() => {
+        fetchData();
         attemptPlay();
-    }, []);
+    }, [loaded]);
 
     async function fetchData() {
         try {
+            if (Cookies.get('email') !== undefined && Cookies.get('password') !== undefined) {
+                console.log('You are logged in: ' + Cookies.get('email'));
+            } else {
+                console.log('You are not logged in!');
+            }
             const response = await axios.get("https://localhost:7296/status")
             setServers(response.data);
-            console.log(response.data);
         } catch (error) {
             console.error(error);
         }
     }
-
-    useEffect(() => {
-        fetchData();
-    }, [])
 
     function getserverStatus(status) {
         if (status == true) {
