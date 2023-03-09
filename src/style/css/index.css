@@ -2,12 +2,11 @@
 
 :root {
     --primary: #bc4123;
-    --secondary: #2b3452;
+    --secondary: #dbdad7;
 }
 
 body {
     margin: 0;
-    padding: 20px;
     font-family: "Poppins";
     background: var(--secondary);
 }

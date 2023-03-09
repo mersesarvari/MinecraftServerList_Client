@@ -16,28 +16,11 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Cookies from 'js-cookie';
 import {
-    Routes,
-    Route,
-    NavLink,
     useNavigate,
 } from 'react-router-dom';
 
 
-
-
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
-
+const theme = createTheme();
 
 export default function Login() {
     const navigate = useNavigate();
@@ -99,7 +82,8 @@ export default function Login() {
     return (
         <div>
             {
-                < Container component="main" maxWidth="xs" >
+                <ThemeProvider theme={theme}>
+                <Container component="main" maxWidth="xs" style={{backgroundColor:'white'}}>
                     <Box
                         sx={{
                             marginTop: 8,
@@ -161,8 +145,8 @@ export default function Login() {
                             </Grid>
                         </Box>
                     </Box>
-                    <Copyright sx={{ mt: 8, mb: 4 }} />
                 </Container >
+                </ThemeProvider>
             }
         </div>
     );
