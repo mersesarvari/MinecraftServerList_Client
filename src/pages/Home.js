@@ -33,7 +33,7 @@ export default function Home() {
             } else {
                 console.log('You are not logged in!');
             }
-            const response = await axios.get("https://localhost:7296/status")
+            const response = await axios.get("https://localhost:7296/server")
             setServers(response.data);
         } catch (error) {
             console.error(error);
