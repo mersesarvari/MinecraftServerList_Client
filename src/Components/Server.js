@@ -20,19 +20,24 @@ const Server = (props) => {
     return ( 
         <div>
             {props.servers && props.servers.map((server) => (
-                <Grid container spacing={0} height="120px" key={server.id}
+            <Grid container spacing={0} height="120px" key={server.id}
                 style={{
                     backgroundColor: '#292826',
-                    marginBottom: '20px',
-                    color: 'black'
+                    marginTop:'0px',
+                    marginBottom:'40px',
+                    marginLeft:'0px',
+                    marginRight:'0px',
+                    color: 'black',
+
                 }}>
-                <Grid item xs={1} md={1}>
-                    <img src={logourl + server.logoPath} style={{margin:'25px 15px', width: '60px',height: '60px'}} />
+                <Grid item xs={1} md={1} height="120px">
+                    <img src={logourl + server.logoPath} style={{margin:'30px 15px', width: '60px',height: '60px'}} />
 
                 </Grid>
-                <Grid item xs={5} md={5} style={{ backgroundColor: 'white', color: 'black' }}>
+                <Grid item xs={5} md={5} style={{ 
+                    backgroundColor: 'white', color: 'black', padding:'0', margin:'0', height:'120px'}}>
                     <video
-                        style={{ height: "60px", width: "auto", margin: "0", padding: '20px 25px' }}
+                        style={{ height: "60px", margin:'30px 20px' }}
                         autoPlay
                         playsInline
                         loop
