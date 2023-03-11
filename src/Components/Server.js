@@ -11,7 +11,8 @@ import { fontStyle } from '@mui/system';
 
 const Server = (props) => {
     const ping_image = '..\\Resources\\Files\\Images\\ping.png';
-    const [url, setURL] = useState('..\\Resources\\Files\\ServerThumbnails\\');
+    const [thumbnailurl, setLogourl] = useState('..\\Resources\\Files\\ServerThumbnails\\');
+    const [logourl, setThumbnailurl] = useState('..\\Resources\\Files\\ServerLogos\\');
 
     const videoEl = useRef(null);
 
@@ -26,17 +27,18 @@ const Server = (props) => {
                     color: 'black'
                 }}>
                 <Grid item xs={1} md={1}>
+                    <img src={logourl + server.logoPath} style={{margin:'25px 15px', width: '60px',height: '60px'}} />
 
                 </Grid>
                 <Grid item xs={5} md={5} style={{ backgroundColor: 'white', color: 'black' }}>
                     <video
-                        style={{ height: "60px", width: "auto", margin: "0", padding: '25px 20px' }}
+                        style={{ height: "60px", width: "auto", margin: "0", padding: '20px 25px' }}
                         autoPlay
                         playsInline
                         loop
                         muted
                         alt="All the devices"
-                        src={url + server.thumbnailPath}
+                        src={thumbnailurl + server.thumbnailPath}
                         ref={videoEl}
                     />
                 </Grid>

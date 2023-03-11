@@ -106,12 +106,12 @@ const Navigation = () => {
                               id="menu-appbar"
                               anchorEl={anchorElUser}
                               anchorOrigin={{
-                                vertical: 'top',
+                                vertical: 'bottom',
                                 horizontal: 'right',
                               }}
                               keepMounted
                               transformOrigin={{
-                                vertical: 'top',
+                                vertical: 'bottom',
                                 horizontal: 'right',
                               }}
                               open={Boolean(anchorElUser)}
@@ -222,7 +222,24 @@ const Navigation = () => {
                     </Box>
                       {/* Login rész és logo */}  
                       <ProfilePanel />
-                    
+                    <Menu
+                        id="menu-appbar"
+                        anchorEl={anchorElNav}
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'right',
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'left',
+                        }}
+                        open={Boolean(anchorElNav)}
+                        onClose={handleCloseNavMenu}
+                        sx={{
+                          display: { xs: 'block', md: 'none' },
+                        }}
+                      />
                   </Toolbar>
                 </Container>
               </AppBar>
