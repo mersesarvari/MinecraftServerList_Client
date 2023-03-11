@@ -28,56 +28,20 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 function CheckLogin() {
   let email = Cookies.get('email');
   let pwd = Cookies.get('password');
+  console.log(email +"|"+ pwd);
   if (email !== undefined && pwd !== undefined) {
+      
       return true;
   } else return false;
 }
 
-const NavItems =()=>{
-  const navigate = useNavigate();
-  if (CheckLogin()) {
-    return (
-      <>
-      <MenuItem>
-      <Typography textAlign="center" onClick={()=>{navigate('')}}>Home</Typography>
-      </MenuItem>
-      <MenuItem>
-      <Typography textAlign="center" onClick={()=>{navigate('')}}>Szerverek</Typography>
-      </MenuItem>
-      <MenuItem>
-      <Typography textAlign="center" onClick={()=>{navigate('rangsor')}}>Rangsor</Typography>
-      </MenuItem>
-      <MenuItem>
-      <Typography textAlign="center" onClick={()=>{navigate('logout')}}>Kilépés</Typography>
-      </MenuItem>
-      </>
-    )
-}
-else {
-    return (
-          <>
-            <MenuItem>
-            <Typography textAlign="center" onClick={()=>{navigate('')}}>Home</Typography>
-            </MenuItem>
-            <MenuItem>
-            <Typography textAlign="center" onClick={()=>{navigate('')}}>Szerverek</Typography>
-            </MenuItem>
-            <MenuItem>
-            <Typography textAlign="center" onClick={()=>{navigate('rangsor')}}>Rangsor</Typography>
-            </MenuItem>
-            <MenuItem>
-            <Typography textAlign="center" onClick={()=>{navigate('login')}}>Belépés</Typography>
-            </MenuItem>
-            <MenuItem>
-            <Typography textAlign="center" onClick={()=>{navigate('register')}}>Regisztráció</Typography>
-            </MenuItem>
-            </>
-    ) }
-}
 const Navigation = () => {
+    const navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
-  
+
+
+
     const handleOpenNavMenu = (event) => {
       setAnchorElNav(event.currentTarget);
     };
@@ -92,7 +56,90 @@ const Navigation = () => {
     const handleCloseUserMenu = () => {
       setAnchorElUser(null);
     };
-    
+    const NavItems =()=>{
+      if (CheckLogin()) {
+          return (
+            <>
+            <MenuItem>
+            <Typography textAlign="center" onClick={()=>{navigate('')}}>Home</Typography>
+            </MenuItem>
+            <MenuItem>
+            <Typography textAlign="center" onClick={()=>{navigate('')}}>Szerverek</Typography>
+            </MenuItem>
+            <MenuItem>
+            <Typography textAlign="center" onClick={()=>{navigate('rangsor')}}>Rangsor</Typography>
+            </MenuItem>
+            <MenuItem>
+            <Typography textAlign="center" onClick={()=>{navigate('logout')}}>Kilépés</Typography>
+            </MenuItem>
+            </>
+          )
+      }
+      else {
+          return (
+                <>
+                  <MenuItem>
+                  <Typography textAlign="center" onClick={()=>{navigate('')}}>Home</Typography>
+                  </MenuItem>
+                  <MenuItem>
+                  <Typography textAlign="center" onClick={()=>{navigate('')}}>Szerverek</Typography>
+                  </MenuItem>
+                  <MenuItem>
+                  <Typography textAlign="center" onClick={()=>{navigate('rangsor')}}>Rangsor</Typography>
+                  </MenuItem>
+                  </>
+          ) 
+      }
+    };
+    const ProfilePanel =()=>{
+        if (CheckLogin()) {
+          return (
+            <>
+                  <Box sx={{ flexGrow: 0 }}>
+                            <Tooltip title="Open settings">
+                              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                              </IconButton>
+                            </Tooltip>
+                            <Menu
+                              sx={{ mt: '45px' }}
+                              id="menu-appbar"
+                              anchorEl={anchorElUser}
+                              anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                              }}
+                              keepMounted
+                              transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                              }}
+                              open={Boolean(anchorElUser)}
+                              onClose={handleCloseUserMenu}
+                            >
+                              {settings.map((setting) => (
+                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                  <Typography textAlign="center">{setting}</Typography>
+                                </MenuItem>
+                              ))}
+                            </Menu>
+                          </Box>
+                  </>            
+          )
+      }
+      else {
+          return (
+            <>
+            <MenuItem>
+            <Typography textAlign="center" onClick={()=>{navigate('login')}}>Belépés</Typography>
+            </MenuItem>
+            <MenuItem>
+            <Typography textAlign="center" onClick={()=>{navigate('register')}}>Regisztráció</Typography>
+            </MenuItem>
+            </>
+          ) }
+    };
+      
     return (
         <div>
             {
@@ -151,6 +198,7 @@ const Navigation = () => {
                       </Menu>
                     </Box>
                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                    
                     <Typography
                       variant="h5"
                       noWrap
@@ -172,36 +220,9 @@ const Navigation = () => {
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                       <NavItems/>
                     </Box>
-          
-                    <Box sx={{ flexGrow: 0 }}>
-                      <Tooltip title="Open settings">
-                        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                          <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                        </IconButton>
-                      </Tooltip>
-                      <Menu
-                        sx={{ mt: '45px' }}
-                        id="menu-appbar"
-                        anchorEl={anchorElUser}
-                        anchorOrigin={{
-                          vertical: 'top',
-                          horizontal: 'right',
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                          vertical: 'top',
-                          horizontal: 'right',
-                        }}
-                        open={Boolean(anchorElUser)}
-                        onClose={handleCloseUserMenu}
-                      >
-                        {settings.map((setting) => (
-                          <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                            <Typography textAlign="center">{setting}</Typography>
-                          </MenuItem>
-                        ))}
-                      </Menu>
-                    </Box>
+                      {/* Login rész és logo */}  
+                      <ProfilePanel />
+                    
                   </Toolbar>
                 </Container>
               </AppBar>
