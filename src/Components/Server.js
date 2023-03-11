@@ -23,10 +23,7 @@ const Server = (props) => {
             <Grid container spacing={0} height="120px" key={server.id}
                 style={{
                     backgroundColor: '#292826',
-                    marginTop:'0px',
-                    marginBottom:'40px',
-                    marginLeft:'0px',
-                    marginRight:'0px',
+                    marginBottom: '15px',
                     color: 'black',
 
                 }}>
