@@ -13,6 +13,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {
+    useNavigate,
+} from 'react-router-dom';
 
 function Copyright(props) {
     return (
@@ -35,24 +38,35 @@ const fieldTheme = {
 
 }
 
-async function RegisterRequest(username, email, password) {
-    try {
-        const response = await axios.post(`https://localhost:7296/register?username=${username}&email=${email}&password=${password}`);
-        console.log("Register was:" + response.data);
-        console.log(response.data);
-    } catch (error) {
-        console.error(error);
-    }
-}
+
 
 export default function Register() {
+    const navigate = useNavigate();
+    async function RegisterRequest(email, password, confirmpassword) {
+        try {
+            const response = await axios.post(`https://localhost:7296/register`,{
+                Email: email,
+                Password: password,
+                ConfirmPassword: confirmpassword
+            });
+            if(response.status===200)
+            {
+                //navigate('/login');
+                //window.location.reload(false);
+                alert("Registration was succesfull! We sent you an activation email to your email address. Activate your account now");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        let username = data.get('username');
         let email = data.get('email');
         let password = data.get('password');
-        RegisterRequest(username, email, password);
+        let confirmpassword = data.get('confirmpassword');
+        RegisterRequest(email, password, confirmpassword);
     };
 
     return (
@@ -79,16 +93,6 @@ export default function Register() {
                                 <TextField
                                     required
                                     fullWidth
-                                    id="username"
-                                    label="Username"
-                                    name="username"
-                                    autoComplete="username"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
                                     id="email"
                                     label="Email Address"
                                     name="email"
@@ -103,6 +107,17 @@ export default function Register() {
                                     label="Password"
                                     type="password"
                                     id="password"
+                                    autoComplete="new-password"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    name="confirmpassword"
+                                    label="Confirm password"
+                                    type="password"
+                                    id="confirmpassword"
                                     autoComplete="new-password"
                                 />
                             </Grid>

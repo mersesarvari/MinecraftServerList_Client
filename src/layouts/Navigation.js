@@ -72,6 +72,9 @@ const Navigation = () => {
             <MenuItem>
             <Typography textAlign="center" onClick={()=>{navigate('logout')}}>Kilépés</Typography>
             </MenuItem>
+            <MenuItem>
+            <Typography textAlign="center" onClick={()=>{navigate('changepassword')}}>New Password</Typography>
+            </MenuItem>
             </>
           )
       }
@@ -86,6 +89,9 @@ const Navigation = () => {
                   </MenuItem>
                   <MenuItem>
                   <Typography textAlign="center" onClick={()=>{navigate('rangsor')}}>Rangsor</Typography>
+                  </MenuItem>
+                  <MenuItem>
+                  <Typography textAlign="center" onClick={()=>{navigate('changepassword')}}>New Password</Typography>
                   </MenuItem>
                   </>
           ) 
