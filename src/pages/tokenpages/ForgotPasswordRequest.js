@@ -5,10 +5,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
@@ -22,51 +18,34 @@ import {
 
 const theme = createTheme();
 
-export default function ResetPassword() {
-    const {token} = useParams();
+export default function ForgotPasswordRequest() {
 
     const navigate = useNavigate();
     useEffect(() => {
-        console.log(token)
-        if(token===undefined)
-        {
-            navigate("/");
-        }
+        
     });
     
     
 
-    async function ResetRequest(password, confirmPassword) {
+    async function ResetRequest(email) {
         try {
-            console.log(password);
-            console.log(confirmPassword);
-            const passwords ={ password,confirmPassword };
 
-            const response = await axios.post(`https://localhost:7296/resetpassword/`,{
-                Token: token,
-                Password: password,
-                ConfirmPassword: confirmPassword
-              }
-            );
+            const response = await axios.post(`https://localhost:7296/forgotpassword?email=${email}`);
             console.log(response);
-            if(response.status === 200)
-            {
-                console.log("response status was 200");
-            }
+            alert("is the email address was valid, we sent an email with the restore link");
             navigate("/");
 
             
         } catch (error) {
-            console.error(error);
+            alert(error.request.response)
         }
     }
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        let pwd = data.get('password');
-        let cfmpwd = data.get('confirmpassword');
-        ResetRequest(pwd,cfmpwd);
+        let email = data.get('email');
+        ResetRequest(email);
 
     };
     return (
@@ -87,37 +66,26 @@ export default function ResetPassword() {
                             <LockOutlinedIcon />
                         </Avatar>
                         <Typography component="h1" variant="h5" style={{color:'black'}}>
-                            Password Restoration
+                            Forgot Password
                         </Typography>
                         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                        <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="password"
-                            />
                             <TextField
                                 margin="normal"
                                 required
                                 fullWidth
-                                name="confirmpassword"
-                                label="Confirm password"
-                                type="password"
-                                id="confirmpassword"
-                                autoComplete="Password again"
+                                id="email"
+                                label="Email Address"
+                                name="email"
+                                autoComplete="email"
+                                autoFocus
                             />
-
                             <Button
                                 type="submit"
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                             >
-                                Change Password
+                                Reset Password
                             </Button>
                         </Box>
                     </Box>

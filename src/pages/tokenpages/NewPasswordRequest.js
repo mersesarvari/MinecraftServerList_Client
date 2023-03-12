@@ -16,69 +16,59 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Cookies from 'js-cookie';
 import {
-    useNavigate,
+    useNavigate, useParams, Outlet
 } from 'react-router-dom';
 
 
 const theme = createTheme();
 
-export default function Login() {
+export default function NewPasswordRequest() {
+    const {token} = useParams();
+
     const navigate = useNavigate();
-
     useEffect(() => {
-        if (CheckLogin() == true) {
-            navigate("/")
+        console.log(token)
+        if(token===undefined)
+        {
+            navigate("/");
         }
-
     });
     
+    
 
-
-    async function LoginRequest(_email, _password) {
+    async function ResetRequest(password, confirmPassword) {
         try {
-            const response = await axios.post(`https://localhost:7296/login`,{
-                Email: _email,
-                Password: _password
-            });
+            console.log(password);
+            console.log(confirmPassword);
+            const passwords ={ password,confirmPassword };
 
-            console.log("Resp:"+response);
-            console.log(response.data);
-            Cookies.set('email', _email, { expires: 7 });
-            Cookies.set('password', _password, { expires: 7 });
-            if (CheckLogin()==true)
+            const response = await axios.post(`https://localhost:7296/resetpassword/`,{
+                Token: token,
+                Password: password,
+                ConfirmPassword: confirmPassword
+              }
+            );
+            console.log(response);
+            if(response.status === 200)
             {
-                navigate('/');
-                window.location.reload(false);
-            }    
-            console.log("Email stored in a cookie: " + Cookies.get('email'));
+                console.log("response status was 200");
+            }
+            navigate("/");
+
+            
         } catch (error) {
-            alert(error.request.response);
+            console.error(error);
         }
     }
 
     const handleSubmit = (event) => {
-        var email = "";
-        var password = "";
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-        email = data.get('email');
-        password = data.get('password');
-        LoginRequest(email, password);
+        let pwd = data.get('password');
+        let cfmpwd = data.get('confirmpassword');
+        ResetRequest(pwd,cfmpwd);
 
     };
-
-    function CheckLogin() {
-        let email = Cookies.get('email');
-        let pwd = Cookies.get('password');
-        if (email !== undefined && pwd !== undefined) {
-            return true;
-        } else return false;
-    }
-
     return (
         <div>
             {
@@ -97,20 +87,10 @@ export default function Login() {
                             <LockOutlinedIcon />
                         </Avatar>
                         <Typography component="h1" variant="h5" style={{color:'black'}}>
-                            Sign in
+                            Password Restoration
                         </Typography>
                         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                                autoFocus
-                            />
-                            <TextField
+                        <TextField
                                 margin="normal"
                                 required
                                 fullWidth
@@ -118,37 +98,34 @@ export default function Login() {
                                 label="Password"
                                 type="password"
                                 id="password"
-                                autoComplete="current-password"
+                                autoComplete="password"
                             />
-                            <FormControlLabel
-                                control={<Checkbox value="remember" color="primary" />}
-                                label="Remember me"
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="confirmpassword"
+                                label="Confirm password"
+                                type="password"
+                                id="confirmpassword"
+                                autoComplete="Password again"
                             />
+
                             <Button
                                 type="submit"
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                             >
-                                Sign In
+                                Change Password
                             </Button>
-                            <Grid container>
-                                <Grid item xs>
-                                    <Link href="forgotpassword" variant="body2">
-                                        Forgot password?
-                                    </Link>
-                                </Grid>
-                                <Grid item>
-                                    <Link href="/register" variant="body2">
-                                        {"Don't have an account? Sign Up"}
-                                    </Link>
-                                </Grid>
-                            </Grid>
                         </Box>
                     </Box>
                 </Container >
                 </ThemeProvider>
             }
+            <Outlet/>
         </div>
+        
     );
 }

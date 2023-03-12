@@ -49,14 +49,9 @@ export default function Register() {
                 Password: password,
                 ConfirmPassword: confirmpassword
             });
-            if(response.status===200)
-            {
-                //navigate('/login');
-                //window.location.reload(false);
-                alert("Registration was succesfull! We sent you an activation email to your email address. Activate your account now");
-            }
+            alert("Registration was succesfull! We sent you an activation email to your email address. Activate your account now");
         } catch (error) {
-            console.error(error);
+            alert(error.request.response);
         }
     }
 

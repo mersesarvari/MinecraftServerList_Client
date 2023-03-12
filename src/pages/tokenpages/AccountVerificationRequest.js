@@ -25,19 +25,12 @@ export default function AccountVerification() {
     async function AccountVerificationRequest() {
         try {
             const response = await axios.post(`https://localhost:7296/verify?token=${token}`);
-            console.log(response);
-            if(response.status === 200)
-            {
-                console.log("response status was 200");
-                console.log("Account verified");
-                navigate('login');
-                
-            }
-            //navigate("/");
-
-            
+            console.log("response status was 200");
+            console.log("Account verified");
+            navigate('login');
         } catch (error) {
             console.error(error);
+            alert(error.request.response);
             navigate('register');
         }
     }
