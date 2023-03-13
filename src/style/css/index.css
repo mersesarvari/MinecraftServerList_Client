@@ -22,4 +22,10 @@ main {
     max-width: 1200px;
     margin: 40px auto;
 }
+p.error
+{
+    font-size: 15px;
+    color:red
+
+}
 

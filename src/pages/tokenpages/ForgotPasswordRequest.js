@@ -14,7 +14,7 @@ import Cookies from 'js-cookie';
 import {
     useNavigate, useParams, Outlet
 } from 'react-router-dom';
-
+import { SERVERIP } from '../../LOCAL';
 
 const theme = createTheme();
 
@@ -30,7 +30,7 @@ export default function ForgotPasswordRequest() {
     async function ResetRequest(email) {
         try {
 
-            const response = await axios.post(`https://localhost:7296/forgotpassword?email=${email}`);
+            const response = await axios.post(`${SERVERIP}forgotpassword?email=${email}`);
             console.log(response);
             alert("is the email address was valid, we sent an email with the restore link");
             navigate("/");

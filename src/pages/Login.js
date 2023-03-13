@@ -15,70 +15,63 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Cookies from 'js-cookie';
-import {
-    useNavigate,
-} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import { SERVERIP, CheckLogin } from '../LOCAL';
+import { useFormik, withFormik } from "formik";
+import {LoginScheme} from '../validations/ValidationSchemes';
 
 
 const theme = createTheme();
 
+
+const onSubmit = async (values, actions) => {
+    console.log(values);
+    console.log(actions);
+    try {
+        let loginObject={
+            Email:values.email,
+            Password: values.password,
+        }
+        const response = await axios.post(`${SERVERIP}login`,loginObject);
+        alert(response);
+        Cookies.set('email', loginObject.Email, { expires: 7 });
+        Cookies.set('password', loginObject.Password, { expires: 7 });
+          
+        console.log("Email stored in a cookie: " + Cookies.get('email'));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        actions.resetForm();
+    } catch (error) {
+        alert(error.request.response);
+    }
+    
+};
 export default function Login() {
     const navigate = useNavigate();
-
+    const {
+        values,
+        errors,
+        touched,
+        isSubmitting,
+        handleBlur,
+        handleChange,
+        handleSubmit,
+      } = useFormik({
+        initialValues: {
+          email: "",
+          password: "",
+          confirmpassword: "",
+        },
+        validationSchema: LoginScheme,
+        onSubmit,
+    });
     useEffect(() => {
-        if (CheckLogin() == true) {
+        if (CheckLogin() === true) {
             navigate("/")
         }
 
     });
+
     
-
-
-    async function LoginRequest(_email, _password) {
-        try {
-            const response = await axios.post(`https://localhost:7296/login`,{
-                Email: _email,
-                Password: _password
-            });
-
-            console.log("Resp:"+response);
-            console.log(response.data);
-            Cookies.set('email', _email, { expires: 7 });
-            Cookies.set('password', _password, { expires: 7 });
-            if (CheckLogin()==true)
-            {
-                navigate('/');
-                window.location.reload(false);
-            }    
-            console.log("Email stored in a cookie: " + Cookies.get('email'));
-        } catch (error) {
-            alert(error.request.response);
-        }
-    }
-
-    const handleSubmit = (event) => {
-        var email = "";
-        var password = "";
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-        email = data.get('email');
-        password = data.get('password');
-        LoginRequest(email, password);
-
-    };
-
-    function CheckLogin() {
-        let email = Cookies.get('email');
-        let pwd = Cookies.get('password');
-        if (email !== undefined && pwd !== undefined) {
-            return true;
-        } else return false;
-    }
-
     return (
         <div>
             {
@@ -109,7 +102,12 @@ export default function Login() {
                                 name="email"
                                 autoComplete="email"
                                 autoFocus
+                                value={values.email}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                className={errors.email && touched.email ? "input-error" : ""}
                             />
+                            {errors.email && touched.email && <p className="error">{errors.email}</p>}
                             <TextField
                                 margin="normal"
                                 required
@@ -119,7 +117,14 @@ export default function Login() {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
+                                value={values.password}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                className={errors.password && touched.email ? "input-error" : ""}
                             />
+                            {errors.password && touched.password && (
+                                <p className="error">{errors.password}</p>
+                            )}
                             <FormControlLabel
                                 control={<Checkbox value="remember" color="primary" />}
                                 label="Remember me"

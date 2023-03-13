@@ -1,8 +1,9 @@
 ﻿import axios from "axios";
 import { useEffect, useState, useRef } from "react";
-import Server from '../Components/Server'
+import Server from '../Components/Servers'
 import Grid from '@mui/material/Grid';
 import Cookies from 'js-cookie'
+import { SERVERIP } from "../LOCAL";
 
 
 
@@ -33,7 +34,7 @@ export default function Home() {
             } else {
                 console.log('You are not logged in!');
             }
-            const response = await axios.get("https://localhost:7296/server")
+            const response = await axios.get(`${SERVERIP}server`)
             setServers(response.data);
         } catch (error) {
             console.error(error);

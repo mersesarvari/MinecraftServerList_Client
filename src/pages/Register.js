@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {RegistrationScheme} from '../validations/ValidationSchemes';
 import axios from "axios";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -13,57 +14,56 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {
-    useNavigate,
-} from 'react-router-dom';
+import { useFormik, withFormik } from "formik";
+import {SERVERIP} from "../LOCAL.js";
 
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright � '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
-
+import '../style/css/index.css';
 const theme = createTheme();
 const fieldTheme = {
     backgroundColor: '#383636',
     color: 'white',
+};
 
-
-}
-
-
-
-export default function Register() {
-    const navigate = useNavigate();
-    async function RegisterRequest(email, password, confirmpassword) {
-        try {
-            const response = await axios.post(`https://localhost:7296/register`,{
-                Email: email,
-                Password: password,
-                ConfirmPassword: confirmpassword
-            });
-            alert("Registration was succesfull! We sent you an activation email to your email address. Activate your account now");
-        } catch (error) {
-            alert(error.request.response);
+const onSubmit = async (values, actions) => {
+    console.log(values);
+    console.log(actions);
+    try {
+        let registrationObject={
+            Email:values.email,
+            Password: values.password,
+            ConfirmPassword: values.confirmpassword,
         }
+        
+        const response = await axios.post(`${SERVERIP}register`,registrationObject);
+        alert("Registration was succesfull! We sent you an activation email to your email address. Activate your account now");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        actions.resetForm();
+    } catch (error) {
+        alert(error.request.response);
     }
+    
+};
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        let email = data.get('email');
-        let password = data.get('password');
-        let confirmpassword = data.get('confirmpassword');
-        RegisterRequest(email, password, confirmpassword);
-    };
-
+  
+export default function Register() {
+    const {
+        values,
+        errors,
+        touched,
+        isSubmitting,
+        handleBlur,
+        handleChange,
+        handleSubmit,
+      } = useFormik({
+        initialValues: {
+          email: "",
+          password: "",
+          confirmpassword: "",
+        },
+        validationSchema: RegistrationScheme,
+        onSubmit,
+    });
+    //console.log(errors);    
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -86,27 +86,42 @@ export default function Register() {
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <TextField
-                                    required
+                                    value={values.email}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
                                     fullWidth
                                     id="email"
                                     label="Email Address"
                                     name="email"
-                                    autoComplete="email"
+                                    autoComplete="email"                                    
+                                    className={errors.email && touched.email ? "input-error" : ""}
                                 />
+                                {errors.email && touched.email && <p className="error">{errors.email}</p>}
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
+                                    value={values.password}
+                                    onChange={handleChange}
+                                    className={errors.password && touched.password ? "input-error" : ""}
                                     required
                                     fullWidth
                                     name="password"
                                     label="Password"
                                     type="password"
                                     id="password"
+                                    onBlur={handleBlur}
                                     autoComplete="new-password"
                                 />
+                                {errors.password && touched.password && (
+                                    <p className="error">{errors.password}</p>
+                                )}
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
+                                    value={values.confirmpassword}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    className={errors.confirmpassword && touched.confirmpassword ? "input-error" : ""}
                                     required
                                     fullWidth
                                     name="confirmpassword"
@@ -115,6 +130,9 @@ export default function Register() {
                                     id="confirmpassword"
                                     autoComplete="new-password"
                                 />
+                                {errors.confirmpassword && touched.confirmpassword && (
+                                    <p className="error">{errors.confirmpassword}</p>
+                                )}
                             </Grid>
                             <Grid item xs={12}>
                                 <FormControlLabel
@@ -140,7 +158,6 @@ export default function Register() {
                         </Grid>
                     </Box>
                 </Box>
-                <Copyright sx={{ mt: 5 }} />
             </Container>
         </ThemeProvider>
     );

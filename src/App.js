@@ -1,4 +1,3 @@
-
 import {
     createBrowserRouter,
     createRoutesFromElements,
@@ -9,13 +8,13 @@ import {
 // pages
 import Home from './pages/Home'
 import About from './pages/About'
-import Create from './pages/CreateServer'
+import Create from './pages/server/CreateServer'
 import Login from './pages/Login'
 import Logout from './pages/Logout'
 import PasswordReset from './pages/tokenpages/NewPasswordRequest'
 import Register from './pages/Register'
 import NoMatch from './pages/NoMatch'
-import ServerPage from './pages/ServerPage'
+import  { serverDetailsLoader } from './Components/DataLoaders'
 import Cookies from 'js-cookie'
 
 
@@ -26,6 +25,10 @@ import Navigation from './layouts/Navigation'
 import AccountVerificationRequest from './pages/tokenpages/AccountVerificationRequest'
 import ForgotPasswordRequest from './pages/tokenpages/ForgotPasswordRequest'
 import NewPasswordRequest from './pages/tokenpages/NewPasswordRequest'
+import ServerNotFound from './pages/server/ServerNotFound'
+import ServerDetailsLayout from './pages/server/ServerDetailsLayout'
+import ServerDetails from './pages/server/ServerDetails'
+import ServerError from './pages/server/ServerError'
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -41,7 +44,18 @@ const router = createBrowserRouter(
                 <Route path=":token" element={<NewPasswordRequest />} />
             </Route>
             <Route path="verify" >
-                <Route path=":token" element={<AccountVerificationRequest />} />
+                <Route 
+                path=":token" 
+                element={<AccountVerificationRequest />}                
+                 />
+            </Route>
+            <Route path="server" element={<ServerDetailsLayout/>} >
+                <Route 
+                path=":id" 
+                element={<ServerDetails/>}
+                loader={serverDetailsLoader}
+                errorElement={<ServerError/>}
+            />
             </Route>
             <Route path="*" element={<NoMatch />} />
         </Route>

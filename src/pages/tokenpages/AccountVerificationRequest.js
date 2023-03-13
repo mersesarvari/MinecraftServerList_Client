@@ -5,6 +5,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {
     useNavigate, useParams, Outlet
 } from 'react-router-dom';
+import { SERVERIP } from '../../LOCAL';
 
 
 const theme = createTheme();
@@ -24,7 +25,7 @@ export default function AccountVerification() {
 
     async function AccountVerificationRequest() {
         try {
-            const response = await axios.post(`https://localhost:7296/verify?token=${token}`);
+            const response = await axios.post(`${SERVERIP}verify?token=${token}`);
             console.log("response status was 200");
             console.log("Account verified");
             navigate('login');

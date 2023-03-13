@@ -4,18 +4,19 @@ import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import BoyIcon from '@mui/icons-material/Boy';
 import Man2Icon from '@mui/icons-material/Man2';
+import {useNavigate} from 'react-router-dom';
 
 //style
 import '../style/css/googlefonts.css';
 import { fontStyle } from '@mui/system';
 
-const Server = (props) => {
+const Servers = (props) => {
     const ping_image = '..\\Resources\\Files\\Images\\ping.png';
     const [thumbnailurl, setLogourl] = useState('..\\Resources\\Files\\ServerThumbnails\\');
     const [logourl, setThumbnailurl] = useState('..\\Resources\\Files\\ServerLogos\\');
 
     const videoEl = useRef(null);
-
+    const navigate = useNavigate();
 
     return ( 
         <div>
@@ -42,6 +43,8 @@ const Server = (props) => {
                         alt="All the devices"
                         src={thumbnailurl + server.thumbnailPath}
                         ref={videoEl}
+                        onClick={()=>{navigate('server/'+server.id)}}
+                        
                     />
                 </Grid>
                 <Grid item xs={4} md={4} style={{ backgroundColor: 'white', color: 'black' }} >
@@ -86,4 +89,4 @@ const Server = (props) => {
      );
 }
  
-export default Server;
+export default Servers;

@@ -18,7 +18,7 @@ import Cookies from 'js-cookie';
 import {
     useNavigate, useParams, Outlet
 } from 'react-router-dom';
-
+import { SERVERIP } from '../../LOCAL';
 
 const theme = createTheme();
 
@@ -42,7 +42,7 @@ export default function NewPasswordRequest() {
             console.log(confirmPassword);
             const passwords ={ password,confirmPassword };
 
-            const response = await axios.post(`https://localhost:7296/resetpassword/`,{
+            const response = await axios.post(`${SERVERIP}resetpassword/`,{
                 Token: token,
                 Password: password,
                 ConfirmPassword: confirmPassword
