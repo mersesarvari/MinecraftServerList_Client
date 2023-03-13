@@ -4,15 +4,15 @@ import Server from '../Components/Servers'
 import Grid from '@mui/material/Grid';
 import Cookies from 'js-cookie'
 import { SERVERIP } from "../LOCAL";
-
+import { useParams, useLoaderData } from "react-router-dom";
 
 
 
 export default function Home() {
     
-    const [servers, setServers] = useState(null);
     const videoEl = useRef(null);
     const [loaded, setloaded] = useState(false);
+    const serverlist = useLoaderData();
 
     const attemptPlay = () => {
         videoEl &&
@@ -23,31 +23,8 @@ export default function Home() {
     };
 
     useEffect(() => {
-        fetchData();
         attemptPlay();
     }, [loaded]);
-
-    async function fetchData() {
-        try {
-            if (Cookies.get('email') !== undefined && Cookies.get('password') !== undefined) {
-                console.log('You are logged in: ' + Cookies.get('email'));
-            } else {
-                console.log('You are not logged in!');
-            }
-            const response = await axios.get(`${SERVERIP}server`)
-            setServers(response.data);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    function getserverStatus(status) {
-        if (status == true) {
-            return "Online";
-        } else {
-            return "Offline";
-        }
-    }
 
     return (
         <div className="home">
@@ -56,7 +33,7 @@ export default function Home() {
 
                 </Grid>
             </Grid>
-            <Server servers={servers}></Server>
+            <Server servers={serverlist}></Server>
         </div>
     )
 }

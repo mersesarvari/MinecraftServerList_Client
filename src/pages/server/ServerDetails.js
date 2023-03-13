@@ -1,7 +1,4 @@
 import { useParams, useLoaderData } from "react-router-dom";
-import axios from "axios";
-import { SERVERIP } from "../../LOCAL";
-import { CollectionsBookmarkOutlined } from "@mui/icons-material";
 
 function ServerDetails() {
     const {id} = useParams();

@@ -33,13 +33,13 @@ const onSubmit = async (values, actions) => {
             Password: values.password,
         }
         const response = await axios.post(`${SERVERIP}login`,loginObject);
-        alert(response);
+        alert(response.data);
         Cookies.set('email', loginObject.Email, { expires: 7 });
         Cookies.set('password', loginObject.Password, { expires: 7 });
-          
-        console.log("Email stored in a cookie: " + Cookies.get('email'));
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        
         actions.resetForm();
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        
     } catch (error) {
         alert(error.request.response);
     }
@@ -66,7 +66,7 @@ export default function Login() {
     });
     useEffect(() => {
         if (CheckLogin() === true) {
-            navigate("/")
+            navigate("/");
         }
 
     });

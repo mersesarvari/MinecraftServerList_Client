@@ -15,7 +15,6 @@ const Servers = (props) => {
     const [thumbnailurl, setLogourl] = useState('..\\Resources\\Files\\ServerThumbnails\\');
     const [logourl, setThumbnailurl] = useState('..\\Resources\\Files\\ServerLogos\\');
 
-    const videoEl = useRef(null);
     const navigate = useNavigate();
 
     return ( 
@@ -42,7 +41,6 @@ const Servers = (props) => {
                         muted
                         alt="All the devices"
                         src={thumbnailurl + server.thumbnailPath}
-                        ref={videoEl}
                         onClick={()=>{navigate('server/'+server.id)}}
                         
                     />

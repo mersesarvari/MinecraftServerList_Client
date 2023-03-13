@@ -14,7 +14,7 @@ import Logout from './pages/Logout'
 import PasswordReset from './pages/tokenpages/NewPasswordRequest'
 import Register from './pages/Register'
 import NoMatch from './pages/NoMatch'
-import  { serverDetailsLoader } from './Components/DataLoaders'
+import  { accountVerificationLoader, serverDetailsLoader, serverListLoader } from './Components/DataLoaders'
 import Cookies from 'js-cookie'
 
 
@@ -33,7 +33,11 @@ import ServerError from './pages/server/ServerError'
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<RootLayout />}>
-            <Route index element={<Home />} />
+            <Route index 
+                element={<Home />} 
+                loader={serverListLoader}
+                errorElement={<ServerError/>}
+            />
             <Route path="about" element={<About />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
@@ -46,7 +50,9 @@ const router = createBrowserRouter(
             <Route path="verify" >
                 <Route 
                 path=":token" 
-                element={<AccountVerificationRequest />}                
+                element={<AccountVerificationRequest />}  
+                loader={accountVerificationLoader}
+                errorElement={<ServerError/>}              
                  />
             </Route>
             <Route path="server" element={<ServerDetailsLayout/>} >
