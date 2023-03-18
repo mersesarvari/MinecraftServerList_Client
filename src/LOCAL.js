@@ -1,3 +1,4 @@
+//EZEKET AZ ADATOKAT A SZERVERTŐL KÉNE LEKÉRDEZNI IGAZÁBÓL
 import Cookies from "js-cookie";
 import { useState } from "react";
 
