@@ -47,13 +47,11 @@ const router = createBrowserRouter(
             <Route path="resetpassword" >
                 <Route path=":token" element={<NewPasswordRequest />} />
             </Route>
-            <Route path="verify" >
-                <Route 
-                path=":token" 
+            <Route path="verify/:token"
                 element={<AccountVerificationRequest />}  
                 loader={accountVerificationLoader}
-                errorElement={<ServerError/>}              
-                 />
+                errorElement={<ServerError/>}     
+                >         
             </Route>
             <Route path="server" element={<ServerDetailsLayout/>} >
                 <Route 

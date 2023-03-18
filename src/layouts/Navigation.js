@@ -28,7 +28,6 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 function CheckLogin() {
   let email = Cookies.get('email');
   let pwd = Cookies.get('password');
-  console.log(email +"|"+ pwd);
   if (email !== undefined && pwd !== undefined) {
       
       return true;

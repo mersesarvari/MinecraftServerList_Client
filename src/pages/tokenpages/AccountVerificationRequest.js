@@ -13,32 +13,10 @@ const theme = createTheme();
 export default function AccountVerification() {
     const {token} = useParams();
     const serverlist = useLoaderData();
-    useEffect(() => {
-        console.log("Trying to activate your account")
-        if(token===undefined)
-        {
-            navigate("/");
-        }
-        //AccountVerificationRequest();
-    });
-
-    const navigate = useNavigate();
-
-    async function AccountVerificationRequest() {
-        try {
-            
-        } catch (error) {
-            console.error(error);
-            alert(error.request.response);
-            navigate('register');
-        }
-    }
-    return (
+    console.log(serverlist);
+    return(
         <div>
-            <h1>Verification page</h1>
-            {serverlist.data}
-            <Outlet/>
+            {serverlist}
         </div>
-        
     );
 }

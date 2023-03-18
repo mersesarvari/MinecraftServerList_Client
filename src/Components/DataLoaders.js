@@ -19,7 +19,6 @@ export const serverDetailsLoader = async ({params}) => {
     }
     console.log(response.data)
     return response.data;
-    
 }
 
 export const serverListLoader = async ({params}) => { 
@@ -32,24 +31,15 @@ export const serverListLoader = async ({params}) => {
     }
     console.log(response.data)
     return response.data;
-    
 }
 
 export const accountVerificationLoader = async ({params}) => { 
-    
     const{token} = params;
     const response = await axios.post(`${SERVERIP}verify?token=${token}`)
     .catch(function (error) {
-        console.log(error.toJSON());
-      });;
-    console.log(response.status);
-    console.log("Account verification");
-    console.log(response.json());
-    if(response.status !==200)
-    {
-        throw Error('Could not find the data');
-    }
-        
-        //return response;
-    
+        console.log("Error");
+        return error.response;
+      });
+      console.log("Return value");
+    return response.data;
 }
