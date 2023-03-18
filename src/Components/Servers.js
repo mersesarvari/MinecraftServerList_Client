@@ -9,6 +9,7 @@ import {useNavigate} from 'react-router-dom';
 //style
 import '../style/css/googlefonts.css';
 import { fontStyle } from '@mui/system';
+import { Rating, Typography } from '@mui/material';
 
 const Servers = (props) => {
     const ping_image = '..\\Resources\\Files\\Images\\ping.png';
@@ -29,7 +30,7 @@ const Servers = (props) => {
                 }}>
                 <Grid item xs={1} md={1} height="120px">
                     <img src={logourl + server.logoPath} style={{margin:'30px 15px', width: '60px',height: '60px'}} />
-
+                    
                 </Grid>
                 <Grid item xs={5} md={5} style={{ 
                     backgroundColor: 'white', color: 'black', padding:'0', margin:'0', height:'120px'}}>
@@ -59,6 +60,9 @@ const Servers = (props) => {
                         <Grid item xs={12} md={12} height="15px" style={{color:'black', fontSize:"14px"}}>
                             { server.serverVersion}
                         </Grid>
+                        <Grid item xs={12} md={12} height="15px" style={{color:'black', fontSize:"14px"}}>
+                        </Grid>
+                        
                     </div>
                     
                     
