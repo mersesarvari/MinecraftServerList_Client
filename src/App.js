@@ -8,7 +8,6 @@ import {
 // pages
 import Home from './pages/Home'
 import About from './pages/About'
-import Create from './pages/server/CreateServer'
 import Login from './pages/Login'
 import Logout from './pages/Logout'
 import PasswordReset from './pages/tokenpages/NewPasswordRequest'
@@ -29,6 +28,7 @@ import ServerNotFound from './pages/server/ServerNotFound'
 import ServerDetailsLayout from './pages/server/ServerDetailsLayout'
 import ServerDetails from './pages/server/ServerDetails'
 import ServerError from './pages/server/ServerError'
+import CreateServer from './pages/server/CreateServer'
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -41,7 +41,7 @@ const router = createBrowserRouter(
             <Route path="about" element={<About />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
-            <Route path="Create" element={<Create />} />
+            <Route path="create" element={<CreateServer />} />
             <Route path="Logout" element={<Logout />} />
             <Route path="forgotpassword" element={<ForgotPasswordRequest />} />
             <Route path="resetpassword" >

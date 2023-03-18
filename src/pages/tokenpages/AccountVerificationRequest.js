@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import axios from "axios";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {
-    useNavigate, useParams, Outlet, useLoaderData
+    useParams, useLoaderData
 } from 'react-router-dom';
 import { SERVERIP } from '../../LOCAL';
 
@@ -16,6 +14,7 @@ export default function AccountVerification() {
     console.log(serverlist);
     return(
         <div>
+            Account verification page:
             {serverlist}
         </div>
     );

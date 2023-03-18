@@ -24,3 +24,37 @@ export const LoginScheme = yup.object().shape({
     .matches(passwordRules, { message: "Password must contain an Uppercase character and a number" }).required("Password is required"),
     confirmpassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match')
 });
+
+export const CreateServerScheme = yup.object().shape({
+    name: yup.string()
+    .required("Server name is required"),
+    ipaddress: yup.string()
+    .min(6, "Password have to be at least 6 characters")
+    .max(20, "Password cannot be longer than 20 characters"),
+    serverlogo: yup.array()
+         .nullable()
+         .required('VALIDATION_FIELD_REQUIRED')
+         .test('is-correct-file', 'VALIDATION_FIELD_FILE_BIG', checkIfFilesAreTooBig)
+         .test(
+           'is-big-file',
+           'VALIDATION_FIELD_FILE_WRONG_TYPE',
+           checkIfFilesAreCorrectType
+         ),
+});
+
+export function checkIfFilesAreTooBig(file) {
+    let valid = true
+    const size = file.size / 1024 / 1024
+        if (size > 10) {
+          valid = false
+        }
+    return valid;
+}
+  
+export function checkIfFilesAreCorrectType(file) {
+    let valid = true
+    if (!['application/pdf', 'image/jpeg', 'image/png'].includes(file.type)) {
+        valid = false
+      }
+    return valid
+}
