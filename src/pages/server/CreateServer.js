@@ -12,7 +12,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import { SERVERIP, CheckLogin } from "../../LOCAL";
+import { SERVERIP, CheckLogin, categories, servertypes } from "../../LOCAL";
 import { useFormik } from "formik";
 import { CreateServerScheme } from "../../validations/ValidationSchemes";
 import {
@@ -34,6 +34,7 @@ import NavForm from "../../Components/navigationform";
 //Components
 import CountryAutoselect from "../../Components/CountryAutoselect";
 import SelectServerCategory from "../../Components/SelectServerCategory";
+import SelectMultipleItem from "../../Components/SelectMultipleItem";
 
 const theme = createTheme();
 
@@ -122,7 +123,7 @@ export default function CreateServer() {
                     <Details
                       next={() => Next()}
                       previous={() => Previous()}
-                      list={["java", "bedrock"]}
+                      list={servertypes}
                     />
                   </>
                 )
@@ -274,6 +275,9 @@ const Description = (props) => {
 
         <Grid item xs={12}>
           <TextField multiline minRows={8} fullWidth label="Description" />
+        </Grid>
+        <Grid item xs={12}>
+          <SelectMultipleItem fullWidth list={categories} />
         </Grid>
         <Grid item xs={2}>
           <Button onClick={() => props.previous()} variant="contained">
