@@ -18,11 +18,9 @@ import {
   serverDetailsLoader,
   serverListLoader,
 } from "./Components/DataLoaders";
-import Cookies from "js-cookie";
 
 // layouts
 import RootLayout from "./layouts/RootLayout";
-import Navigation from "./layouts/Navigation";
 import AccountVerificationRequest from "./pages/tokenpages/AccountVerificationRequest";
 import ForgotPasswordRequest from "./pages/tokenpages/ForgotPasswordRequest";
 import NewPasswordRequest from "./pages/tokenpages/NewPasswordRequest";
@@ -32,20 +30,10 @@ import ServerDetails from "./pages/server/ServerDetails";
 import ServerError from "./pages/server/ServerError";
 import CreateServer from "./pages/server/CreateServer";
 import ServerContextProvider, { ServerContext } from "./contexts/ServerContext";
-import { UserContext } from "./contexts/UserContext";
 import { useState, useMemo } from "react";
 
 function App() {
-  const [server, setServer] = useState(null);
-  const servervalue = useMemo(
-    () => ({ server, setServer }),
-    [server, setServer]
-  );
-  return (
-    <ServerContext.Provider value={{ servervalue }}>
-      <RouterProvider router={router} />
-    </ServerContext.Provider>
-  );
+  return <RouterProvider router={router} />;
 }
 
 const router = createBrowserRouter(

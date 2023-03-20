@@ -7,7 +7,6 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Autocomplete from "@mui/material/Autocomplete";
-import Step from "@mui/material/Step";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Cookies from "js-cookie";
@@ -15,17 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { SERVERIP, CheckLogin } from "../../LOCAL";
 import { useFormik } from "formik";
 import { CreateServerScheme } from "../../validations/ValidationSchemes";
-import {
-  IconButton,
-  StepLabel,
-  Stepper,
-  Tabs,
-  Tab,
-  Typography,
-  StepContent,
-  Paper,
-  Chip,
-} from "@mui/material";
+import { IconButton } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import NavForm from "../../Components/navigationform";
 
@@ -34,6 +23,7 @@ import NavForm from "../../Components/navigationform";
 //Components
 import CountryAutoSelect from "../../Components/CountryAutoSelect";
 import SelectServerCategory from "../../Components/SelectServerCategory";
+import { UserContext } from "../../contexts/UserContext";
 
 const theme = createTheme();
 
@@ -57,6 +47,25 @@ const onSubmit = async (values, actions) => {
   }
 };
 export default function CreateServer() {
+  const FormTitle = ["Details", "Description", "Social"];
+  const [page, setPage] = useState(0);
+  const [types, setTypes] = useState([]);
+  const [formData, setFormData] = useState({
+    servername: "",
+    servertypes: [],
+    serverjavaip: "",
+    serverjavaport: "25565",
+    serverbedrockip: "",
+    serverbedrockport: "25565",
+    servercountry: "",
+    serverthumbnail: "",
+    servericon: "",
+    servershortdescription: "",
+    serverlongdescription: "",
+    serverdiscordlink: "",
+    serveryoutubelink: "",
+    serverwebsitelink: "",
+  });
   const navigate = useNavigate();
   const {
     values,
@@ -79,9 +88,6 @@ export default function CreateServer() {
     { title: "java", year: 1994 },
     { title: "bedrock", year: 1972 },
   ];
-  const pages = ["details", "description", "social"];
-  const [active, setActive] = useState(pages[0]);
-  const [types, setTypes] = useState([]);
 
   useEffect(() => {
     if (CheckLogin() !== true) {
@@ -91,22 +97,44 @@ export default function CreateServer() {
 
   function Next() {
     //Ha az utolsó oldalon vagyunk
-    if (active === pages[pages.length - 1]) {
-      //Submitted
-      alert("Az uutolsó oldalon vagyunk. jöhet a mentés");
-      return;
-    }
-    setActive(pages[pages.indexOf(active) + 1]);
+    if (page >= FormTitle.length - 1) return;
+    return setPage(page + 1);
   }
   function Previous() {
     //Ha az utolsó oldalon vagyunk
-    if (active === pages[0]) {
-      //Submitted
-      alert("Az első oldalon vagyunk. innen nincsen visszalépés");
-      return;
-    }
-    setActive(pages[pages.indexOf(active) - 1]);
+    if (page <= 0) return;
+    return setPage(page - 1);
   }
+  const PageDisplay = () => {
+    if (page === 0)
+      return (
+        <Details
+          next={() => Next()}
+          previous={() => Previous()}
+          list={["java", "bedrock"]}
+          formData={formData}
+          setFormDatabase={setFormData}
+        />
+      );
+    if (page === 1)
+      return (
+        <Description
+          next={() => Next()}
+          previous={() => Previous()}
+          formData={formData}
+          setFormDatabase={setFormData}
+        />
+      );
+    if (page === 2)
+      return (
+        <Social
+          next={() => Next()}
+          previous={() => Previous()}
+          formData={formData}
+          setFormDatabase={setFormData}
+        />
+      );
+  };
   return (
     <div>
       {
@@ -115,31 +143,7 @@ export default function CreateServer() {
             <Container component="main" maxWidth="xs">
               <NavForm />
               <CssBaseline />
-              {
-                // https://colorlib.com/wp/free-bootstrap-wizards/
-                active === pages[0] && (
-                  <>
-                    <Details
-                      next={() => Next()}
-                      previous={() => Previous()}
-                      list={["java", "bedrock"]}
-                    />
-                  </>
-                )
-              }
-              {active === pages[1] && (
-                <>
-                  <Description
-                    next={() => Next()}
-                    previous={() => Previous()}
-                  />
-                </>
-              )}
-              {active === pages[2] && (
-                <>
-                  <Social next={() => Next()} previous={() => Previous()} />
-                </>
-              )}
+              {<PageDisplay />}
             </Container>
           </ThemeProvider>
         </>
@@ -148,7 +152,7 @@ export default function CreateServer() {
   );
 }
 
-const Details = (props) => {
+const Details = ({ formData, setFormData, next, previous, list }, props) => {
   const fixedOptions = [];
   const [value, setValue] = React.useState([]);
   return (
@@ -182,7 +186,7 @@ const Details = (props) => {
                   ),
                 ]);
               }}
-              options={props.list}
+              options={list}
               getOptionLabel={(option) => option}
               style={{ width: 500 }}
               renderInput={(params) => (
@@ -223,7 +227,7 @@ const Details = (props) => {
           <Grid item xs={2}></Grid>
           <Grid item xs={6}></Grid>
           <Grid item xs={4}>
-            <Button variant="contained" onClick={() => props.next()}>
+            <Button variant="contained" onClick={() => next()}>
               continue
             </Button>
           </Grid>
@@ -232,7 +236,7 @@ const Details = (props) => {
     </Box>
   );
 };
-const Description = (props) => {
+const Description = ({ formData, setFormData, next, previous }, props) => {
   return (
     <Box
       component="form"
@@ -276,13 +280,13 @@ const Description = (props) => {
           <TextField multiline minRows={8} fullWidth label="Description" />
         </Grid>
         <Grid item xs={2}>
-          <Button onClick={() => props.previous()} variant="contained">
+          <Button onClick={() => previous()} variant="contained">
             Previous
           </Button>
         </Grid>
         <Grid item xs={6}></Grid>
         <Grid item xs={4}>
-          <Button onClick={() => props.next()} variant="contained">
+          <Button onClick={() => next()} variant="contained">
             continue
           </Button>
         </Grid>
@@ -290,7 +294,7 @@ const Description = (props) => {
     </Box>
   );
 };
-const Social = (props) => {
+const Social = ({ formData, setFormData, next, previous }, props) => {
   return (
     <Box
       sx={{
@@ -317,13 +321,13 @@ const Social = (props) => {
             <TextField fullWidth label="Website" id="fullWidth" />
           </Grid>
           <Grid item xs={2}>
-            <Button variant="contained" onClick={() => props.previous()}>
+            <Button variant="contained" onClick={() => previous()}>
               previous
             </Button>
           </Grid>
           <Grid item xs={7}></Grid>
           <Grid item xs={3}>
-            <Button variant="contained" onClick={() => props.next()}>
+            <Button variant="contained" onClick={() => next()}>
               Submit
             </Button>
           </Grid>
