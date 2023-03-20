@@ -30,7 +30,7 @@ import ServerNotFound from "./pages/server/ServerNotFound";
 import ServerDetailsLayout from "./pages/server/ServerDetailsLayout";
 import ServerDetails from "./pages/server/ServerDetails";
 import ServerError from "./pages/server/ServerError";
-import CreateServer from "./pages/CreateServer";
+import CreateServer from "./pages/server/CreateServer";
 import ServerContextProvider, { ServerContext } from "./contexts/ServerContext";
 import { UserContext } from "./contexts/UserContext";
 import { useState, useMemo } from "react";

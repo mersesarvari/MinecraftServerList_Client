@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
-export default function CountrySelect() {
+export default function CountryAutoSelect() {
   return (
     <Autocomplete
       id="country-select-demo"
