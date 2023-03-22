@@ -64,6 +64,7 @@ export default function Login() {
         validationSchema: LoginScheme,
         onSubmit,
     });
+    
     useEffect(() => {
         if (CheckLogin() === true) {
             navigate("/");
