@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -9,47 +8,26 @@ import Box from "@mui/material/Box";
 import Autocomplete from "@mui/material/Autocomplete";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Cookies from "js-cookie";
-import { Form, useNavigate } from "react-router-dom";
-import { SERVERIP, CheckLogin } from "../../LOCAL";
-import { Field, Formik, useFormik } from "formik";
-import {
-  CreateServerScheme,
-  ServerFormScheme,
-} from "../../validations/ValidationSchemes";
+import { Form } from "react-router-dom";
+import { CheckLogin } from "../../LOCAL";
+import { Formik } from "formik";
 import { IconButton } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import NavForm from "../../Components/navigationform";
 
 // icons
+//https://www.youtube.com/watch?v=C3hGMDVo_ec
 
 //Components
 import CountryAutoSelect from "../../Components/CountryAutoSelect";
-import SelectServerCategory from "../../Components/SelectServerCategory";
-import { UserContext } from "../../contexts/UserContext";
+import { ServerFormScheme } from "../../validations/ValidationSchemes";
 
 const theme = createTheme();
-
-const StepOne = () => {
-  return (
-    <Formik>
-      {() => (
-        <Form>
-          <p>Server Name</p>
-          <Field name="servername" />
-          <p>Server server type</p>
-          <Field name="servertypes" />
-          <p>Server java ip</p>
-          <Field name="servername" />
-        </Form>
-      )}
-    </Formik>
-  );
-};
 
 export default function CreateServer() {
   const FormTitle = ["Details", "Description", "Social"];
   const [page, setPage] = useState(0);
+  const serverTypes = ["java", "bedrock"];
   const [types, setTypes] = useState([]);
 
   const [data, setData] = useState({
@@ -68,76 +46,18 @@ export default function CreateServer() {
     serveryoutubelink: "",
     serverwebsitelink: "",
   });
+  function Next() {
+    //Ha az utolsó oldalon vagyunk
+    if (page >= FormTitle.length - 1) return;
+    return setPage(page + 1);
+  }
+  function Previous() {
+    //Ha az utolsó oldalon vagyunk
+    if (page <= 0) return;
+    return setPage(page - 1);
+  }
 
-  const onSubmit = async (values, actions) => {
-    console.log(values);
-    console.log(actions);
-  };
-  const Proba = () => {
-    return (
-      <Formik>
-        <Form
-          initialValues={{
-            servername: "",
-            servertypes: [],
-            serverjavaip: "",
-            serverjavaport: "25565",
-            serverbedrockip: "",
-            serverbedrockport: "19132",
-            servercountry: "",
-            serverthumbnail: "",
-            servericon: "",
-            servershortdescription: "",
-            serverlongdescription: "",
-            serverdiscordlink: "",
-            serveryoutubelink: "",
-            serverwebsitelink: "",
-          }}
-        >
-          <Field name="servername" component={TextField} label="Server Name" />
-          <Field
-            name="servername"
-            component={Autocomplete}
-            label="Server Name"
-          />
-          <Field name="servername" component={TextField} label="Server Name" />
-          <Field name="servername" component={TextField} label="Server Name" />
-          <Field name="servername" component={TextField} label="Server Name" />
-        </Form>
-      </Formik>
-    );
-  };
-  const {
-    values,
-    errors,
-    touched,
-    isSubmitting,
-    handleBlur,
-    handleChange,
-    handleSubmit,
-  } = useFormik({
-    initialValues: {
-      servername: "",
-      servertypes: "",
-      serverjavaip: "",
-      serverjavaport: "",
-      serverbedrockip: "",
-      serverbedrockport: "",
-      servercountry: "",
-      serverthumbnail: "",
-      servericon: "",
-      servershortdescription: "",
-      serverlongdescription: "",
-      serverdiscordlink: "",
-      serveryoutubelink: "",
-      serverwebsitelink: "",
-    },
-    validationSchema: ServerFormScheme,
-    onSubmit,
-  });
-  const navigate = useNavigate();
-
-  const Details = ({ formData, setFormData, next, previous, list }, props) => {
+  const Details = ({ next, previous, list, formik }) => {
     const fixedOptions = [];
     const [value, setValue] = React.useState([]);
     return (
@@ -149,25 +69,24 @@ export default function CreateServer() {
           alignItems: "center",
         }}
       >
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="Server name"
-                id="fullWidth"
-                name="Server name"
-                autoComplete="Server name"
-                value={values.servername}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={
-                  errors.servername && touched.servername ? "input-error" : ""
+                name="servername"
+                id="servername"
+                value={formik.values.servername}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.servername && Boolean(formik.errors.servername)
+                }
+                helperText={
+                  formik.touched.servername && formik.errors.servername
                 }
               />
-              {errors.servername && touched.servername && (
-                <p className="error">{errors.servername}</p>
-              )}
             </Grid>
             <Grid item xs={12}>
               <Autocomplete
@@ -193,21 +112,13 @@ export default function CreateServer() {
                 )}
               />
             </Grid>
-
             {value.includes("java") && (
               <>
                 <Grid item xs={7}>
                   <TextField
                     fullWidth
                     label="Java server ip"
-                    value={values.serverjavaip}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={
-                      errors.serverjavaip && touched.serverjavaip
-                        ? "input-error"
-                        : ""
-                    }
+                    value={formik.values.serverjavaip}
                   />
                 </Grid>
                 <Grid item xs={5}>
@@ -215,44 +126,22 @@ export default function CreateServer() {
                 </Grid>
               </>
             )}
-
             {value.includes("bedrock") && (
               <>
                 <Grid item xs={7}>
-                  <TextField
-                    fullWidth
-                    label="Bedrock server ip"
-                    onChange={(event) =>
-                      setFormData({
-                        ...formData,
-                        serverbedrockip: event.target.value,
-                      })
-                    }
-                  />
+                  <TextField fullWidth label="Bedrock server ip" />
                 </Grid>
                 <Grid item xs={5}>
-                  <TextField
-                    onChange={(event) =>
-                      setFormData({
-                        ...formData,
-                        serverbedrockport: event.target.value,
-                      })
-                    }
-                  />
+                  <TextField />
                 </Grid>
               </>
             )}
-
             <Grid item xs={12}>
               <CountryAutoSelect />
             </Grid>
             <Grid item xs={2}></Grid>
             <Grid item xs={6}></Grid>
-            <Grid item xs={4}>
-              <Button variant="contained" onClick={() => next()}>
-                continue
-              </Button>
-            </Grid>
+            <Grid item xs={4}></Grid>
           </Grid>
         </Box>
       </Box>
@@ -358,56 +247,7 @@ export default function CreateServer() {
       </Box>
     );
   };
-  const top100Films = [
-    { title: "java", year: 1994 },
-    { title: "bedrock", year: 1972 },
-  ];
-  useEffect(() => {
-    if (CheckLogin() !== true) {
-      //navigate("/");
-    }
-  });
 
-  function Next() {
-    //Ha az utolsó oldalon vagyunk
-    if (page >= FormTitle.length - 1) return;
-    return setPage(page + 1);
-  }
-  function Previous() {
-    //Ha az utolsó oldalon vagyunk
-    if (page <= 0) return;
-    return setPage(page - 1);
-  }
-  const PageDisplay = () => {
-    if (page === 0)
-      return (
-        <Details
-          next={() => Next()}
-          previous={() => Previous()}
-          list={["java", "bedrock"]}
-          //formData={formData}
-          //setFormData={setFormData}
-        />
-      );
-    if (page === 1)
-      return (
-        <Description
-          next={() => Next()}
-          previous={() => Previous()}
-          //formData={formData}
-          //setFormData={setFormData}
-        />
-      );
-    if (page === 2)
-      return (
-        <Social
-          next={() => Next()}
-          previous={() => Previous()}
-          //formData={formData}
-          //setFormData={setFormData}
-        />
-      );
-  };
   return (
     <div>
       {
@@ -416,7 +256,25 @@ export default function CreateServer() {
             <Container component="main" maxWidth="xs">
               <NavForm />
               <CssBaseline />
-              {<PageDisplay />}
+              <Formik
+                initialValues={{
+                  servername: "",
+                }}
+                onSubmit={(values) => {
+                  console.log(values);
+                  console.log(JSON.stringify(values, null, 2));
+                }}
+                validationSchema={ServerFormScheme}
+              >
+                {(formik) => (
+                  <form onSubmit={formik.handleSubmit}>
+                    <Details list={serverTypes} formik={formik} />
+                    <Button type="submit" color="primary">
+                      Submit
+                    </Button>
+                  </form>
+                )}
+              </Formik>
             </Container>
           </ThemeProvider>
         </>

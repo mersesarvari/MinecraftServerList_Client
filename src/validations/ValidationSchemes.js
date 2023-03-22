@@ -41,9 +41,9 @@ export const LoginScheme = yup.object().shape({
 export const ServerFormScheme = yup.object().shape({
   servername: yup
     .string()
-    .required("Server name is required")
     .min(5, "Minimum server name length must be 5 character")
-    .max(20, "Minimum server name length must be 20 character"),
+    .max(20, "Minimum server name length must be 20 character")
+    .required("Server name is required"),
   servertypes: yup.string(),
   serverjavaip: yup.string(),
   serverjavaport: yup.string().required(),
@@ -57,24 +57,6 @@ export const ServerFormScheme = yup.object().shape({
   serverdiscordlink: yup.string(),
   serveryoutubelink: yup.string(),
   serverwebsitelink: yup.string(),
-});
-
-export const CreateServerScheme = yup.object().shape({
-  name: yup.string().required("Server name is required"),
-  ipaddress: yup
-    .string()
-    .min(6, "Password have to be at least 6 characters")
-    .max(20, "Password cannot be longer than 20 characters"),
-  serverlogo: yup
-    .array()
-    .nullable()
-    .required("VALIDATION_FIELD_REQUIRED")
-    .test("is-correct-file", "VALIDATION_FIELD_FILE_BIG", checkIfFilesAreTooBig)
-    .test(
-      "is-big-file",
-      "VALIDATION_FIELD_FILE_WRONG_TYPE",
-      checkIfFilesAreCorrectType
-    ),
 });
 
 export function checkIfFilesAreTooBig(file) {
