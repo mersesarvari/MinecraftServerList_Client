@@ -28,23 +28,10 @@ export default function CreateServer() {
   const [types, setTypes] = useState([]);
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const [errors, setErrors] = useState([]);
+  const [ip, setIp] = useState(null);
+  const [javacheck, setJavacheck] = useState(false);
+  const [bedrockcheck, setBedrockcheck] = useState(false);
 
-  const [data, setData] = useState({
-    servername: "",
-    servertypes: [],
-    serverjavaip: "",
-    serverjavaport: "25565",
-    serverbedrockip: "",
-    serverbedrockport: "19132",
-    servercountry: "",
-    serverthumbnail: "",
-    servericon: "",
-    servershortdescription: "",
-    serverlongdescription: "",
-    serverdiscordlink: "",
-    serveryoutubelink: "",
-    serverwebsitelink: "",
-  });
   function Next() {
     //Ha az utolsó oldalon vagyunk
     if (page >= FormTitle.length - 1) return;
@@ -55,17 +42,16 @@ export default function CreateServer() {
     if (page <= 0) return;
     return setPage(page - 1);
   }
+  function SetJavaCheck(event) {
+    event.preventDefault();
+    setJavacheck(event.target.checked);
+  }
+  function SetBedrockCheck(event) {
+    event.preventDefault();
+    setBedrockcheck(event.target.checked);
+  }
 
   const Details = ({ next, previous, list, formik }) => {
-    const [java, setJava] = React.useState(false);
-    const [bedrock, setBedrock] = React.useState(false);
-    const handleJavaChange = (event) => {
-      setJava(event.target.checked);
-    };
-    const handleBedrockChange = (event) => {
-      setBedrock(event.target.checked);
-    };
-    const handleIpChange = () => {};
     return (
       <Box
         sx={{
@@ -97,14 +83,16 @@ export default function CreateServer() {
             <Grid item xd={6}>
               <FormControlLabel
                 control={
-                  <Checkbox id="javaCheck" onChange={handleJavaChange} />
+                  <Checkbox checked={javacheck} onChange={SetJavaCheck} />
                 }
                 label="java server"
               />
             </Grid>
             <Grid item xd={6}>
               <FormControlLabel
-                control={<Checkbox onChange={handleBedrockChange} />}
+                control={
+                  <Checkbox checked={bedrockcheck} onChange={SetBedrockCheck} />
+                }
                 label="bedrock server"
               />
             </Grid>
@@ -117,8 +105,7 @@ export default function CreateServer() {
                     label="Java server ip"
                     value={formik.values.serverjavaip}
                     onChange={formik.handleChange}
-                    onkeypress={handleIpChange}
-                    disabled={!java}
+                    disabled={!javacheck}
                   />
                 </Grid>
                 <Grid item xs={5}>
@@ -126,8 +113,7 @@ export default function CreateServer() {
                     id="serverjavaport"
                     value={formik.values.serverjavaport}
                     fullWidth
-                    disabled={!java}
-                    onkeypress={handleIpChange}
+                    disabled={!javacheck}
                     onChange={formik.handleChange}
                     label="port"
                   />
@@ -143,13 +129,13 @@ export default function CreateServer() {
                     value={formik.values.serverbedrockip}
                     onChange={formik.handleChange}
                     label="Bedrock server ip"
-                    disabled={!bedrock}
+                    disabled={!bedrockcheck}
                   />
                 </Grid>
                 <Grid item xs={5}>
                   <TextField
                     id="serverbedrockport"
-                    disabled={!bedrock}
+                    disabled={!bedrockcheck}
                     onChange={formik.handleChange}
                     label="port"
                   />
@@ -157,7 +143,14 @@ export default function CreateServer() {
               </>
             }
             <Grid item xs={12}>
-              {errors.length > 0 && <p className="error">{errors}</p>}
+              {(formik.touched.serverjavaip ||
+                formik.touched.serverbedrockip) &&
+                formik.values.serverjavaip === "" &&
+                formik.values.serverbedrockip === "" && (
+                  <p className="error">
+                    {"You have to set at least 1 ipaddress"}
+                  </p>
+                )}
             </Grid>
             <Grid item xs={12}>
               <CountryAutoSelect />
