@@ -25,10 +25,6 @@ export default function CreateServer() {
   const FormTitle = ["Details", "Description", "Social"];
   const [page, setPage] = useState(0);
   const serverTypes = ["java", "bedrock"];
-  const [types, setTypes] = useState([]);
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
-  const [errors, setErrors] = useState([]);
-  const [ip, setIp] = useState(null);
   const [javacheck, setJavacheck] = useState(false);
   const [bedrockcheck, setBedrockcheck] = useState(false);
 
@@ -52,6 +48,7 @@ export default function CreateServer() {
   }
 
   const Details = ({ next, previous, list, formik }) => {
+    const [nextavailable, setNextAvailable] = useState(false);
     return (
       <Box
         sx={{
@@ -155,9 +152,14 @@ export default function CreateServer() {
             <Grid item xs={12}>
               <CountryAutoSelect />
             </Grid>
+
             <Grid item xs={2}></Grid>
             <Grid item xs={6}></Grid>
-            <Grid item xs={4}></Grid>
+            <Grid item xs={4}>
+              <Button type="submit" color="primary">
+                next
+              </Button>
+            </Grid>
           </Grid>
         </Box>
       </Box>
@@ -285,22 +287,26 @@ export default function CreateServer() {
                     values.serverjavaip === "" &&
                     values.serverbedrockip === ""
                   ) {
-                    setErrors(
-                      "You have to set at least one type of server Ip address."
-                    );
                     return;
                   }
+
                   console.log(JSON.stringify(values));
-                  alert("Submitted");
+                  alert("Next page");
+                  setPage(page + 1);
                 }}
                 validationSchema={ServerFormScheme}
               >
                 {(formik) => (
                   <form onSubmit={formik.handleSubmit}>
-                    <Details list={serverTypes} formik={formik} />
-                    <Button type="submit" color="primary">
-                      Submit
-                    </Button>
+                    {page === 0 && (
+                      <Details list={serverTypes} formik={formik} />
+                    )}
+                    {page === 1 && (
+                      <Description list={serverTypes} formik={formik} />
+                    )}
+                    {page === 2 && (
+                      <Social list={serverTypes} formik={formik} />
+                    )}
                   </form>
                 )}
               </Formik>
