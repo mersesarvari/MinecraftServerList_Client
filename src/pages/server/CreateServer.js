@@ -27,6 +27,7 @@ export default function CreateServer() {
   const serverTypes = ["java", "bedrock"];
   const [types, setTypes] = useState([]);
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
+  const [errors, setErrors] = useState([]);
 
   const [data, setData] = useState({
     servername: "",
@@ -56,7 +57,6 @@ export default function CreateServer() {
   }
 
   const Details = ({ next, previous, list, formik }) => {
-    const fixedOptions = [];
     const [java, setJava] = React.useState(false);
     const [bedrock, setBedrock] = React.useState(false);
     const handleJavaChange = (event) => {
@@ -65,6 +65,7 @@ export default function CreateServer() {
     const handleBedrockChange = (event) => {
       setBedrock(event.target.checked);
     };
+    const handleIpChange = () => {};
     return (
       <Box
         sx={{
@@ -93,33 +94,43 @@ export default function CreateServer() {
                 }
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xd={6}>
               <FormControlLabel
                 control={
                   <Checkbox id="javaCheck" onChange={handleJavaChange} />
                 }
                 label="java server"
               />
+            </Grid>
+            <Grid item xd={6}>
               <FormControlLabel
                 control={<Checkbox onChange={handleBedrockChange} />}
                 label="bedrock server"
               />
-              {formik.errors.serveripset && (
-                <p className="error">{formik.errors.serveripset}</p>
-              )}
             </Grid>
             {
               <>
                 <Grid item xs={7}>
                   <TextField
                     fullWidth
+                    id="serverjavaip"
                     label="Java server ip"
                     value={formik.values.serverjavaip}
+                    onChange={formik.handleChange}
+                    onkeypress={handleIpChange}
                     disabled={!java}
                   />
                 </Grid>
                 <Grid item xs={5}>
-                  <TextField fullWidth disabled={!java} label="port" />
+                  <TextField
+                    id="serverjavaport"
+                    value={formik.values.serverjavaport}
+                    fullWidth
+                    disabled={!java}
+                    onkeypress={handleIpChange}
+                    onChange={formik.handleChange}
+                    label="port"
+                  />
                 </Grid>
               </>
             }
@@ -127,17 +138,27 @@ export default function CreateServer() {
               <>
                 <Grid item xs={7}>
                   <TextField
+                    id="serverbedrockip"
                     fullWidth
                     value={formik.values.serverbedrockip}
+                    onChange={formik.handleChange}
                     label="Bedrock server ip"
                     disabled={!bedrock}
                   />
                 </Grid>
                 <Grid item xs={5}>
-                  <TextField disabled={!bedrock} label="port" />
+                  <TextField
+                    id="serverbedrockport"
+                    disabled={!bedrock}
+                    onChange={formik.handleChange}
+                    label="port"
+                  />
                 </Grid>
               </>
             }
+            <Grid item xs={12}>
+              {errors.length > 0 && <p className="error">{errors}</p>}
+            </Grid>
             <Grid item xs={12}>
               <CountryAutoSelect />
             </Grid>
@@ -267,7 +288,15 @@ export default function CreateServer() {
                   serverbedrockport: "",
                 }}
                 onSubmit={(values, formik) => {
-                  console.log(formik.errors);
+                  if (
+                    values.serverjavaip === "" &&
+                    values.serverbedrockip === ""
+                  ) {
+                    setErrors(
+                      "You have to set at least one type of server Ip address."
+                    );
+                    return;
+                  }
                   console.log(JSON.stringify(values));
                   alert("Submitted");
                 }}

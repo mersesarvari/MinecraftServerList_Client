@@ -44,8 +44,8 @@ export const ServerFormScheme = yup.object().shape({
     .min(5, "Minimum server name length must be 5 character")
     .max(20, "Minimum server name length must be 20 character")
     .required("Server name is required"),
-  serverjavaip: yup.string(),
-  serverjavaport: yup.string(),
-  serverbedrockip: yup.string(),
-  serverbedrockport: yup.string(),
+  serverjavaip: yup.string().max(30),
+  serverjavaport: yup.string().max(30),
+  serverbedrockip: yup.string().max(30),
+  serverbedrockport: yup.string().max(30),
 });
