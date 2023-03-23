@@ -1,28 +1,16 @@
 import * as React from "react";
-import { render } from "react-dom";
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import Autocomplete from "@mui/material/Autocomplete";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Form } from "react-router-dom";
-import { CheckLogin } from "../../LOCAL";
-import { Field, Formik } from "formik";
-import { LocalizationProvider } from "@mui/lab";
-import {
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  IconButton,
-  MenuItem,
-} from "@mui/material";
+import { Formik } from "formik";
+import { Checkbox, FormControlLabel, IconButton } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import NavForm from "../../Components/navigationform";
-import { Select } from "formik-mui";
 
 // icons
 //https://www.youtube.com/watch?v=C3hGMDVo_ec
@@ -116,6 +104,9 @@ export default function CreateServer() {
                 control={<Checkbox onChange={handleBedrockChange} />}
                 label="bedrock server"
               />
+              {formik.errors.serveripset && (
+                <p className="error">{formik.errors.serveripset}</p>
+              )}
             </Grid>
             {
               <>
@@ -277,7 +268,8 @@ export default function CreateServer() {
                 }}
                 onSubmit={(values, formik) => {
                   console.log(formik.errors);
-                  console.log(JSON.stringify(values, null, 2));
+                  console.log(JSON.stringify(values));
+                  alert("Submitted");
                 }}
                 validationSchema={ServerFormScheme}
               >
