@@ -86,16 +86,6 @@ export default function CreateServer() {
     setCompleted({});
   };
 
-  function Next() {
-    //Ha az utolsó oldalon vagyunk
-    if (page >= FormTitle.length - 1) return;
-    return setPage(page + 1);
-  }
-  function Previous() {
-    //Ha az utolsó oldalon vagyunk
-    if (page <= 0) return;
-    return setPage(page - 1);
-  }
   function SetJavaCheck(event) {
     event.preventDefault();
     setJavacheck(event.target.checked);
@@ -210,14 +200,6 @@ export default function CreateServer() {
             <Grid item xs={12}>
               <CountryAutoSelect />
             </Grid>
-
-            <Grid item xs={2}></Grid>
-            <Grid item xs={6}></Grid>
-            <Grid item xs={4}>
-              <Button type="submit" color="primary">
-                next
-              </Button>
-            </Grid>
           </Grid>
         </Box>
       </Box>
@@ -266,17 +248,6 @@ export default function CreateServer() {
           <Grid item xs={12}>
             <TextField multiline minRows={8} fullWidth label="Description" />
           </Grid>
-          <Grid item xs={2}>
-            <Button onClick={() => Previous()} variant="contained">
-              Previous
-            </Button>
-          </Grid>
-          <Grid item xs={6}></Grid>
-          <Grid item xs={4}>
-            <Button onClick={() => Next()} variant="contained">
-              continue
-            </Button>
-          </Grid>
         </Grid>
       </Box>
     );
@@ -306,17 +277,6 @@ export default function CreateServer() {
             </Grid>
             <Grid item xs={12}>
               <TextField fullWidth label="Website" id="fullWidth" />
-            </Grid>
-            <Grid item xs={2}>
-              <Button variant="contained" onClick={() => Previous()}>
-                previous
-              </Button>
-            </Grid>
-            <Grid item xs={7}></Grid>
-            <Grid item xs={3}>
-              <Button variant="contained" onClick={() => Next()}>
-                Submit
-              </Button>
             </Grid>
           </Grid>
         </Box>
@@ -417,7 +377,6 @@ export default function CreateServer() {
 
                       console.log(JSON.stringify(values));
                       alert("Next page");
-                      Next();
                     }}
                     validationSchema={ServerFormScheme}
                   >
