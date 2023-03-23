@@ -1,4 +1,5 @@
 import * as React from "react";
+import { render } from "react-dom";
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -10,10 +11,18 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Form } from "react-router-dom";
 import { CheckLogin } from "../../LOCAL";
-import { Formik } from "formik";
-import { IconButton } from "@mui/material";
+import { Field, Formik } from "formik";
+import { LocalizationProvider } from "@mui/lab";
+import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  IconButton,
+  MenuItem,
+} from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import NavForm from "../../Components/navigationform";
+import { Select } from "formik-mui";
 
 // icons
 //https://www.youtube.com/watch?v=C3hGMDVo_ec
@@ -29,6 +38,7 @@ export default function CreateServer() {
   const [page, setPage] = useState(0);
   const serverTypes = ["java", "bedrock"];
   const [types, setTypes] = useState([]);
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
   const [data, setData] = useState({
     servername: "",
@@ -59,13 +69,21 @@ export default function CreateServer() {
 
   const Details = ({ next, previous, list, formik }) => {
     const fixedOptions = [];
-    const [value, setValue] = React.useState([]);
+    const [java, setJava] = React.useState(false);
+    const [bedrock, setBedrock] = React.useState(false);
+    const handleJavaChange = (event) => {
+      setJava(event.target.checked);
+    };
+    const handleBedrockChange = (event) => {
+      setBedrock(event.target.checked);
+    };
     return (
       <Box
         sx={{
           marginTop: 8,
           display: "flex",
           flexDirection: "column",
+
           alignItems: "center",
         }}
       >
@@ -79,7 +97,6 @@ export default function CreateServer() {
                 id="servername"
                 value={formik.values.servername}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 error={
                   formik.touched.servername && Boolean(formik.errors.servername)
                 }
@@ -89,53 +106,47 @@ export default function CreateServer() {
               />
             </Grid>
             <Grid item xs={12}>
-              <Autocomplete
-                multiple
-                id="fixed-tags-demo"
-                //value={value}
-                onChange={(event, newValue) => {
-                  setValue([
-                    ...newValue.filter(
-                      (option) => fixedOptions.indexOf(option) === -1
-                    ),
-                  ]);
-                }}
-                options={list}
-                getOptionLabel={(option) => option}
-                style={{ width: 500 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Server type(s)"
-                    placeholder="select server types"
-                  />
-                )}
+              <FormControlLabel
+                control={
+                  <Checkbox id="javaCheck" onChange={handleJavaChange} />
+                }
+                label="java server"
+              />
+              <FormControlLabel
+                control={<Checkbox onChange={handleBedrockChange} />}
+                label="bedrock server"
               />
             </Grid>
-            {value.includes("java") && (
+            {
               <>
                 <Grid item xs={7}>
                   <TextField
                     fullWidth
                     label="Java server ip"
                     value={formik.values.serverjavaip}
+                    disabled={!java}
                   />
                 </Grid>
                 <Grid item xs={5}>
-                  <TextField fullWidth />
+                  <TextField fullWidth disabled={!java} label="port" />
                 </Grid>
               </>
-            )}
-            {value.includes("bedrock") && (
+            }
+            {
               <>
                 <Grid item xs={7}>
-                  <TextField fullWidth label="Bedrock server ip" />
+                  <TextField
+                    fullWidth
+                    value={formik.values.serverbedrockip}
+                    label="Bedrock server ip"
+                    disabled={!bedrock}
+                  />
                 </Grid>
                 <Grid item xs={5}>
-                  <TextField />
+                  <TextField disabled={!bedrock} label="port" />
                 </Grid>
               </>
-            )}
+            }
             <Grid item xs={12}>
               <CountryAutoSelect />
             </Grid>
@@ -259,9 +270,13 @@ export default function CreateServer() {
               <Formik
                 initialValues={{
                   servername: "",
+                  serverjavaip: "",
+                  serverjavaport: "25565",
+                  serverbedrockip: "",
+                  serverbedrockport: "",
                 }}
-                onSubmit={(values) => {
-                  console.log(values);
+                onSubmit={(values, formik) => {
+                  console.log(formik.errors);
                   console.log(JSON.stringify(values, null, 2));
                 }}
                 validationSchema={ServerFormScheme}

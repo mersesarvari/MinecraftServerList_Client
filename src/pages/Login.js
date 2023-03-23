@@ -108,7 +108,6 @@ export default function Login() {
                   autoFocus
                   value={values.email}
                   onChange={handleChange}
-                  onBlur={handleBlur}
                   className={errors.email && touched.email ? "input-error" : ""}
                 />
                 {errors.email && touched.email && (
@@ -125,7 +124,6 @@ export default function Login() {
                   autoComplete="current-password"
                   value={values.password}
                   onChange={handleChange}
-                  onBlur={handleBlur}
                   className={
                     errors.password && touched.email ? "input-error" : ""
                   }
