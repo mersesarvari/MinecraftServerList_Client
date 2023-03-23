@@ -47,7 +47,7 @@ export default function CreateServer() {
     setBedrockcheck(event.target.checked);
   }
 
-  const Details = ({ next, previous, list, formik }) => {
+  const Details = ({ list, formik }) => {
     const [nextavailable, setNextAvailable] = useState(false);
     return (
       <Box
@@ -165,11 +165,11 @@ export default function CreateServer() {
       </Box>
     );
   };
-  const Description = ({ formData, setFormData, next, previous }, props) => {
+  const Description = ({ formik }) => {
     return (
       <Box
         component="form"
-        onSubmit={props.handleSubmit}
+        onSubmit={formik.handleSubmit}
         noValidate
         sx={{ mt: 1 }}
       >
@@ -209,13 +209,13 @@ export default function CreateServer() {
             <TextField multiline minRows={8} fullWidth label="Description" />
           </Grid>
           <Grid item xs={2}>
-            <Button onClick={() => previous()} variant="contained">
+            <Button onClick={() => Previous()} variant="contained">
               Previous
             </Button>
           </Grid>
           <Grid item xs={6}></Grid>
           <Grid item xs={4}>
-            <Button onClick={() => next()} variant="contained">
+            <Button onClick={() => Next()} variant="contained">
               continue
             </Button>
           </Grid>
@@ -250,13 +250,13 @@ export default function CreateServer() {
               <TextField fullWidth label="Website" id="fullWidth" />
             </Grid>
             <Grid item xs={2}>
-              <Button variant="contained" onClick={() => previous()}>
+              <Button variant="contained" onClick={() => Previous()}>
                 previous
               </Button>
             </Grid>
             <Grid item xs={7}></Grid>
             <Grid item xs={3}>
-              <Button variant="contained" onClick={() => next()}>
+              <Button variant="contained" onClick={() => Next()}>
                 Submit
               </Button>
             </Grid>
@@ -292,7 +292,7 @@ export default function CreateServer() {
 
                   console.log(JSON.stringify(values));
                   alert("Next page");
-                  setPage(page + 1);
+                  Next();
                 }}
                 validationSchema={ServerFormScheme}
               >
