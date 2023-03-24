@@ -15,7 +15,6 @@ import {
   StepButton,
   Stepper,
 } from "@mui/material";
-import { PhotoCamera } from "@mui/icons-material";
 import NavForm from "../../Components/navigationform";
 
 // icons
@@ -56,15 +55,11 @@ export default function CreateServer() {
   };
 
   const handleBack = () => {
-    if (showError[activeStep]) {
-      alert("YOu cannot move from this step. Correct the errors");
-      return;
-    }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleStep = (step) => () => {
-    if (showError[step]) {
+    if (showError[activeStep] && activeStep < step) {
       alert("YOu cannot move from this step. Correct the errors");
       return;
     }
@@ -212,30 +207,10 @@ export default function CreateServer() {
         <Box onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <Button variant="contained" component="label">
-                Upload Server icon
-                <input hidden accept="image/*" multiple type="file" />
-              </Button>
-              <IconButton
-                color="primary"
-                aria-label="upload picture"
-                component="label"
-              >
-                <input hidden accept="image/*" type="file" />
-                <PhotoCamera />
-              </IconButton>
+              <input hidden accept="image/*" type="file" />
             </Grid>
             <Grid item xs={6}>
               <TextField type="file" />
-
-              <IconButton
-                color="primary"
-                aria-label="upload picture"
-                component="label"
-              >
-                <input hidden accept="image/*" type="file" />
-                <PhotoCamera />
-              </IconButton>
             </Grid>
 
             <Grid item xs={12}>
