@@ -32,6 +32,7 @@ export default function CreateServer() {
   const [bedrockcheck, setBedrockcheck] = useState(false);
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
+  const [showError, setShowError] = useState([false, true, true]);
 
   const totalSteps = () => {
     return steps.length;
@@ -43,6 +44,10 @@ export default function CreateServer() {
   const isErrorHappened = () => {};
 
   const handleNext = () => {
+    if (showError[activeStep]) {
+      alert("YOu cannot move from this step. Correct the errors");
+      return;
+    }
     if (isLastStep()) {
       alert("You reached the last stem on this form");
       return;
@@ -51,10 +56,18 @@ export default function CreateServer() {
   };
 
   const handleBack = () => {
+    if (showError[activeStep]) {
+      alert("YOu cannot move from this step. Correct the errors");
+      return;
+    }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleStep = (step) => () => {
+    if (showError[step]) {
+      alert("YOu cannot move from this step. Correct the errors");
+      return;
+    }
     setActiveStep(step);
   };
 
@@ -73,7 +86,6 @@ export default function CreateServer() {
   }
 
   const Details = ({ list, formik }) => {
-    const [nextavailable, setNextAvailable] = useState(false);
     return (
       <Box
         sx={{
@@ -95,10 +107,14 @@ export default function CreateServer() {
                 value={formik.values.servername}
                 onChange={formik.handleChange}
                 error={
-                  formik.touched.servername && Boolean(formik.errors.servername)
+                  (formik.touched.servername &&
+                    Boolean(formik.errors.servername)) ||
+                  showError[0]
                 }
                 helperText={
-                  formik.touched.servername && formik.errors.servername
+                  ((formik.touched.servername || showError) &&
+                    Boolean(formik.errors.servername)) ||
+                  (showError[0] && "Error is showed")
                 }
               />
             </Grid>
