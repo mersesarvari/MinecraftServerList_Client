@@ -38,7 +38,7 @@ export const LoginScheme = yup.object().shape({
     .oneOf([yup.ref("password"), null], "Passwords must match"),
 });
 
-export const ServerFormScheme = yup.object().shape({
+export const ServerFormDetailsScheme = yup.object().shape({
   servername: yup
     .string()
     .min(5, "Minimum server name length must be 5 character")
@@ -48,4 +48,39 @@ export const ServerFormScheme = yup.object().shape({
   serverjavaport: yup.string().max(30),
   serverbedrockip: yup.string().max(30),
   serverbedrockport: yup.string().max(30),
+});
+
+export const ServerFormDescriptionScheme = yup.object().shape({
+  servername: yup
+    .string()
+    .min(5, "Minimum server name length must be 5 character")
+    .max(20, "Minimum server name length must be 20 character")
+    .required("Server name is required"),
+  serverjavaip: yup.string().max(30),
+  serverjavaport: yup.string().max(30),
+  serverbedrockip: yup.string().max(30),
+  serverbedrockport: yup.string().max(30),
+});
+export const ServerFormSocialScheme = yup.object().shape({
+  serveryoutube: yup
+    .string()
+    .matches(
+      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+      "Enter correct url!"
+    )
+    .required("Please enter website"),
+  serverdiscord: yup
+    .string()
+    .matches(
+      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+      "Enter correct url!"
+    )
+    .required("Please enter website"),
+  serverwebsite: yup
+    .string()
+    .matches(
+      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+      "Enter correct url!"
+    )
+    .required("Please enter website"),
 });

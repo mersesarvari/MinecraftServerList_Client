@@ -22,7 +22,7 @@ import NavForm from "../../Components/navigationform";
 
 //Components
 import CountryAutoSelect from "../../Components/CountryAutoSelect";
-import { ServerFormScheme } from "../../validations/ValidationSchemes";
+import { ServerFormDetailsScheme } from "../../validations/ValidationSchemes";
 
 export default function CreateServer() {
   const steps = ["Information", "Description", "Social"];
@@ -80,176 +80,255 @@ export default function CreateServer() {
     setBedrockcheck(event.target.checked);
   }
 
-  const Details = ({ list, formik }) => {
+  const Details = () => {
     return (
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-
-          alignItems: "center",
+      <Formik
+        initialValues={{
+          servername: "",
+          serverjavaip: "",
+          serverjavaport: "25565",
+          serverbedrockip: "",
+          serverbedrockport: "19132",
         }}
+        onSubmit={(values, formik) => {
+          if (values.serverjavaip === "" && values.serverbedrockip === "") {
+            return;
+          }
+
+          console.log(JSON.stringify(values));
+          alert("Next page");
+        }}
+        validationSchema={ServerFormDetailsScheme}
       >
-        <Box onSubmit={formik.handleSubmit}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Server name"
-                name="servername"
-                id="servername"
-                value={formik.values.servername}
-                onChange={formik.handleChange}
-                error={
-                  (formik.touched.servername &&
-                    Boolean(formik.errors.servername)) ||
-                  showError[0]
-                }
-                helperText={
-                  ((formik.touched.servername || showError) &&
-                    Boolean(formik.errors.servername)) ||
-                  (showError[0] && "Error is showed")
-                }
-              />
-            </Grid>
-            <Grid item xd={6}>
-              <FormControlLabel
-                control={
-                  <Checkbox checked={javacheck} onChange={SetJavaCheck} />
-                }
-                label="java server"
-              />
-            </Grid>
-            <Grid item xd={6}>
-              <FormControlLabel
-                control={
-                  <Checkbox checked={bedrockcheck} onChange={SetBedrockCheck} />
-                }
-                label="bedrock server"
-              />
-            </Grid>
-            {
-              <>
-                <Grid item xs={7}>
-                  <TextField
-                    fullWidth
-                    id="serverjavaip"
-                    label="Java server ip"
-                    value={formik.values.serverjavaip}
-                    onChange={formik.handleChange}
-                    disabled={!javacheck}
-                  />
+        {(formik) => (
+          <form onSubmit={formik.handleSubmit}>
+            <Box
+              sx={{
+                marginTop: 8,
+                display: "flex",
+                flexDirection: "column",
+
+                alignItems: "center",
+              }}
+            >
+              <Box>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Server name"
+                      name="servername"
+                      id="servername"
+                      value={formik.values.servername}
+                      onChange={formik.handleChange}
+                      error={
+                        (formik.touched.servername &&
+                          Boolean(formik.errors.servername)) ||
+                        showError[0]
+                      }
+                    />
+                  </Grid>
+                  <Grid item xd={6}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox checked={javacheck} onChange={SetJavaCheck} />
+                      }
+                      label="java server"
+                    />
+                  </Grid>
+                  <Grid item xd={6}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={bedrockcheck}
+                          onChange={SetBedrockCheck}
+                        />
+                      }
+                      label="bedrock server"
+                    />
+                  </Grid>
+                  {
+                    <>
+                      <Grid item xs={7}>
+                        <TextField
+                          fullWidth
+                          id="serverjavaip"
+                          label="Java server ip"
+                          value={formik.values.serverjavaip}
+                          onChange={formik.handleChange}
+                          disabled={!javacheck}
+                        />
+                      </Grid>
+                      <Grid item xs={5}>
+                        <TextField
+                          id="serverjavaport"
+                          value={formik.values.serverjavaport}
+                          fullWidth
+                          disabled={!javacheck}
+                          onChange={formik.handleChange}
+                          label="port"
+                        />
+                      </Grid>
+                    </>
+                  }
+                  {
+                    <>
+                      <Grid item xs={7}>
+                        <TextField
+                          id="serverbedrockip"
+                          fullWidth
+                          value={formik.values.serverbedrockip}
+                          onChange={formik.handleChange}
+                          label="Bedrock server ip"
+                          disabled={!bedrockcheck}
+                          required
+                        />
+                      </Grid>
+                      <Grid item xs={5}>
+                        <TextField
+                          id="serverbedrockport"
+                          value={formik.values.serverbedrockport}
+                          disabled={!bedrockcheck}
+                          onChange={formik.handleChange}
+                          required
+                          label="port"
+                        />
+                      </Grid>
+                    </>
+                  }
+                  <Grid item xs={12}>
+                    {(formik.touched.serverjavaip ||
+                      formik.touched.serverbedrockip) &&
+                      formik.values.serverjavaip === "" &&
+                      formik.values.serverbedrockip === "" && (
+                        <p className="error">
+                          {"You have to set at least 1 ipaddress"}
+                        </p>
+                      )}
+                  </Grid>
+                  <Grid item xs={12}>
+                    <CountryAutoSelect />
+                  </Grid>
                 </Grid>
-                <Grid item xs={5}>
-                  <TextField
-                    id="serverjavaport"
-                    value={formik.values.serverjavaport}
-                    fullWidth
-                    disabled={!javacheck}
-                    onChange={formik.handleChange}
-                    label="port"
-                  />
-                </Grid>
-              </>
-            }
-            {
-              <>
-                <Grid item xs={7}>
-                  <TextField
-                    id="serverbedrockip"
-                    fullWidth
-                    value={formik.values.serverbedrockip}
-                    onChange={formik.handleChange}
-                    label="Bedrock server ip"
-                    disabled={!bedrockcheck}
-                  />
-                </Grid>
-                <Grid item xs={5}>
-                  <TextField
-                    id="serverbedrockport"
-                    disabled={!bedrockcheck}
-                    onChange={formik.handleChange}
-                    label="port"
-                  />
-                </Grid>
-              </>
-            }
-            <Grid item xs={12}>
-              {(formik.touched.serverjavaip ||
-                formik.touched.serverbedrockip) &&
-                formik.values.serverjavaip === "" &&
-                formik.values.serverbedrockip === "" && (
-                  <p className="error">
-                    {"You have to set at least 1 ipaddress"}
-                  </p>
-                )}
-            </Grid>
-            <Grid item xs={12}>
-              <CountryAutoSelect />
-            </Grid>
-          </Grid>
-        </Box>
-      </Box>
+              </Box>
+            </Box>
+          </form>
+        )}
+      </Formik>
     );
   };
-  const Description = ({ formik }) => {
+  const Description = () => {
     return (
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-
-          alignItems: "center",
+      <Formik
+        initialValues={{
+          servername: "",
+          serverjavaip: "",
+          serverjavaport: "25565",
+          serverbedrockip: "",
+          serverbedrockport: "19132",
         }}
+        onSubmit={(values, formik) => {
+          if (values.serverjavaip === "" && values.serverbedrockip === "") {
+            return;
+          }
+
+          console.log(JSON.stringify(values));
+          alert("Next page");
+        }}
+        validationSchema={ServerFormDetailsScheme}
       >
-        <Box onSubmit={formik.handleSubmit}>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <input hidden accept="image/*" type="file" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField type="file" />
-            </Grid>
+        {(formik) => (
+          <form onSubmit={formik.handleSubmit}>
+            <Box
+              sx={{
+                marginTop: 8,
+                display: "flex",
+                flexDirection: "column",
 
-            <Grid item xs={12}>
-              <TextField fullWidth label="Short description" />
-            </Grid>
+                alignItems: "center",
+              }}
+            >
+              <Box onSubmit={formik.handleSubmit}>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <input hidden accept="image/*" type="file" />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField type="file" />
+                  </Grid>
 
-            <Grid item xs={12}>
-              <TextField multiline minRows={8} fullWidth label="Description" />
-            </Grid>
-          </Grid>
-        </Box>
-      </Box>
+                  <Grid item xs={12}>
+                    <TextField fullWidth label="Short description" />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <TextField
+                      multiline
+                      minRows={8}
+                      fullWidth
+                      label="Description"
+                    />
+                  </Grid>
+                </Grid>
+              </Box>
+            </Box>
+          </form>
+        )}
+      </Formik>
     );
   };
-  const Social = ({ formik }) => {
+  const Social = () => {
     return (
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-
-          alignItems: "center",
+      <Formik
+        initialValues={{
+          servername: "",
+          serverjavaip: "",
+          serverjavaport: "25565",
+          serverbedrockip: "",
+          serverbedrockport: "19132",
         }}
+        onSubmit={(values, formik) => {
+          if (values.serverjavaip === "" && values.serverbedrockip === "") {
+            return;
+          }
+
+          console.log(JSON.stringify(values));
+          alert("Next page");
+        }}
+        validationSchema={ServerFormDetailsScheme}
       >
-        <Box onSubmit={formik.handleSubmit}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField fullWidth label="Discord link" id="fullWidth" />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField fullWidth label="Youtube intro link" id="fullWidth" />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField fullWidth label="Website" id="fullWidth" />
-            </Grid>
-          </Grid>
-        </Box>
-      </Box>
+        {(formik) => (
+          <form onSubmit={formik.handleSubmit}>
+            <Box
+              sx={{
+                marginTop: 8,
+                display: "flex",
+                flexDirection: "column",
+
+                alignItems: "center",
+              }}
+            >
+              <Box onSubmit={formik.handleSubmit}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField fullWidth label="Discord link" id="fullWidth" />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Youtube intro link"
+                      id="fullWidth"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField fullWidth label="Website" id="fullWidth" />
+                  </Grid>
+                </Grid>
+              </Box>
+            </Box>
+          </form>
+        )}
+      </Formik>
     );
   };
 
@@ -268,38 +347,9 @@ export default function CreateServer() {
           ))}
         </Stepper>
         <React.Fragment>
-          <Formik
-            initialValues={{
-              servername: "",
-              serverjavaip: "",
-              serverjavaport: "25565",
-              serverbedrockip: "",
-              serverbedrockport: "",
-            }}
-            onSubmit={(values, formik) => {
-              if (values.serverjavaip === "" && values.serverbedrockip === "") {
-                return;
-              }
-
-              console.log(JSON.stringify(values));
-              alert("Next page");
-            }}
-            validationSchema={ServerFormScheme}
-          >
-            {(formik) => (
-              <form onSubmit={formik.handleSubmit}>
-                {activeStep === 0 && (
-                  <Details list={serverTypes} formik={formik} />
-                )}
-                {activeStep === 1 && (
-                  <Description list={serverTypes} formik={formik} />
-                )}
-                {activeStep === 2 && (
-                  <Social list={serverTypes} formik={formik} />
-                )}
-              </form>
-            )}
-          </Formik>
+          {activeStep === 0 && <Details list={serverTypes} />}
+          {activeStep === 1 && <Description list={serverTypes} />}
+          {activeStep === 2 && <Social list={serverTypes} />}
           <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
             <Button
               color="inherit"
@@ -315,7 +365,7 @@ export default function CreateServer() {
                 Next
               </Button>
             ) : (
-              <Button onClick={handleNext} sx={{ mr: 1 }}>
+              <Button type="submit" onClick={handleNext} sx={{ mr: 1 }}>
                 Complete
               </Button>
             )}
