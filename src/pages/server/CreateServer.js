@@ -1,12 +1,11 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Formik } from "formik";
 import {
   Checkbox,
@@ -15,7 +14,6 @@ import {
   Step,
   StepButton,
   Stepper,
-  Typography,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import NavForm from "../../Components/navigationform";
@@ -42,6 +40,7 @@ export default function CreateServer() {
   const isLastStep = () => {
     return activeStep === totalSteps() - 1;
   };
+  const isErrorHappened = () => {};
 
   const handleNext = () => {
     if (isLastStep()) {
@@ -186,66 +185,67 @@ export default function CreateServer() {
   const Description = ({ formik }) => {
     return (
       <Box
-        component="form"
-        onSubmit={formik.handleSubmit}
-        noValidate
-        sx={{ mt: 1 }}
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+
+          alignItems: "center",
+        }}
       >
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Button variant="contained" component="label">
-              Upload Server icon
-              <input hidden accept="image/*" multiple type="file" />
-            </Button>
-            <IconButton
-              color="primary"
-              aria-label="upload picture"
-              component="label"
-            >
-              <input hidden accept="image/*" type="file" />
-              <PhotoCamera />
-            </IconButton>
-          </Grid>
-          <Grid item xs={6}>
-            <TextField type="file" />
+        <Box onSubmit={formik.handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Button variant="contained" component="label">
+                Upload Server icon
+                <input hidden accept="image/*" multiple type="file" />
+              </Button>
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                component="label"
+              >
+                <input hidden accept="image/*" type="file" />
+                <PhotoCamera />
+              </IconButton>
+            </Grid>
+            <Grid item xs={6}>
+              <TextField type="file" />
 
-            <IconButton
-              color="primary"
-              aria-label="upload picture"
-              component="label"
-            >
-              <input hidden accept="image/*" type="file" />
-              <PhotoCamera />
-            </IconButton>
-          </Grid>
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                component="label"
+              >
+                <input hidden accept="image/*" type="file" />
+                <PhotoCamera />
+              </IconButton>
+            </Grid>
 
-          <Grid item xs={12}>
-            <TextField fullWidth label="Short description" />
-          </Grid>
+            <Grid item xs={12}>
+              <TextField fullWidth label="Short description" />
+            </Grid>
 
-          <Grid item xs={12}>
-            <TextField multiline minRows={8} fullWidth label="Description" />
+            <Grid item xs={12}>
+              <TextField multiline minRows={8} fullWidth label="Description" />
+            </Grid>
           </Grid>
-        </Grid>
+        </Box>
       </Box>
     );
   };
-  const Social = ({ formData, setFormData, next, previous }, props) => {
+  const Social = ({ formik }) => {
     return (
       <Box
         sx={{
           marginTop: 8,
           display: "flex",
           flexDirection: "column",
+
           alignItems: "center",
         }}
       >
-        <Box
-          component="form"
-          onSubmit={props.handleSubmit}
-          noValidate
-          sx={{ mt: 1 }}
-        >
+        <Box onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField fullWidth label="Discord link" id="fullWidth" />
