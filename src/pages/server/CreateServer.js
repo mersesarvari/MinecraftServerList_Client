@@ -26,7 +26,11 @@ import NavForm from "../../Components/navigationform";
 //https://www.youtube.com/watch?v=C3hGMDVo_ec
 
 //Components
-import { ServerFormDetailsScheme } from "../../validations/ValidationSchemes";
+import {
+  ServerFormDetailsScheme,
+  ServerFormDescriptionScheme,
+  ServerFormSocialScheme,
+} from "../../validations/ValidationSchemes";
 
 export default function CreateServer() {
   const steps = ["Information", "Description", "Social"];
@@ -75,7 +79,6 @@ export default function CreateServer() {
           bedrockport: "19132",
         }}
         onSubmit={(values, formik) => {
-          console.log("Submitted");
           if (values.javaip === "" && values.bedrockip === "") {
             return;
           }
@@ -140,21 +143,17 @@ export default function CreateServer() {
     return (
       <Formik
         initialValues={{
-          servername: "",
-          serverjavaip: "",
-          serverjavaport: "25565",
-          serverbedrockip: "",
-          serverbedrockport: "19132",
+          shortdesc: "",
+          longdesc: "",
+          thumbnail: "",
+          icon: "",
         }}
         onSubmit={(values, formik) => {
-          if (values.serverjavaip === "" && values.serverbedrockip === "") {
-            return;
-          }
-
           console.log(JSON.stringify(values));
           alert("Next page");
+          handleNext();
         }}
-        validationSchema={ServerFormDetailsScheme}
+        validationSchema={ServerFormDescriptionScheme}
       >
         {(formik) => (
           <form onSubmit={formik.handleSubmit}>
@@ -163,30 +162,80 @@ export default function CreateServer() {
                 marginTop: 8,
                 display: "flex",
                 flexDirection: "column",
-
                 alignItems: "center",
               }}
             >
-              <Box onSubmit={formik.handleSubmit}>
+              <Box>
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
-                    <input hidden accept="image/*" type="file" />
+                    <TextField
+                      type="file"
+                      id="thumbnail"
+                      onChange={(file) =>
+                        formik.setFieldValue("thumbnail", file.target.files[0])
+                      }
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <TextField type="file" />
+                    {formik.values.thumbnail && (
+                      <PreviewVideo file={formik.values.thumbnail} />
+                    )}
                   </Grid>
-
                   <Grid item xs={12}>
-                    <TextField fullWidth label="Short description" />
+                    {formik.errors.thumbnail && (
+                      <Alert severity="error">{formik.errors.thumbnail}</Alert>
+                    )}
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      type="file"
+                      id="icon"
+                      hidden
+                      onChange={(file) =>
+                        formik.setFieldValue("icon", file.target.files[0])
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    {formik.values.icon && (
+                      <PreviewImage file={formik.values.icon} />
+                    )}
+                  </Grid>
+                  <Grid item xs={12}>
+                    {formik.errors.icon && (
+                      <Alert severity="error">{formik.errors.icon}</Alert>
+                    )}
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      id="shortdesc"
+                      fullWidth
+                      label="Short description"
+                      value={formik.values.shortdesc}
+                      onChange={formik.handleChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    {formik.touched.shortdesc && formik.errors.shortdesc && (
+                      <Alert severity="error">{formik.errors.shortdesc}</Alert>
+                    )}
                   </Grid>
 
                   <Grid item xs={12}>
                     <TextField
+                      id="longdesc"
                       multiline
                       minRows={8}
                       fullWidth
                       label="Description"
+                      value={formik.values.longdesc}
+                      onChange={formik.handleChange}
                     />
+                  </Grid>
+                  <Grid item xs={12}>
+                    {formik.touched.longdesc && formik.errors.longdesc && (
+                      <Alert severity="error">{formik.errors.longdesc}</Alert>
+                    )}
                   </Grid>
                 </Grid>
               </Box>
@@ -234,7 +283,7 @@ export default function CreateServer() {
           console.log(JSON.stringify(values));
           alert("Next page");
         }}
-        validationSchema={ServerFormDetailsScheme}
+        validationSchema={ServerFormSocialScheme}
       >
         {(formik) => (
           <form onSubmit={formik.handleSubmit}>
@@ -657,6 +706,52 @@ export default function CreateServer() {
           </Select>
         </FormControl>
       </Grid>
+    );
+  };
+  const PreviewImage = ({ file }) => {
+    const [preview, setPreview] = useState({});
+    console.log(file);
+    if (file) {
+      console.log(file);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        setPreview(reader.result);
+      };
+    }
+    return (
+      <div>
+        <img
+          style={{ width: "60px", height: "60px" }}
+          alt=""
+          src={preview}
+        ></img>
+      </div>
+    );
+  };
+  const PreviewVideo = ({ file }) => {
+    const [preview, setPreview] = useState({});
+    console.log(file);
+    if (file) {
+      console.log(file);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        setPreview(reader.result);
+      };
+    }
+    return (
+      <div>
+        <video
+          style={{ height: "60px" }}
+          autoPlay
+          playsInline
+          loop
+          muted
+          alt="All the devices"
+          src={preview}
+        />
+      </div>
     );
   };
 
