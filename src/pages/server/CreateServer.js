@@ -169,40 +169,42 @@ export default function CreateServer() {
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <TextField
+                      onBlur={formik.handleBlur}
                       type="file"
                       id="thumbnail"
-                      onChange={(file) =>
-                        formik.setFieldValue("thumbnail", file.target.files[0])
-                      }
+                      onChange={(file) => {
+                        formik.setFieldValue("thumbnail", file.target.files[0]);
+                      }}
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    {formik.values.thumbnail && (
+                    {formik.values.thumbnail && formik.touched.thumbnail && (
                       <PreviewVideo file={formik.values.thumbnail} />
                     )}
                   </Grid>
                   <Grid item xs={12}>
-                    {formik.errors.thumbnail && (
+                    {formik.errors.thumbnail && formik.touched.thumbnail && (
                       <Alert severity="error">{formik.errors.thumbnail}</Alert>
                     )}
                   </Grid>
                   <Grid item xs={6}>
                     <TextField
+                      onBlur={formik.handleBlur}
                       type="file"
                       id="icon"
                       hidden
-                      onChange={(file) =>
-                        formik.setFieldValue("icon", file.target.files[0])
-                      }
+                      onChange={(file) => {
+                        formik.setFieldValue("icon", file.target.files[0]);
+                      }}
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    {formik.values.icon && (
+                    {formik.values.icon && formik.touched.icon && (
                       <PreviewImage file={formik.values.icon} />
                     )}
                   </Grid>
                   <Grid item xs={12}>
-                    {formik.errors.icon && (
+                    {formik.errors.icon && formik.touched.icon && (
                       <Alert severity="error">{formik.errors.icon}</Alert>
                     )}
                   </Grid>
@@ -269,17 +271,11 @@ export default function CreateServer() {
     return (
       <Formik
         initialValues={{
-          servername: "",
-          serverjavaip: "",
-          serverjavaport: "25565",
-          serverbedrockip: "",
-          serverbedrockport: "19132",
+          youtube: "",
+          website: "",
+          discord: "",
         }}
         onSubmit={(values, formik) => {
-          if (values.serverjavaip === "" && values.serverbedrockip === "") {
-            return;
-          }
-
           console.log(JSON.stringify(values));
           alert("Next page");
         }}
@@ -299,17 +295,46 @@ export default function CreateServer() {
               <Box onSubmit={formik.handleSubmit}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <TextField fullWidth label="Discord link" id="fullWidth" />
+                    <TextField
+                      fullWidth
+                      label="Discord server link"
+                      id="discord"
+                      onChange={formik.handleChange}
+                      value={formik.values.discord}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    {formik.errors.discord && formik.touched.discord && (
+                      <Alert severity="error">{formik.errors.discord}</Alert>
+                    )}
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
                       fullWidth
-                      label="Youtube intro link"
-                      id="fullWidth"
+                      label="Website url"
+                      id="website"
+                      onChange={formik.handleChange}
+                      value={formik.values.website}
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <TextField fullWidth label="Website" id="fullWidth" />
+                    {formik.errors.website && formik.touched.website && (
+                      <Alert severity="error">{formik.errors.website}</Alert>
+                    )}
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Youtube url"
+                      id="youtube"
+                      onChange={formik.handleChange}
+                      value={formik.values.youtube}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    {formik.errors.youtube && formik.touched.youtube && (
+                      <Alert severity="error">{formik.errors.youtube}</Alert>
+                    )}
                   </Grid>
                 </Grid>
               </Box>
@@ -710,9 +735,7 @@ export default function CreateServer() {
   };
   const PreviewImage = ({ file }) => {
     const [preview, setPreview] = useState({});
-    console.log(file);
     if (file) {
-      console.log(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
@@ -731,9 +754,7 @@ export default function CreateServer() {
   };
   const PreviewVideo = ({ file }) => {
     const [preview, setPreview] = useState({});
-    console.log(file);
     if (file) {
-      console.log(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
