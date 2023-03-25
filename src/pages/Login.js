@@ -31,9 +31,11 @@ const onSubmit = async (values, actions) => {
       Password: values.password,
     };
     const response = await axios.post(`${SERVERIP}login`, loginObject);
+    console.log(response);
     alert(response.data);
     Cookies.set("email", loginObject.Email, { expires: 7 });
     Cookies.set("password", loginObject.Password, { expires: 7 });
+    Cookies.set("userid", response.data, { expires: 7 });
 
     actions.resetForm();
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -57,7 +59,6 @@ export default function Login() {
       password: "",
       confirmpassword: "",
     },
-    validationSchema: LoginScheme,
     onSubmit,
   });
 

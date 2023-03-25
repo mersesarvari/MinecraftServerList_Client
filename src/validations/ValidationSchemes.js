@@ -67,8 +67,8 @@ export const ServerFormDescriptionScheme = yup.object().shape({
     .required()
     .test("FILE_SIZE", "To big!", (value) => value && value.size < 1024 * 100)
     .test(
-      "FILE_TYPE",
-      "Invalid file type",
+      "EmptyCheck",
+      "Please",
       (value) =>
         value && ["image/jpg", "image/png", "image/gif"].includes(value.type)
     ),

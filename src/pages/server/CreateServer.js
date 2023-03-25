@@ -7,7 +7,8 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { Formik } from "formik";
-import Autocomplete from "@mui/material/Autocomplete";
+import Cookies from "js-cookie";
+import axios from "axios";
 import {
   Alert,
   Checkbox,
@@ -31,17 +32,42 @@ import {
   ServerFormDescriptionScheme,
   ServerFormSocialScheme,
 } from "../../validations/ValidationSchemes";
+import { SERVERIP } from "../../LOCAL";
 
 export default function CreateServer() {
   const steps = ["Information", "Description", "Social"];
   const serverTypes = ["java", "bedrock"];
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = React.useState(2);
   const [completed, setCompleted] = React.useState({});
+  const FD = new FormData();
+
+  //formVariables
+  const [thumb, setthumb] = React.useState({});
+  const [ico, setico] = React.useState({});
+  const [short, setshort] = React.useState({});
+  const [long, setlong] = React.useState({});
+
+  /*
+  const [details, setDetails] = React.useState({});
+  const [descripion, setDescription] = React.useState({});
+  const [social, setSocial] = React.useState({});
+  */
 
   const totalSteps = () => {
     return steps.length;
   };
+  async function PostData(server) {
+    //Here Ill post the data of ther server
+    try {
+      //console.log("Form Data:", FD);
+      //const response = await axios.post(`${SERVERIP}server`, FD);
+      //alert(response.data);
 
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    } catch (error) {
+      alert(error.request.response);
+    }
+  }
   const isLastStep = () => {
     return activeStep === totalSteps() - 1;
   };
@@ -50,6 +76,17 @@ export default function CreateServer() {
   const handleNext = () => {
     if (isLastStep()) {
       alert("You reached the last stem on this form");
+      //Getting the locale storages
+      let details = localStorage.getItem("details");
+      let description = localStorage.getItem("description");
+      let social = localStorage.getItem("social");
+      //console.log(details, description, social);
+      //let serverObject = Object.assign(details, description, social);
+      //console.log(serverObject);
+      //console.log("Icon:", serverObject.icon);
+      //PostData();
+
+      console.log(thumb);
       return;
     }
     setActiveStep((nextActiveStep) => nextActiveStep + 1);
@@ -67,8 +104,7 @@ export default function CreateServer() {
     setActiveStep(0);
     setCompleted({});
   };
-
-  const Details = () => {
+  const Details = (props) => {
     return (
       <Formik
         initialValues={{
@@ -82,14 +118,27 @@ export default function CreateServer() {
           if (values.javaip === "" && values.bedrockip === "") {
             return;
           }
-          console.log(JSON.stringify(values));
-          alert("Next page");
+          console.log(values);
+          alert("Local storage has been created successfully");
+          //setDetails(values);
+          localStorage.setItem("details", JSON.stringify(values));
+          props.FD.append("servername", values.name);
+          props.FD.append("javaIp", values.javaip);
+          props.FD.append("javaPort", values.javaport);
+          props.FD.append("bedrockIp", values.bedrockport);
+          props.FD.append("bedrockPort", values.bedrockport);
+          props.FD.append("country", values.country);
+
           handleNext();
         }}
         validationSchema={ServerFormDetailsScheme}
       >
         {(formik) => (
-          <form onSubmit={formik.handleSubmit}>
+          <form
+            onSubmit={formik.handleSubmit}
+            id="detailsform"
+            encType="multipart/form-data"
+          >
             <Box
               sx={{
                 marginTop: 8,
@@ -139,7 +188,7 @@ export default function CreateServer() {
       </Formik>
     );
   };
-  const Description = () => {
+  const Description = (props) => {
     return (
       <Formik
         initialValues={{
@@ -149,14 +198,33 @@ export default function CreateServer() {
           icon: "",
         }}
         onSubmit={(values, formik) => {
-          console.log(JSON.stringify(values));
-          alert("Next page");
+          console.log("Icon:", values.icon);
+          console.log(values);
+          alert("Local storage has been created successfully");
+          //setDescription(values);
+          //localStorage.setItem("description", JSON.stringify(values));
+          let FD = props.FD;
+          setshort(values.shortdesc);
+          setlong(values.longdesc);
+          setthumb(values.thumbnail);
+          setico(values.icon);
+          console.log("FD values:");
+          for (const value of FD.values()) {
+            console.log(value);
+          }
+
+          console.log(FD);
+
           handleNext();
         }}
         validationSchema={ServerFormDescriptionScheme}
       >
         {(formik) => (
-          <form onSubmit={formik.handleSubmit}>
+          <form
+            onSubmit={formik.handleSubmit}
+            id="descriptionform"
+            encType="multipart/form-data"
+          >
             <Box
               sx={{
                 marginTop: 8,
@@ -178,9 +246,11 @@ export default function CreateServer() {
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    {formik.values.thumbnail && formik.touched.thumbnail && (
-                      <PreviewVideo file={formik.values.thumbnail} />
-                    )}
+                    {formik.values.thumbnail &&
+                      formik.touched.thumbnail &&
+                      !formik.errors.thumbnail && (
+                        <PreviewVideo file={formik.values.thumbnail} />
+                      )}
                   </Grid>
                   <Grid item xs={12}>
                     {formik.errors.thumbnail && formik.touched.thumbnail && (
@@ -199,9 +269,11 @@ export default function CreateServer() {
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    {formik.values.icon && formik.touched.icon && (
-                      <PreviewImage file={formik.values.icon} />
-                    )}
+                    {formik.values.icon &&
+                      formik.touched.icon &&
+                      !formik.errors.icon && (
+                        <PreviewImage file={formik.values.icon} />
+                      )}
                   </Grid>
                   <Grid item xs={12}>
                     {formik.errors.icon && formik.touched.icon && (
@@ -267,7 +339,7 @@ export default function CreateServer() {
       </Formik>
     );
   };
-  const Social = () => {
+  const Social = (props) => {
     return (
       <Formik
         initialValues={{
@@ -276,13 +348,25 @@ export default function CreateServer() {
           discord: "",
         }}
         onSubmit={(values, formik) => {
-          console.log(JSON.stringify(values));
-          alert("Next page");
+          console.log(values);
+          alert("Local storage has been created successfully");
+          //setSocial(values);
+          localStorage.setItem("social", JSON.stringify(values));
+          let FD = props.FD;
+          FD.append("website", values.website);
+          FD.append("discord", values.discord);
+          FD.append("youtube", values.youtube);
+
+          handleNext();
         }}
         validationSchema={ServerFormSocialScheme}
       >
         {(formik) => (
-          <form onSubmit={formik.handleSubmit}>
+          <form
+            onSubmit={formik.handleSubmit}
+            id="socialform"
+            encType="multipart/form-data"
+          >
             <Box
               sx={{
                 marginTop: 8,
@@ -775,7 +859,6 @@ export default function CreateServer() {
       </div>
     );
   };
-
   return (
     <Container component="main" maxWidth="sm">
       <NavForm />
@@ -789,9 +872,9 @@ export default function CreateServer() {
           ))}
         </Stepper>
         <React.Fragment>
-          {activeStep === 0 && <Details list={serverTypes} />}
-          {activeStep === 1 && <Description list={serverTypes} />}
-          {activeStep === 2 && <Social list={serverTypes} />}
+          {activeStep === 0 && <Details list={serverTypes} FD={FD} />}
+          {activeStep === 1 && <Description list={serverTypes} FD={FD} />}
+          {activeStep === 2 && <Social list={serverTypes} FD={FD} />}
         </React.Fragment>
       </Box>
     </Container>
