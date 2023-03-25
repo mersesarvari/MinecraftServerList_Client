@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -7,10 +7,14 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { Formik } from "formik";
+import Autocomplete from "@mui/material/Autocomplete";
 import {
   Checkbox,
+  FormControl,
   FormControlLabel,
-  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
   Step,
   StepButton,
   Stepper,
@@ -21,14 +25,11 @@ import NavForm from "../../Components/navigationform";
 //https://www.youtube.com/watch?v=C3hGMDVo_ec
 
 //Components
-import CountryAutoSelect from "../../Components/CountryAutoSelect";
 import { ServerFormDetailsScheme } from "../../validations/ValidationSchemes";
 
 export default function CreateServer() {
   const steps = ["Information", "Description", "Social"];
   const serverTypes = ["java", "bedrock"];
-  const [javacheck, setJavacheck] = useState(false);
-  const [bedrockcheck, setBedrockcheck] = useState(false);
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
   const [showError, setShowError] = useState([false, true, true]);
@@ -63,6 +64,7 @@ export default function CreateServer() {
       alert("YOu cannot move from this step. Correct the errors");
       return;
     }
+
     setActiveStep(step);
   };
 
@@ -70,15 +72,6 @@ export default function CreateServer() {
     setActiveStep(0);
     setCompleted({});
   };
-
-  function SetJavaCheck(event) {
-    event.preventDefault();
-    setJavacheck(event.target.checked);
-  }
-  function SetBedrockCheck(event) {
-    event.preventDefault();
-    setBedrockcheck(event.target.checked);
-  }
 
   const Details = () => {
     return (
@@ -91,14 +84,16 @@ export default function CreateServer() {
           serverbedrockport: "19132",
         }}
         onSubmit={(values, formik) => {
+          console.log("Submitted");
           if (values.serverjavaip === "" && values.serverbedrockip === "") {
             return;
           }
-
           console.log(JSON.stringify(values));
           alert("Next page");
+          handleNext();
         }}
         validationSchema={ServerFormDetailsScheme}
+        handleCountryChange
       >
         {(formik) => (
           <form onSubmit={formik.handleSubmit}>
@@ -107,7 +102,6 @@ export default function CreateServer() {
                 marginTop: 8,
                 display: "flex",
                 flexDirection: "column",
-
                 alignItems: "center",
               }}
             >
@@ -117,7 +111,6 @@ export default function CreateServer() {
                     <TextField
                       fullWidth
                       label="Server name"
-                      name="servername"
                       id="servername"
                       value={formik.values.servername}
                       onChange={formik.handleChange}
@@ -127,90 +120,29 @@ export default function CreateServer() {
                         showError[0]
                       }
                     />
+                    {formik.errors.servername && (
+                      <p className="error">{formik.errors.servername}</p>
+                    )}
                   </Grid>
-                  <Grid item xd={6}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox checked={javacheck} onChange={SetJavaCheck} />
-                      }
-                      label="java server"
-                    />
-                  </Grid>
-                  <Grid item xd={6}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={bedrockcheck}
-                          onChange={SetBedrockCheck}
-                        />
-                      }
-                      label="bedrock server"
-                    />
-                  </Grid>
-                  {
-                    <>
-                      <Grid item xs={7}>
-                        <TextField
-                          fullWidth
-                          id="serverjavaip"
-                          label="Java server ip"
-                          value={formik.values.serverjavaip}
-                          onChange={formik.handleChange}
-                          disabled={!javacheck}
-                        />
-                      </Grid>
-                      <Grid item xs={5}>
-                        <TextField
-                          id="serverjavaport"
-                          value={formik.values.serverjavaport}
-                          fullWidth
-                          disabled={!javacheck}
-                          onChange={formik.handleChange}
-                          label="port"
-                        />
-                      </Grid>
-                    </>
-                  }
-                  {
-                    <>
-                      <Grid item xs={7}>
-                        <TextField
-                          id="serverbedrockip"
-                          fullWidth
-                          value={formik.values.serverbedrockip}
-                          onChange={formik.handleChange}
-                          label="Bedrock server ip"
-                          disabled={!bedrockcheck}
-                          required
-                        />
-                      </Grid>
-                      <Grid item xs={5}>
-                        <TextField
-                          id="serverbedrockport"
-                          value={formik.values.serverbedrockport}
-                          disabled={!bedrockcheck}
-                          onChange={formik.handleChange}
-                          required
-                          label="port"
-                        />
-                      </Grid>
-                    </>
-                  }
-                  <Grid item xs={12}>
-                    {(formik.touched.serverjavaip ||
-                      formik.touched.serverbedrockip) &&
-                      formik.values.serverjavaip === "" &&
-                      formik.values.serverbedrockip === "" && (
-                        <p className="error">
-                          {"You have to set at least 1 ipaddress"}
-                        </p>
-                      )}
-                  </Grid>
-                  <Grid item xs={12}>
-                    <CountryAutoSelect />
-                  </Grid>
+                  <AddressForm formik={formik} />
+
+                  <LocationForm formik={formik} />
                 </Grid>
               </Box>
+            </Box>
+            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+              <Button
+                color="inherit"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                sx={{ mr: 1 }}
+              >
+                Back
+              </Button>
+              <Box sx={{ flex: "1 1 auto" }} />
+              <Button type="submit" sx={{ mr: 1 }}>
+                Next
+              </Button>
             </Box>
           </form>
         )}
@@ -272,6 +204,26 @@ export default function CreateServer() {
                 </Grid>
               </Box>
             </Box>
+            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+              <Button
+                color="inherit"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                sx={{ mr: 1 }}
+              >
+                Back
+              </Button>
+              <Box sx={{ flex: "1 1 auto" }} />
+              {isLastStep ? (
+                <Button type="submit" sx={{ mr: 1 }}>
+                  Next
+                </Button>
+              ) : (
+                <Button type="submit" sx={{ mr: 1 }}>
+                  Complete
+                </Button>
+              )}
+            </Box>
           </form>
         )}
       </Formik>
@@ -326,9 +278,396 @@ export default function CreateServer() {
                 </Grid>
               </Box>
             </Box>
+            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+              <Button
+                color="inherit"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                sx={{ mr: 1 }}
+              >
+                Back
+              </Button>
+              <Box sx={{ flex: "1 1 auto" }} />
+              {isLastStep ? (
+                <Button type="submit" sx={{ mr: 1 }}>
+                  Next
+                </Button>
+              ) : (
+                <Button type="submit" sx={{ mr: 1 }}>
+                  Complete
+                </Button>
+              )}
+            </Box>
           </form>
         )}
       </Formik>
+    );
+  };
+  const AddressForm = (props) => {
+    const [javacheck, setJavacheck] = useState(false);
+    const [bedrockcheck, setBedrockcheck] = useState(false);
+    let formik = props.formik;
+    return (
+      <Grid item xs={12} container spacing={2}>
+        <Grid item xd={6}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                onChange={() => {
+                  setJavacheck(!javacheck);
+                }}
+              />
+            }
+            label="java server"
+          />
+        </Grid>
+        <Grid item xd={6}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                onChange={() => {
+                  setBedrockcheck(!bedrockcheck);
+                }}
+              />
+            }
+            label="bedrock server"
+          />
+        </Grid>
+
+        <Grid item xs={7}>
+          <TextField
+            fullWidth
+            id="serverjavaip"
+            label="Java server ip"
+            value={formik.values.serverjavaip}
+            onChange={formik.handleChange}
+            disabled={!javacheck}
+            required
+          />
+        </Grid>
+        <Grid item xs={5}>
+          <TextField
+            id="serverjavaport"
+            value={formik.values.serverjavaport}
+            fullWidth
+            disabled={!javacheck}
+            onChange={formik.handleChange}
+            label="port"
+            required
+          />
+        </Grid>
+        <Grid item xs={7}>
+          <TextField
+            id="serverbedrockip"
+            fullWidth
+            value={formik.values.serverbedrockip}
+            onChange={formik.handleChange}
+            label="Bedrock server ip"
+            disabled={!bedrockcheck}
+            required
+          />
+        </Grid>
+        <Grid item xs={5}>
+          <TextField
+            id="serverbedrockport"
+            value={formik.values.serverbedrockport}
+            disabled={!bedrockcheck}
+            onChange={formik.handleChange}
+            required
+            label="port"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          {(formik.touched.serverjavaip || formik.touched.serverbedrockip) &&
+            formik.values.serverjavaip === "" &&
+            formik.values.serverbedrockip === "" && (
+              <p className="error">{"You have to set at least 1 ipaddress"}</p>
+            )}
+        </Grid>
+      </Grid>
+    );
+  };
+  const LocationForm = (props) => {
+    const countries = [
+      "Afghanistan",
+      "Aland Islands",
+      "Albania",
+      "Algeria",
+      "American Samoa",
+      "Andorra",
+      "Angola",
+      "Anguilla",
+      "Antarctica",
+      "Antigua and Barbuda",
+      "Argentina",
+      "Armenia",
+      "Aruba",
+      "Australia",
+      "Austria",
+      "Azerbaijan",
+      "Bahamas",
+      "Bahrain",
+      "Bangladesh",
+      "Barbados",
+      "Belarus",
+      "Belgium",
+      "Belize",
+      "Benin",
+      "Bermuda",
+      "Bhutan",
+      "Bolivia",
+      "Bonaire, Sint Eustatius and Saba",
+      "Bosnia and Herzegovina",
+      "Botswana",
+      "Bouvet Island",
+      "Brazil",
+      "British Indian Ocean Territory",
+      "Brunei Darussalam",
+      "Bulgaria",
+      "Burkina Faso",
+      "Burundi",
+      "Cambodia",
+      "Cameroon",
+      "Canada",
+      "Cape Verde",
+      "Cayman Islands",
+      "Central African Republic",
+      "Chad",
+      "Chile",
+      "China",
+      "Christmas Island",
+      "Cocos (Keeling) Islands",
+      "Colombia",
+      "Comoros",
+      "Congo",
+      "Congo, Democratic Republic of the Congo",
+      "Cook Islands",
+      "Costa Rica",
+      "Cote D'Ivoire",
+      "Croatia",
+      "Cuba",
+      "Curacao",
+      "Cyprus",
+      "Czech Republic",
+      "Denmark",
+      "Djibouti",
+      "Dominica",
+      "Dominican Republic",
+      "Ecuador",
+      "Egypt",
+      "El Salvador",
+      "Equatorial Guinea",
+      "Eritrea",
+      "Estonia",
+      "Ethiopia",
+      "Falkland Islands (Malvinas)",
+      "Faroe Islands",
+      "Fiji",
+      "Finland",
+      "France",
+      "French Guiana",
+      "French Polynesia",
+      "French Southern Territories",
+      "Gabon",
+      "Gambia",
+      "Georgia",
+      "Germany",
+      "Ghana",
+      "Gibraltar",
+      "Greece",
+      "Greenland",
+      "Grenada",
+      "Guadeloupe",
+      "Guam",
+      "Guatemala",
+      "Guernsey",
+      "Guinea",
+      "Guinea-Bissau",
+      "Guyana",
+      "Haiti",
+      "Heard Island and McDonald Islands",
+      "Holy See (Vatican City State)",
+      "Honduras",
+      "Hong Kong",
+      "Hungary",
+      "Iceland",
+      "India",
+      "Indonesia",
+      "Iran, Islamic Republic of",
+      "Iraq",
+      "Ireland",
+      "Isle of Man",
+      "Israel",
+      "Italy",
+      "Jamaica",
+      "Japan",
+      "Jersey",
+      "Jordan",
+      "Kazakhstan",
+      "Kenya",
+      "Kiribati",
+      "Korea, Democratic People's Republic of",
+      "Korea, Republic of",
+      "Kosovo",
+      "Kuwait",
+      "Kyrgyzstan",
+      "Lao People's Democratic Republic",
+      "Latvia",
+      "Lebanon",
+      "Lesotho",
+      "Liberia",
+      "Libyan Arab Jamahiriya",
+      "Liechtenstein",
+      "Lithuania",
+      "Luxembourg",
+      "Macao",
+      "Macedonia, the Former Yugoslav Republic of",
+      "Madagascar",
+      "Malawi",
+      "Malaysia",
+      "Maldives",
+      "Mali",
+      "Malta",
+      "Marshall Islands",
+      "Martinique",
+      "Mauritania",
+      "Mauritius",
+      "Mayotte",
+      "Mexico",
+      "Micronesia, Federated States of",
+      "Moldova, Republic of",
+      "Monaco",
+      "Mongolia",
+      "Montenegro",
+      "Montserrat",
+      "Morocco",
+      "Mozambique",
+      "Myanmar",
+      "Namibia",
+      "Nauru",
+      "Nepal",
+      "Netherlands",
+      "Netherlands Antilles",
+      "New Caledonia",
+      "New Zealand",
+      "Nicaragua",
+      "Niger",
+      "Nigeria",
+      "Niue",
+      "Norfolk Island",
+      "Northern Mariana Islands",
+      "Norway",
+      "Oman",
+      "Pakistan",
+      "Palau",
+      "Palestinian Territory, Occupied",
+      "Panama",
+      "Papua New Guinea",
+      "Paraguay",
+      "Peru",
+      "Philippines",
+      "Pitcairn",
+      "Poland",
+      "Portugal",
+      "Puerto Rico",
+      "Qatar",
+      "Reunion",
+      "Romania",
+      "Russian Federation",
+      "Rwanda",
+      "Saint Barthelemy",
+      "Saint Helena",
+      "Saint Kitts and Nevis",
+      "Saint Lucia",
+      "Saint Martin",
+      "Saint Pierre and Miquelon",
+      "Saint Vincent and the Grenadines",
+      "Samoa",
+      "San Marino",
+      "Sao Tome and Principe",
+      "Saudi Arabia",
+      "Senegal",
+      "Serbia",
+      "Serbia and Montenegro",
+      "Seychelles",
+      "Sierra Leone",
+      "Singapore",
+      "St Martin",
+      "Slovakia",
+      "Slovenia",
+      "Solomon Islands",
+      "Somalia",
+      "South Africa",
+      "South Georgia and the South Sandwich Islands",
+      "South Sudan",
+      "Spain",
+      "Sri Lanka",
+      "Sudan",
+      "Suriname",
+      "Svalbard and Jan Mayen",
+      "Swaziland",
+      "Sweden",
+      "Switzerland",
+      "Syrian Arab Republic",
+      "Taiwan, Province of China",
+      "Tajikistan",
+      "Tanzania, United Republic of",
+      "Thailand",
+      "Timor-Leste",
+      "Togo",
+      "Tokelau",
+      "Tonga",
+      "Trinidad and Tobago",
+      "Tunisia",
+      "Turkey",
+      "Turkmenistan",
+      "Turks and Caicos Islands",
+      "Tuvalu",
+      "Uganda",
+      "Ukraine",
+      "United Arab Emirates",
+      "United Kingdom",
+      "United States",
+      "United States Minor Outlying Islands",
+      "Uruguay",
+      "Uzbekistan",
+      "Vanuatu",
+      "Venezuela",
+      "Viet Nam",
+      "Virgin Islands, British",
+      "Virgin Islands, U.s.",
+      "Wallis and Futuna",
+      "Western Sahara",
+      "Yemen",
+      "Zambia",
+      "Zimbabwe",
+    ];
+    const [country, setCountry] = useState("United States");
+    const handleChange = (event) => {
+      setCountry(event.target.value);
+    };
+    return (
+      <Grid item xs={12}>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-autowidth-label">
+            Select country
+          </InputLabel>
+          <Select
+            value={country}
+            onChange={handleChange}
+            labelId="demo-simple-select-autowidth-label"
+            id="demo-simple-select-autowidth"
+            fullWidth
+            label="Server country"
+          >
+            {countries.map((item) => (
+              <MenuItem key={item} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
     );
   };
 
@@ -350,26 +689,6 @@ export default function CreateServer() {
           {activeStep === 0 && <Details list={serverTypes} />}
           {activeStep === 1 && <Description list={serverTypes} />}
           {activeStep === 2 && <Social list={serverTypes} />}
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-            <Button
-              color="inherit"
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
-              Back
-            </Button>
-            <Box sx={{ flex: "1 1 auto" }} />
-            {isLastStep ? (
-              <Button onClick={handleNext} sx={{ mr: 1 }}>
-                Next
-              </Button>
-            ) : (
-              <Button type="submit" onClick={handleNext} sx={{ mr: 1 }}>
-                Complete
-              </Button>
-            )}
-          </Box>
         </React.Fragment>
       </Box>
     </Container>

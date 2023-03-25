@@ -3,10 +3,12 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
-export default function CountryAutoSelect() {
+export default function CountryAutoSelect(props) {
+  const [value, setValue] = React.useState(null);
   return (
     <Autocomplete
-      id="country-select-demo"
+      id="country"
+      onChange={(e, value) => props.formik.onChange(value)}
       options={countries}
       autoHighlight
       getOptionLabel={(option) => option.name}
