@@ -39,15 +39,15 @@ export const LoginScheme = yup.object().shape({
 });
 
 export const ServerFormDetailsScheme = yup.object().shape({
-  servername: yup
+  name: yup
     .string()
     .min(5, "Minimum server name length must be 5 character")
     .max(20, "Minimum server name length must be 20 character")
     .required("Server name is required"),
-  serverjavaip: yup.string().max(30),
-  serverjavaport: yup.string().max(30),
-  serverbedrockip: yup.string().max(30),
-  serverbedrockport: yup.string().max(30),
+  javaip: yup.string().max(30),
+  javaport: yup.string().max(30),
+  bedrockip: yup.string().max(30),
+  bedrockport: yup.string().max(30),
 });
 
 export const ServerFormDescriptionScheme = yup.object().shape({

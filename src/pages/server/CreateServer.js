@@ -9,6 +9,7 @@ import Container from "@mui/material/Container";
 import { Formik } from "formik";
 import Autocomplete from "@mui/material/Autocomplete";
 import {
+  Alert,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -32,7 +33,6 @@ export default function CreateServer() {
   const serverTypes = ["java", "bedrock"];
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
-  const [showError, setShowError] = useState([false, true, true]);
 
   const totalSteps = () => {
     return steps.length;
@@ -44,10 +44,6 @@ export default function CreateServer() {
   const isErrorHappened = () => {};
 
   const handleNext = () => {
-    if (showError[activeStep]) {
-      alert("YOu cannot move from this step. Correct the errors");
-      return;
-    }
     if (isLastStep()) {
       alert("You reached the last stem on this form");
       return;
@@ -60,11 +56,6 @@ export default function CreateServer() {
   };
 
   const handleStep = (step) => () => {
-    if (showError[activeStep] && activeStep < step) {
-      alert("YOu cannot move from this step. Correct the errors");
-      return;
-    }
-
     setActiveStep(step);
   };
 
@@ -77,15 +68,15 @@ export default function CreateServer() {
     return (
       <Formik
         initialValues={{
-          servername: "",
-          serverjavaip: "",
-          serverjavaport: "25565",
-          serverbedrockip: "",
-          serverbedrockport: "19132",
+          name: "",
+          javaip: "",
+          javaport: "25565",
+          bedrockip: "",
+          bedrockport: "19132",
         }}
         onSubmit={(values, formik) => {
           console.log("Submitted");
-          if (values.serverjavaip === "" && values.serverbedrockip === "") {
+          if (values.javaip === "" && values.bedrockip === "") {
             return;
           }
           console.log(JSON.stringify(values));
@@ -93,7 +84,6 @@ export default function CreateServer() {
           handleNext();
         }}
         validationSchema={ServerFormDetailsScheme}
-        handleCountryChange
       >
         {(formik) => (
           <form onSubmit={formik.handleSubmit}>
@@ -111,18 +101,15 @@ export default function CreateServer() {
                     <TextField
                       fullWidth
                       label="Server name"
-                      id="servername"
-                      value={formik.values.servername}
+                      id="name"
+                      value={formik.values.name}
                       onChange={formik.handleChange}
-                      error={
-                        (formik.touched.servername &&
-                          Boolean(formik.errors.servername)) ||
-                        showError[0]
-                      }
                     />
-                    {formik.errors.servername && (
-                      <p className="error">{formik.errors.servername}</p>
-                    )}
+                    <Grid item xs={12}>
+                      {formik.errors.name && (
+                        <Alert severity="error">{formik.errors.name}</Alert>
+                      )}
+                    </Grid>
                   </Grid>
                   <AddressForm formik={formik} />
 
@@ -337,9 +324,9 @@ export default function CreateServer() {
         <Grid item xs={7}>
           <TextField
             fullWidth
-            id="serverjavaip"
+            id="javaip"
             label="Java server ip"
-            value={formik.values.serverjavaip}
+            value={formik.values.javaip}
             onChange={formik.handleChange}
             disabled={!javacheck}
             required
@@ -347,8 +334,8 @@ export default function CreateServer() {
         </Grid>
         <Grid item xs={5}>
           <TextField
-            id="serverjavaport"
-            value={formik.values.serverjavaport}
+            id="javaport"
+            value={formik.values.javaport}
             fullWidth
             disabled={!javacheck}
             onChange={formik.handleChange}
@@ -358,9 +345,9 @@ export default function CreateServer() {
         </Grid>
         <Grid item xs={7}>
           <TextField
-            id="serverbedrockip"
+            id="bedrockip"
             fullWidth
-            value={formik.values.serverbedrockip}
+            value={formik.values.bedrockip}
             onChange={formik.handleChange}
             label="Bedrock server ip"
             disabled={!bedrockcheck}
@@ -369,7 +356,7 @@ export default function CreateServer() {
         </Grid>
         <Grid item xs={5}>
           <TextField
-            id="serverbedrockport"
+            id="bedrockport"
             value={formik.values.serverbedrockport}
             disabled={!bedrockcheck}
             onChange={formik.handleChange}
@@ -378,10 +365,12 @@ export default function CreateServer() {
           />
         </Grid>
         <Grid item xs={12}>
-          {(formik.touched.serverjavaip || formik.touched.serverbedrockip) &&
-            formik.values.serverjavaip === "" &&
-            formik.values.serverbedrockip === "" && (
-              <p className="error">{"You have to set at least 1 ipaddress"}</p>
+          {(formik.touched.javaip || formik.touched.bedrockip) &&
+            formik.values.javaip === "" &&
+            formik.values.bedrockip === "" && (
+              <Alert severity="error">
+                You cannot create a server without setting the ip address
+              </Alert>
             )}
         </Grid>
       </Grid>
@@ -679,9 +668,7 @@ export default function CreateServer() {
         <Stepper nonLinear activeStep={activeStep}>
           {steps.map((label, index) => (
             <Step key={label} completed={completed[index]}>
-              <StepButton color="inherit" onClick={handleStep(index)}>
-                {label}
-              </StepButton>
+              <StepButton color="inherit">{label}</StepButton>
             </Step>
           ))}
         </Stepper>
