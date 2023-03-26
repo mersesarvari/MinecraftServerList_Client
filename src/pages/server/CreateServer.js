@@ -36,13 +36,12 @@ import {
 import { SERVERIP } from "../../LOCAL";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
+import { useRef } from "react";
 
 export default function CreateServer() {
   const steps = ["Information", "Description", "Social"];
-  const serverTypes = ["java", "bedrock"];
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
-  const FD = new FormData();
 
   //formVariables
   const [thumb, setthumb] = React.useState({});
@@ -56,7 +55,12 @@ export default function CreateServer() {
   const [jp, setjp] = React.useState({});
   const [bip, setbip] = React.useState({});
   const [bp, setbp] = React.useState({});
-  var country = "United States";
+  const [c, setC] = React.useState({});
+  var country = useRef("United States");
+  useEffect(() => {
+    // 👇️ only runs once
+    country.current = "United States";
+  }, []); // 👈️ empty dependencies array
 
   //formVariables
   const [y, sety] = React.useState({});
@@ -142,12 +146,14 @@ export default function CreateServer() {
         return;
       }
       console.log("Submitting");
+      data.country = country.current;
       console.log(data);
       setn(data.name);
       setjip(data.javaip);
       setjp(data.javaport);
       setbip(data.bedrockip);
       setbp(data.bedrockport);
+      setC(data.country);
       handleNext();
     };
 
@@ -246,18 +252,14 @@ export default function CreateServer() {
                   <Alert severity="error">{errors.thumbnail?.message}</Alert>
                 )}
               </Grid>
-              <Grid item xs={6}>
-                <PreviewVideo file={""} />
-              </Grid>
+              <Grid item xs={6}></Grid>
               <Grid item xs={6}>
                 <TextField {...register("icon")} type="file" id="icon" hidden />
                 {errors.icon && (
                   <Alert severity="error">{errors.icon?.message}</Alert>
                 )}
               </Grid>
-              <Grid item xs={6}>
-                <PreviewImage file={""} />
-              </Grid>
+              <Grid item xs={6}></Grid>
               <Grid item xs={12}>
                 <TextField
                   id="shortdesc"
@@ -476,7 +478,7 @@ export default function CreateServer() {
     );
   };
   const LocationForm = (props) => {
-    const [cntry, setCntry] = useState(country);
+    const [cntry, setCntry] = useState(country.current);
     const countries = [
       "Afghanistan",
       "Aland Islands",
@@ -732,8 +734,9 @@ export default function CreateServer() {
       "Zimbabwe",
     ];
     const handleChange = (event) => {
-      country = event.target.value;
-      setCntry(country);
+      country.current = event.target.value;
+      setCntry(country.current);
+      console.log(country.current);
     };
     return (
       <Grid item xs={12}>
@@ -757,48 +760,6 @@ export default function CreateServer() {
           </Select>
         </FormControl>
       </Grid>
-    );
-  };
-  const PreviewImage = ({ file }) => {
-    const [preview, setPreview] = useState({});
-    if (file) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        setPreview(reader.result);
-      };
-    }
-    return (
-      <div>
-        <img
-          style={{ width: "60px", height: "60px" }}
-          alt=""
-          src={preview}
-        ></img>
-      </div>
-    );
-  };
-  const PreviewVideo = ({ file }) => {
-    const [preview, setPreview] = useState({});
-    if (file) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        setPreview(reader.result);
-      };
-    }
-    return (
-      <div>
-        <video
-          style={{ height: "60px" }}
-          autoPlay
-          playsInline
-          loop
-          muted
-          alt="All the devices"
-          src={preview}
-        />
-      </div>
     );
   };
   return (
