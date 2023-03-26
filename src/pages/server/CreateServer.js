@@ -6,7 +6,6 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { Formik } from "formik";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -23,7 +22,6 @@ import {
   StepButton,
   Stepper,
 } from "@mui/material";
-import NavForm from "../../Components/navigationform";
 
 // icons
 //https://www.youtube.com/watch?v=C3hGMDVo_ec
@@ -764,7 +762,6 @@ export default function CreateServer() {
   };
   return (
     <Container component="main" maxWidth="sm">
-      <NavForm />
       <CssBaseline />
       <Box sx={{ width: "100%" }}>
         <Stepper nonLinear activeStep={activeStep}>

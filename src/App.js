@@ -24,13 +24,10 @@ import RootLayout from "./layouts/RootLayout";
 import AccountVerificationRequest from "./pages/tokenpages/AccountVerificationRequest";
 import ForgotPasswordRequest from "./pages/tokenpages/ForgotPasswordRequest";
 import NewPasswordRequest from "./pages/tokenpages/NewPasswordRequest";
-import ServerNotFound from "./pages/server/ServerNotFound";
 import ServerDetailsLayout from "./pages/server/ServerDetailsLayout";
 import ServerDetails from "./pages/server/ServerDetails";
 import ServerError from "./pages/server/ServerError";
 import CreateServer from "./pages/server/CreateServer";
-import ServerContextProvider, { ServerContext } from "./contexts/ServerContext";
-import { useState, useMemo } from "react";
 
 function App() {
   return <RouterProvider router={router} />;
