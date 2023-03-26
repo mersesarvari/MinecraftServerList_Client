@@ -40,7 +40,7 @@ import { useEffect } from "react";
 export default function CreateServer() {
   const steps = ["Information", "Description", "Social"];
   const serverTypes = ["java", "bedrock"];
-  const [activeStep, setActiveStep] = React.useState(2);
+  const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
   const FD = new FormData();
 
@@ -56,7 +56,7 @@ export default function CreateServer() {
   const [jp, setjp] = React.useState({});
   const [bip, setbip] = React.useState({});
   const [bp, setbp] = React.useState({});
-  const [c, setc] = React.useState({});
+  var country = "United States";
 
   //formVariables
   const [y, sety] = React.useState({});
@@ -75,7 +75,7 @@ export default function CreateServer() {
     formData.append("javaPort", jp);
     formData.append("bedrockIp", bip);
     formData.append("bedrockPort", bp);
-    formData.append("country", c);
+    formData.append("country", country);
     formData.append("thumbnail", thumb);
     formData.append("logo", ico);
     formData.append("shortDescription", short);
@@ -127,6 +127,7 @@ export default function CreateServer() {
       defaultValues: {
         javaport: "25565",
         bedrockport: "19132",
+        country: "United States",
       },
     });
     const onSubmit = (data) => {
@@ -146,7 +147,7 @@ export default function CreateServer() {
       setjip(data.javaip);
       setjp(data.javaport);
       setbip(data.bedrockip);
-      setbip(data.bedrockport);
+      setbp(data.bedrockport);
       handleNext();
     };
 
@@ -475,6 +476,7 @@ export default function CreateServer() {
     );
   };
   const LocationForm = (props) => {
+    const [cntry, setCntry] = useState(country);
     const countries = [
       "Afghanistan",
       "Aland Islands",
@@ -729,11 +731,9 @@ export default function CreateServer() {
       "Zambia",
       "Zimbabwe",
     ];
-    const [country, setCountry] = useState("United States");
     const handleChange = (event) => {
-      console.log(event.target.value);
-      setCountry(event.target.value);
-      setc(event.target.value.toString());
+      country = event.target.value;
+      setCntry(country);
     };
     return (
       <Grid item xs={12}>
@@ -742,7 +742,7 @@ export default function CreateServer() {
             Select country
           </InputLabel>
           <Select
-            value={country}
+            value={cntry}
             onChange={handleChange}
             labelId="demo-simple-select-autowidth-label"
             id="demo-simple-select-autowidth"
