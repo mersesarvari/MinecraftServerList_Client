@@ -9,6 +9,7 @@ import Container from "@mui/material/Container";
 import { Formik } from "formik";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import {
   Alert,
   Checkbox,
@@ -26,7 +27,6 @@ import NavForm from "../../Components/navigationform";
 // icons
 //https://www.youtube.com/watch?v=C3hGMDVo_ec
 
-//Components
 import {
   ServerFormDetailsScheme,
   ServerFormDescriptionScheme,
@@ -59,18 +59,13 @@ export default function CreateServer() {
   const [y, sety] = React.useState({});
   const [d, setd] = React.useState({});
   const [w, setw] = React.useState({});
+  const navigate = useNavigate();
   var formData = new FormData();
-
-  /*
-  const [details, setDetails] = React.useState({});
-  const [descripion, setDescription] = React.useState({});
-  const [social, setSocial] = React.useState({});
-  */
 
   const totalSteps = () => {
     return steps.length;
   };
-  async function PostData(server) {
+  async function PostData() {
     formData.append("publisherid", Cookies.get("userid"));
     formData.append("servername", n);
     formData.append("javaIp", jip);
@@ -100,30 +95,19 @@ export default function CreateServer() {
   const isLastStep = () => {
     return activeStep === totalSteps() - 1;
   };
-  const isErrorHappened = () => {};
-
   const handleNext = () => {
-    if (isLastStep()) {
-      alert("You reached the last stem on this form");
-      //Getting the locale storages
-      let details = localStorage.getItem("details");
-      let description = localStorage.getItem("description");
-      let social = localStorage.getItem("social");
-      //Adding PostData
-      PostData();
+    if (!isLastStep()) {
+      setActiveStep((nextActiveStep) => nextActiveStep + 1);
       return;
     }
-    setActiveStep((nextActiveStep) => nextActiveStep + 1);
+    PostData();
   };
-
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
-
   const handleStep = (step) => () => {
     setActiveStep(step);
   };
-
   const handleReset = () => {
     setActiveStep(0);
     setCompleted({});
@@ -142,17 +126,12 @@ export default function CreateServer() {
           if (values.javaip === "" && values.bedrockip === "") {
             return;
           }
-          console.log(values);
-          alert("Local storage has been created successfully");
-          //setDetails(values);
-          localStorage.setItem("details", JSON.stringify(values));
           setn(values.name);
           setjip(values.javaip);
           setjp(values.javaport);
           setbip(values.bedrockport);
           setbp(values.bedrockport);
           setc(values.country);
-
           handleNext();
         }}
         validationSchema={ServerFormDetailsScheme}
@@ -222,11 +201,6 @@ export default function CreateServer() {
           icon: "",
         }}
         onSubmit={(values, formik) => {
-          console.log("Icon:", values.icon);
-          console.log(values);
-          alert("Local storage has been created successfully");
-          //setDescription(values);
-          //localStorage.setItem("description", JSON.stringify(values));
           setshort(values.shortdesc);
           setlong(values.longdesc);
           setthumb(values.thumbnail);
@@ -359,11 +333,9 @@ export default function CreateServer() {
           website: "",
           discord: "",
         }}
-        onSubmit={(values, formik) => {
-          console.log(values);
-          alert("Local storage has been created successfully");
-          //setSocial(values);
-          localStorage.setItem("social", JSON.stringify(values));
+        onSubmit={(values, formik, actions, event) => {
+          event.preventDefault();
+          actions.resetForm(false);
           sety(values.youtube);
           setd(values.discord);
           setw(values.website);
@@ -387,7 +359,7 @@ export default function CreateServer() {
                 alignItems: "center",
               }}
             >
-              <Box onSubmit={formik.handleSubmit}>
+              <Box>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <TextField
@@ -884,9 +856,9 @@ export default function CreateServer() {
           ))}
         </Stepper>
         <React.Fragment>
-          {activeStep === 0 && <Details list={serverTypes} FD={FD} />}
-          {activeStep === 1 && <Description list={serverTypes} FD={FD} />}
-          {activeStep === 2 && <Social list={serverTypes} FD={FD} />}
+          {activeStep === 0 && <Details list={serverTypes} />}
+          {activeStep === 1 && <Description list={serverTypes} />}
+          {activeStep === 2 && <Social list={serverTypes} />}
         </React.Fragment>
       </Box>
     </Container>
