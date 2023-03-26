@@ -774,11 +774,9 @@ export default function CreateServer() {
             </Step>
           ))}
         </Stepper>
-        <React.Fragment>
-          {activeStep === 0 && <Details />}
-          {activeStep === 1 && <Description />}
-          {activeStep === 2 && <Social />}
-        </React.Fragment>
+        <React.Fragment>{activeStep === 0 && <Details />}</React.Fragment>
+        <React.Fragment>{activeStep === 1 && <Description />}</React.Fragment>
+        <React.Fragment>{activeStep === 2 && <Social />}</React.Fragment>
       </Box>
     </Container>
   );
