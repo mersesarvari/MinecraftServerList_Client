@@ -24,7 +24,6 @@
     "react-router-dom": "^6.8.2",
     "react-scripts": "5.0.1",
     "react-select": "^5.7.2",
-    "s": "^1.0.0",
     "scripts": "^0.1.0",
     "web-vitals": "^2.1.4",
     "yup": "^1.0.2"
@@ -33,8 +32,7 @@
     "start": "set HTTPS=true&&react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "prestart": "node aspnetcore-https && node aspnetcore-react"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [

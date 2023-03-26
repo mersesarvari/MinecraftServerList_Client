@@ -118,6 +118,16 @@ export default function CreateServer() {
     setActiveStep(0);
     setCompleted({});
   };
+  async function CheckServerStatus(address, port) {
+    var response = await axios.get(
+      `${SERVERIP}status?hostname=${address}&port=${port}`
+    );
+    console.log(response);
+    if (response?.status === 200 && response?.data === true) {
+      return true;
+    }
+    return false;
+  }
   const Details = (props) => {
     const [showMissingIpError, setSHowMissingIpError] = useState("");
     const {
@@ -132,16 +142,34 @@ export default function CreateServer() {
         country: "United States",
       },
     });
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
       console.log(data.javaip);
+      console.log(data.bedrockip);
       if (
         (data.javaip === "" || data.javaip === undefined) &&
         (data.bedrockip === "" || data.bedrockip === undefined)
       ) {
-        setSHowMissingIpError(
-          "You have to set the ip address(s) of your server"
-        );
+        setSHowMissingIpError("You have to set the server ip address");
         return;
+      }
+      if (data.javaip !== "" && data.javaip !== undefined) {
+        //Checking if server is online (java version)
+        let javastatus = await CheckServerStatus(data.javaip, data.javaport);
+        if (!javastatus) {
+          setSHowMissingIpError("Java server is not online at this moment.");
+          return;
+        }
+      }
+      //Checking if server is online (bedrock version)
+      if (data.bedrockip !== "" && data.bedrockip !== undefined) {
+        let bedrockstatus = await CheckServerStatus(
+          data.bedrockip,
+          data.bedrockport
+        );
+        if (!bedrockstatus) {
+          setSHowMissingIpError("Bedrock server is not online at this moment.");
+          return;
+        }
       }
       console.log("Submitting");
       data.country = country.current;
@@ -182,7 +210,7 @@ export default function CreateServer() {
                   <Alert severity="error">{errors.name?.message}</Alert>
                 )}
               </Grid>
-              <AddressForm register={register} />
+              <AddressForm register={register} errors={errors} />
               <Grid item xs={12}>
                 {showMissingIpError !== "" && (
                   <Alert severity="error">{showMissingIpError}</Alert>
@@ -442,6 +470,9 @@ export default function CreateServer() {
             required
             {...props.register("javaip")}
           />
+          {props.errors.javaip && (
+            <Alert severity="error">{props.errors.javaip?.message}</Alert>
+          )}
         </Grid>
         <Grid item xs={5}>
           <TextField
@@ -452,6 +483,9 @@ export default function CreateServer() {
             required
             {...props.register("javaport")}
           />
+          {props.errors.javaport && (
+            <Alert severity="error">{props.errors.javaport?.message}</Alert>
+          )}
         </Grid>
         <Grid item xs={7}>
           <TextField
@@ -462,6 +496,9 @@ export default function CreateServer() {
             required
             {...props.register("bedrockip")}
           />
+          {props.errors.bedrockip && (
+            <Alert severity="error">{props.errors.bedrockip?.message}</Alert>
+          )}
         </Grid>
         <Grid item xs={5}>
           <TextField
@@ -471,6 +508,9 @@ export default function CreateServer() {
             label="port"
             {...props.register("bedrockport")}
           />
+          {props.errors.bedrockport && (
+            <Alert severity="error">{props.errors.bedrockport?.message}</Alert>
+          )}
         </Grid>
       </Grid>
     );

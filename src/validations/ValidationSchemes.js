@@ -1,6 +1,9 @@
 import * as yup from "yup";
-
+import axios from "axios";
+import { SERVERIP } from "../LOCAL";
 const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$/;
+const domainRule =
+  /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$/;
 
 export const RegistrationScheme = yup.object().shape({
   email: yup
@@ -19,7 +22,6 @@ export const RegistrationScheme = yup.object().shape({
     .string()
     .oneOf([yup.ref("password"), null], "Passwords must match"),
 });
-
 export const LoginScheme = yup.object().shape({
   email: yup
     .string()
@@ -44,9 +46,23 @@ export const ServerFormDetailsScheme = yup.object().shape({
     .min(5, "Minimum server name length must be 5 character")
     .max(20, "Minimum server name length must be 20 character")
     .required("Server name is required"),
-  javaip: yup.string().max(30),
+  javaip: yup
+    .string()
+    .max(30)
+    .test(
+      "IPVALIDATON",
+      "Ip address doesnt look like a valid address",
+      (value) => domainRule.test(value) || !value
+    ),
   javaport: yup.string().max(30),
-  bedrockip: yup.string().max(30),
+  bedrockip: yup
+    .string()
+    .max(30)
+    .test(
+      "IPVALIDATON",
+      "Ip address doesnt look like a valid address",
+      (value) => domainRule.test(value) || !value
+    ),
   bedrockport: yup.string().max(30),
 });
 

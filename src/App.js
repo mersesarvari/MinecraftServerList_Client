@@ -10,7 +10,6 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
-import PasswordReset from "./pages/tokenpages/NewPasswordRequest";
 import Register from "./pages/Register";
 import NoMatch from "./pages/NoMatch";
 import {
