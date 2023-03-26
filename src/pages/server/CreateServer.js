@@ -47,6 +47,20 @@ export default function CreateServer() {
   const [short, setshort] = React.useState({});
   const [long, setlong] = React.useState({});
 
+  //formVariables
+  const [n, setn] = React.useState({});
+  const [jip, setjip] = React.useState({});
+  const [jp, setjp] = React.useState({});
+  const [bip, setbip] = React.useState({});
+  const [bp, setbp] = React.useState({});
+  const [c, setc] = React.useState({});
+
+  //formVariables
+  const [y, sety] = React.useState({});
+  const [d, setd] = React.useState({});
+  const [w, setw] = React.useState({});
+  var formData = new FormData();
+
   /*
   const [details, setDetails] = React.useState({});
   const [descripion, setDescription] = React.useState({});
@@ -57,13 +71,28 @@ export default function CreateServer() {
     return steps.length;
   };
   async function PostData(server) {
-    //Here Ill post the data of ther server
-    try {
-      //console.log("Form Data:", FD);
-      //const response = await axios.post(`${SERVERIP}server`, FD);
-      //alert(response.data);
+    formData.append("publisherid", Cookies.get("userid"));
+    formData.append("servername", n);
+    formData.append("javaIp", jip);
+    formData.append("javaPort", jp);
+    formData.append("bedrockIp", bip);
+    formData.append("bedrockPort", bp);
+    formData.append("country", c);
+    formData.append("thumbnail", thumb);
+    formData.append("logo", ico);
+    formData.append("shortDescription", short);
+    formData.append("longDescription", long);
+    formData.append("youtube", y);
+    formData.append("discord", d);
+    formData.append("website", w);
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    for (const pair of formData.entries()) {
+      console.log(`${pair[0]}, ${pair[1]}`);
+    }
+    try {
+      const response = await axios.post(`${SERVERIP}server`, formData);
+      console.log(response);
+      alert(response.data);
     } catch (error) {
       alert(error.request.response);
     }
@@ -80,13 +109,8 @@ export default function CreateServer() {
       let details = localStorage.getItem("details");
       let description = localStorage.getItem("description");
       let social = localStorage.getItem("social");
-      //console.log(details, description, social);
-      //let serverObject = Object.assign(details, description, social);
-      //console.log(serverObject);
-      //console.log("Icon:", serverObject.icon);
-      //PostData();
-
-      console.log(thumb);
+      //Adding PostData
+      PostData();
       return;
     }
     setActiveStep((nextActiveStep) => nextActiveStep + 1);
@@ -122,12 +146,12 @@ export default function CreateServer() {
           alert("Local storage has been created successfully");
           //setDetails(values);
           localStorage.setItem("details", JSON.stringify(values));
-          props.FD.append("servername", values.name);
-          props.FD.append("javaIp", values.javaip);
-          props.FD.append("javaPort", values.javaport);
-          props.FD.append("bedrockIp", values.bedrockport);
-          props.FD.append("bedrockPort", values.bedrockport);
-          props.FD.append("country", values.country);
+          setn(values.name);
+          setjip(values.javaip);
+          setjp(values.javaport);
+          setbip(values.bedrockport);
+          setbp(values.bedrockport);
+          setc(values.country);
 
           handleNext();
         }}
@@ -203,28 +227,16 @@ export default function CreateServer() {
           alert("Local storage has been created successfully");
           //setDescription(values);
           //localStorage.setItem("description", JSON.stringify(values));
-          let FD = props.FD;
           setshort(values.shortdesc);
           setlong(values.longdesc);
           setthumb(values.thumbnail);
           setico(values.icon);
-          console.log("FD values:");
-          for (const value of FD.values()) {
-            console.log(value);
-          }
-
-          console.log(FD);
-
           handleNext();
         }}
         validationSchema={ServerFormDescriptionScheme}
       >
         {(formik) => (
-          <form
-            onSubmit={formik.handleSubmit}
-            id="descriptionform"
-            encType="multipart/form-data"
-          >
+          <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
             <Box
               sx={{
                 marginTop: 8,
@@ -352,11 +364,10 @@ export default function CreateServer() {
           alert("Local storage has been created successfully");
           //setSocial(values);
           localStorage.setItem("social", JSON.stringify(values));
-          let FD = props.FD;
-          FD.append("website", values.website);
-          FD.append("discord", values.discord);
-          FD.append("youtube", values.youtube);
-
+          sety(values.youtube);
+          setd(values.discord);
+          setw(values.website);
+          setico(values.icon);
           handleNext();
         }}
         validationSchema={ServerFormSocialScheme}
@@ -792,6 +803,7 @@ export default function CreateServer() {
     const [country, setCountry] = useState("United States");
     const handleChange = (event) => {
       setCountry(event.target.value);
+      setc(event.target.value);
     };
     return (
       <Grid item xs={12}>
