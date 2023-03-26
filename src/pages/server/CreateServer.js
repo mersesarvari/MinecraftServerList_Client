@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -10,6 +10,7 @@ import { Formik } from "formik";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Alert,
   Checkbox,
@@ -33,6 +34,8 @@ import {
   ServerFormSocialScheme,
 } from "../../validations/ValidationSchemes";
 import { SERVERIP } from "../../LOCAL";
+import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 
 export default function CreateServer() {
   const steps = ["Information", "Description", "Social"];
@@ -101,6 +104,7 @@ export default function CreateServer() {
       return;
     }
     PostData();
+    navigate("/");
   };
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -113,328 +117,294 @@ export default function CreateServer() {
     setCompleted({});
   };
   const Details = (props) => {
-    return (
-      <Formik
-        initialValues={{
-          name: "",
-          javaip: "",
-          javaport: "25565",
-          bedrockip: "",
-          bedrockport: "19132",
-        }}
-        onSubmit={(values, formik) => {
-          if (values.javaip === "" && values.bedrockip === "") {
-            return;
-          }
-          setn(values.name);
-          setjip(values.javaip);
-          setjp(values.javaport);
-          setbip(values.bedrockport);
-          setbp(values.bedrockport);
-          setc(values.country);
-          handleNext();
-        }}
-        validationSchema={ServerFormDetailsScheme}
-      >
-        {(formik) => (
-          <form
-            onSubmit={formik.handleSubmit}
-            id="detailsform"
-            encType="multipart/form-data"
-          >
-            <Box
-              sx={{
-                marginTop: 8,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Box>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Server name"
-                      id="name"
-                      value={formik.values.name}
-                      onChange={formik.handleChange}
-                    />
-                    <Grid item xs={12}>
-                      {formik.errors.name && (
-                        <Alert severity="error">{formik.errors.name}</Alert>
-                      )}
-                    </Grid>
-                  </Grid>
-                  <AddressForm formik={formik} />
+    const [showMissingIpError, setSHowMissingIpError] = useState("");
+    const {
+      register,
+      handleSubmit,
+      formState: { errors },
+    } = useForm({
+      resolver: yupResolver(ServerFormDetailsScheme),
+      defaultValues: {
+        javaport: "25565",
+        bedrockport: "19132",
+      },
+    });
+    const onSubmit = (data) => {
+      console.log(data.javaip);
+      if (
+        (data.javaip === "" || data.javaip === undefined) &&
+        (data.bedrockip === "" || data.bedrockip === undefined)
+      ) {
+        setSHowMissingIpError(
+          "You have to set the ip address(s) of your server"
+        );
+        return;
+      }
+      console.log("Submitting");
+      console.log(data);
+      setn(data.name);
+      setjip(data.javaip);
+      setjp(data.javaport);
+      setbip(data.bedrockip);
+      setbip(data.bedrockport);
+      handleNext();
+    };
 
-                  <LocationForm formik={formik} />
-                </Grid>
-              </Box>
-            </Box>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-              <Box sx={{ flex: "1 1 auto" }} />
-              <Button type="submit" sx={{ mr: 1 }}>
-                Next
-              </Button>
-            </Box>
-          </form>
-        )}
-      </Formik>
+    return (
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        id="detailsform"
+        encType="multipart/form-data"
+      >
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Server name"
+                  id="name"
+                  {...register("name")}
+                />
+                {errors.name && (
+                  <Alert severity="error">{errors.name?.message}</Alert>
+                )}
+              </Grid>
+              <AddressForm register={register} />
+              <Grid item xs={12}>
+                {showMissingIpError !== "" && (
+                  <Alert severity="error">{showMissingIpError}</Alert>
+                )}
+              </Grid>
+              <LocationForm register={register} />
+            </Grid>
+          </Box>
+        </Box>
+        <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+          <Button
+            color="inherit"
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            sx={{ mr: 1 }}
+          >
+            Back
+          </Button>
+          <Box sx={{ flex: "1 1 auto" }} />
+          <Button type="submit" sx={{ mr: 1 }}>
+            Next
+          </Button>
+        </Box>
+      </form>
     );
   };
   const Description = (props) => {
-    return (
-      <Formik
-        initialValues={{
-          shortdesc: "",
-          longdesc: "",
-          thumbnail: "",
-          icon: "",
-        }}
-        onSubmit={(values, formik) => {
-          setshort(values.shortdesc);
-          setlong(values.longdesc);
-          setthumb(values.thumbnail);
-          setico(values.icon);
-          handleNext();
-        }}
-        validationSchema={ServerFormDescriptionScheme}
-      >
-        {(formik) => (
-          <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
-            <Box
-              sx={{
-                marginTop: 8,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Box>
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <TextField
-                      onBlur={formik.handleBlur}
-                      type="file"
-                      id="thumbnail"
-                      onChange={(file) => {
-                        formik.setFieldValue("thumbnail", file.target.files[0]);
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    {formik.values.thumbnail &&
-                      formik.touched.thumbnail &&
-                      !formik.errors.thumbnail && (
-                        <PreviewVideo file={formik.values.thumbnail} />
-                      )}
-                  </Grid>
-                  <Grid item xs={12}>
-                    {formik.errors.thumbnail && formik.touched.thumbnail && (
-                      <Alert severity="error">{formik.errors.thumbnail}</Alert>
-                    )}
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      onBlur={formik.handleBlur}
-                      type="file"
-                      id="icon"
-                      hidden
-                      onChange={(file) => {
-                        formik.setFieldValue("icon", file.target.files[0]);
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    {formik.values.icon &&
-                      formik.touched.icon &&
-                      !formik.errors.icon && (
-                        <PreviewImage file={formik.values.icon} />
-                      )}
-                  </Grid>
-                  <Grid item xs={12}>
-                    {formik.errors.icon && formik.touched.icon && (
-                      <Alert severity="error">{formik.errors.icon}</Alert>
-                    )}
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      id="shortdesc"
-                      fullWidth
-                      label="Short description"
-                      value={formik.values.shortdesc}
-                      onChange={formik.handleChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    {formik.touched.shortdesc && formik.errors.shortdesc && (
-                      <Alert severity="error">{formik.errors.shortdesc}</Alert>
-                    )}
-                  </Grid>
+    const {
+      register,
+      handleSubmit,
+      formState: { errors },
+    } = useForm({
+      resolver: yupResolver(ServerFormDescriptionScheme),
+    });
+    const onSubmit = (data) => {
+      console.log("Submitting");
+      console.log(data);
 
-                  <Grid item xs={12}>
-                    <TextField
-                      id="longdesc"
-                      multiline
-                      minRows={8}
-                      fullWidth
-                      label="Description"
-                      value={formik.values.longdesc}
-                      onChange={formik.handleChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    {formik.touched.longdesc && formik.errors.longdesc && (
-                      <Alert severity="error">{formik.errors.longdesc}</Alert>
-                    )}
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-              <Box sx={{ flex: "1 1 auto" }} />
-              {isLastStep ? (
-                <Button type="submit" sx={{ mr: 1 }}>
-                  Next
-                </Button>
-              ) : (
-                <Button type="submit" sx={{ mr: 1 }}>
-                  Complete
-                </Button>
-              )}
-            </Box>
-          </form>
-        )}
-      </Formik>
+      setico(data.icon[0]);
+      setthumb(data.thumbnail[0]);
+      setshort(data.shortdesc);
+      setlong(data.longdesc);
+      handleNext();
+    };
+    return (
+      <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <TextField
+                  {...register("thumbnail")}
+                  type="file"
+                  id="thumbnail"
+                  hidden
+                />
+                {errors.thumbnail && (
+                  <Alert severity="error">{errors.thumbnail?.message}</Alert>
+                )}
+              </Grid>
+              <Grid item xs={6}>
+                <PreviewVideo file={""} />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField {...register("icon")} type="file" id="icon" hidden />
+                {errors.icon && (
+                  <Alert severity="error">{errors.icon?.message}</Alert>
+                )}
+              </Grid>
+              <Grid item xs={6}>
+                <PreviewImage file={""} />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  id="shortdesc"
+                  fullWidth
+                  label="Short description"
+                  {...register("shortdesc")}
+                />
+                {errors.shortdesc && (
+                  <Alert severity="error">{errors.shortdesc?.message}</Alert>
+                )}
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  id="longdesc"
+                  multiline
+                  minRows={8}
+                  fullWidth
+                  label="Description"
+                  {...register("longdesc")}
+                />
+                {errors.longdesc && (
+                  <Alert severity="error">{errors.longdesc?.message}</Alert>
+                )}
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+        <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+          <Button
+            color="inherit"
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            sx={{ mr: 1 }}
+          >
+            Back
+          </Button>
+          <Box sx={{ flex: "1 1 auto" }} />
+          {isLastStep ? (
+            <Button type="submit" sx={{ mr: 1 }}>
+              Next
+            </Button>
+          ) : (
+            <Button type="submit" sx={{ mr: 1 }}>
+              Complete
+            </Button>
+          )}
+        </Box>
+      </form>
     );
   };
   const Social = (props) => {
-    return (
-      <Formik
-        initialValues={{
-          youtube: "",
-          website: "",
-          discord: "",
-        }}
-        onSubmit={(values, formik, actions, event) => {
-          event.preventDefault();
-          actions.resetForm(false);
-          sety(values.youtube);
-          setd(values.discord);
-          setw(values.website);
-          setico(values.icon);
-          handleNext();
-        }}
-        validationSchema={ServerFormSocialScheme}
-      >
-        {(formik) => (
-          <form
-            onSubmit={formik.handleSubmit}
-            id="socialform"
-            encType="multipart/form-data"
-          >
-            <Box
-              sx={{
-                marginTop: 8,
-                display: "flex",
-                flexDirection: "column",
+    const {
+      register,
+      handleSubmit,
+      formState: { errors },
+    } = useForm({
+      resolver: yupResolver(ServerFormSocialScheme),
+    });
+    const SaveData = (data) => {
+      console.log("Submitting");
+      console.log(data);
 
-                alignItems: "center",
-              }}
-            >
-              <Box>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Discord server link"
-                      id="discord"
-                      onChange={formik.handleChange}
-                      value={formik.values.discord}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    {formik.errors.discord && formik.touched.discord && (
-                      <Alert severity="error">{formik.errors.discord}</Alert>
-                    )}
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Website url"
-                      id="website"
-                      onChange={formik.handleChange}
-                      value={formik.values.website}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    {formik.errors.website && formik.touched.website && (
-                      <Alert severity="error">{formik.errors.website}</Alert>
-                    )}
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Youtube url"
-                      id="youtube"
-                      onChange={formik.handleChange}
-                      value={formik.values.youtube}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    {formik.errors.youtube && formik.touched.youtube && (
-                      <Alert severity="error">{formik.errors.youtube}</Alert>
-                    )}
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-              <Box sx={{ flex: "1 1 auto" }} />
-              {isLastStep ? (
-                <Button type="submit" sx={{ mr: 1 }}>
-                  Next
-                </Button>
-              ) : (
-                <Button type="submit" sx={{ mr: 1 }}>
-                  Complete
-                </Button>
-              )}
-            </Box>
-          </form>
-        )}
-      </Formik>
+      sety(data.youtube);
+      setd(data.discord);
+      setw(data.website);
+      handleNext();
+    };
+    return (
+      <form
+        onSubmit={handleSubmit(SaveData)}
+        id="socialform"
+        encType="multipart/form-data"
+      >
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Discord server link"
+                  id="discord"
+                  {...register("discord")}
+                />
+                {errors.discord && (
+                  <Alert severity="error">{errors.discord?.message}</Alert>
+                )}
+              </Grid>
+              <Grid item xs={12}></Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Website url"
+                  id="website"
+                  {...register("website")}
+                />
+                {errors.website && (
+                  <Alert severity="error">{errors.website?.message}</Alert>
+                )}
+              </Grid>
+              <Grid item xs={12}></Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Youtube url"
+                  id="youtube"
+                  {...register("youtube")}
+                />
+                {errors.youtube && (
+                  <Alert severity="error">{errors.youtube?.message}</Alert>
+                )}
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+        <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+          <Button
+            color="inherit"
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            sx={{ mr: 1 }}
+          >
+            Back
+          </Button>
+          <Box sx={{ flex: "1 1 auto" }} />
+          {isLastStep ? (
+            <Button type="submit" sx={{ mr: 1 }}>
+              Next
+            </Button>
+          ) : (
+            <Button type="submit" sx={{ mr: 1 }}>
+              Complete
+            </Button>
+          )}
+        </Box>
+      </form>
     );
   };
   const AddressForm = (props) => {
     const [javacheck, setJavacheck] = useState(false);
     const [bedrockcheck, setBedrockcheck] = useState(false);
-    let formik = props.formik;
     return (
       <Grid item xs={12} container spacing={2}>
         <Grid item xd={6}>
@@ -467,52 +437,39 @@ export default function CreateServer() {
             fullWidth
             id="javaip"
             label="Java server ip"
-            value={formik.values.javaip}
-            onChange={formik.handleChange}
             disabled={!javacheck}
             required
+            {...props.register("javaip")}
           />
         </Grid>
         <Grid item xs={5}>
           <TextField
             id="javaport"
-            value={formik.values.javaport}
             fullWidth
             disabled={!javacheck}
-            onChange={formik.handleChange}
             label="port"
             required
+            {...props.register("javaport")}
           />
         </Grid>
         <Grid item xs={7}>
           <TextField
             id="bedrockip"
             fullWidth
-            value={formik.values.bedrockip}
-            onChange={formik.handleChange}
             label="Bedrock server ip"
             disabled={!bedrockcheck}
             required
+            {...props.register("bedrockip")}
           />
         </Grid>
         <Grid item xs={5}>
           <TextField
             id="bedrockport"
-            value={formik.values.serverbedrockport}
             disabled={!bedrockcheck}
-            onChange={formik.handleChange}
             required
             label="port"
+            {...props.register("bedrockport")}
           />
-        </Grid>
-        <Grid item xs={12}>
-          {(formik.touched.javaip || formik.touched.bedrockip) &&
-            formik.values.javaip === "" &&
-            formik.values.bedrockip === "" && (
-              <Alert severity="error">
-                You cannot create a server without setting the ip address
-              </Alert>
-            )}
         </Grid>
       </Grid>
     );
@@ -774,8 +731,9 @@ export default function CreateServer() {
     ];
     const [country, setCountry] = useState("United States");
     const handleChange = (event) => {
+      console.log(event.target.value);
       setCountry(event.target.value);
-      setc(event.target.value);
+      setc(event.target.value.toString());
     };
     return (
       <Grid item xs={12}>
@@ -856,9 +814,9 @@ export default function CreateServer() {
           ))}
         </Stepper>
         <React.Fragment>
-          {activeStep === 0 && <Details list={serverTypes} />}
-          {activeStep === 1 && <Description list={serverTypes} />}
-          {activeStep === 2 && <Social list={serverTypes} />}
+          {activeStep === 0 && <Details />}
+          {activeStep === 1 && <Description />}
+          {activeStep === 2 && <Social />}
         </React.Fragment>
       </Box>
     </Container>

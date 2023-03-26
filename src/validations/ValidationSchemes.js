@@ -55,22 +55,28 @@ export const ServerFormDescriptionScheme = yup.object().shape({
   longdesc: yup.string().min(50).max(5000).required(),
   thumbnail: yup
     .mixed()
-    .required()
-    .test("FILE_SIZE", "To big!", (value) => value && value.size < 1024 * 300)
+    .required("File is required")
+    .test("REQ", "File is required", (val) => val && val[0])
     .test(
-      "FILE_TYPE",
-      "Invalid file type",
-      (value) => value && ["video/mp4", "video/ogg"].includes(value.type)
+      "FILE_SIZE",
+      "To big!",
+      (value) => value.length > 0 && value[0]?.size < 1024 * 30000
+    )
+    .test("FILE_TYPE", "Invalid file type", (value) =>
+      ["video/mp4", "video/ogg"].includes(value[0]?.type)
     ),
+
   icon: yup
     .mixed()
-    .required()
-    .test("FILE_SIZE", "To big!", (value) => value && value.size < 1024 * 100)
+    .required("File is required")
+    .test("REQ", "File is required", (val) => val && val[0])
     .test(
-      "EmptyCheck",
-      "Please",
-      (value) =>
-        value && ["image/jpg", "image/png", "image/gif"].includes(value.type)
+      "FILE_SIZE",
+      "To big!",
+      (value) => value.length > 0 && value[0]?.size < 1024 * 30000
+    )
+    .test("EmptyCheck", "Please", (value) =>
+      ["image/jpg", "image/png", "image/gif"].includes(value[0]?.type)
     ),
 });
 export const ServerFormSocialScheme = yup.object().shape({
