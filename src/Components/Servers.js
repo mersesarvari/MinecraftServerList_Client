@@ -1,10 +1,7 @@
 import Grid from "@mui/material/Grid";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-
-//style
-import { fontStyle } from "@mui/system";
-import { Rating, Typography } from "@mui/material";
+import { SERVERIP } from "../LOCAL";
 
 const Servers = (props) => {
   const ping_image = "..\\Resources\\Files\\Images\\ping.png";
@@ -34,7 +31,8 @@ const Servers = (props) => {
           >
             <Grid item xs={1} md={1} height="120px">
               <img
-                src={logourl + server.logoPath}
+                src={SERVERIP + "logo?id=" + server.id}
+                alt="server logo"
                 style={{ margin: "30px 15px", width: "60px", height: "60px" }}
               />
             </Grid>
@@ -57,7 +55,7 @@ const Servers = (props) => {
                 loop
                 muted
                 alt="All the devices"
-                src={thumbnailurl + server.thumbnailPath}
+                src={SERVERIP + "thumbnail?id=" + server.id}
                 onClick={() => {
                   navigate("server/" + server.id);
                 }}
