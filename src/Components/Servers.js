@@ -1,4 +1,5 @@
 import Grid from "@mui/material/Grid";
+import { fontWeight } from "@mui/system";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { SERVERIP } from "../LOCAL";
@@ -126,8 +127,10 @@ const Servers = (props) => {
                   paddingTop: "20px",
                 }}
               >
-                {server.javaIp !== "" && server.javaIp}
-                {server.javaIp === "" && server.bedrockIp}
+                <div style={{ fontWeight: "560", color: "white" }}>
+                  {server.javaIp !== "" && server.javaIp}
+                  {server.javaIp === "" && server.bedrockIp}
+                </div>
               </Grid>
               <Grid
                 item
