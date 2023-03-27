@@ -126,7 +126,8 @@ const Servers = (props) => {
                   paddingTop: "20px",
                 }}
               >
-                {server.ip}
+                {server.javaIp !== "" && server.javaIp}
+                {server.javaIp === "" && server.bedrockIp}
               </Grid>
               <Grid
                 item
