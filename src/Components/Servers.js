@@ -40,6 +40,9 @@ const Servers = (props) => {
                 margin: "0",
                 height: "120px",
               }}
+              onClick={() => {
+                navigate("server/" + server.id);
+              }}
             >
               <video
                 style={{ height: "60px", margin: "30px 20px" }}
@@ -49,9 +52,6 @@ const Servers = (props) => {
                 muted
                 alt="All the devices"
                 src={SERVERIP + "thumbnail?id=" + server.id}
-                onClick={() => {
-                  navigate("server/" + server.id);
-                }}
               />
             </Grid>
             <Grid
@@ -59,6 +59,9 @@ const Servers = (props) => {
               xs={4}
               md={4}
               style={{ backgroundColor: "white", color: "black" }}
+              onClick={() => {
+                navigate("server/" + server.id);
+              }}
             >
               <div
                 style={{
