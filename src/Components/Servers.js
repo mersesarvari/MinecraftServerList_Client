@@ -4,14 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { SERVERIP } from "../LOCAL";
 
 const Servers = (props) => {
-  const ping_image = "..\\Resources\\Files\\Images\\ping.png";
-  const [thumbnailurl, setLogourl] = useState(
-    "..\\Resources\\Files\\ServerThumbnails\\"
-  );
-  const [logourl, setThumbnailurl] = useState(
-    "..\\Resources\\Files\\ServerLogos\\"
-  );
-
   const navigate = useNavigate();
 
   return (
