@@ -13,19 +13,16 @@ export async function CheckLogin() {
   //Cookies.remove("token");
   let email = Cookies.get("email");
   let token = Cookies.get("token");
-
+  let strAuth = "Authorization";
   const config = {
-    headers: { Authorization: `bearer ${token}` },
+    headers: { strAuth: `bearer ${token}` },
   };
   console.log("Checklogin cookies:", email, token);
   if (email !== undefined && token !== undefined) {
     var response = await axios.get(SERVERIP + "auth", config, { Email: email });
     console.log("Checklogin response: ", response);
-    if (response.status !== 200) {
-      Cookies.remove("email");
-      Cookies.remove("token");
-    }
     console.log(response.data);
+    return true;
   } else return false;
 }
 
