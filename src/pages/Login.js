@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -17,8 +17,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { SERVERIP, CheckLogin } from "../LOCAL";
-import { useFormik, withFormik } from "formik";
-import { LoginScheme } from "../validations/ValidationSchemes";
+import { useFormik } from "formik";
 
 const theme = createTheme();
 
@@ -32,10 +31,13 @@ const onSubmit = async (values, actions) => {
     };
     const response = await axios.post(`${SERVERIP}login`, loginObject);
     console.log(response);
-    alert(response.data);
-    Cookies.set("email", loginObject.Email, { expires: 7 });
-    Cookies.set("password", loginObject.Password, { expires: 7 });
-    Cookies.set("userid", response.data, { expires: 7 });
+    Cookies.set("email", response.data.email, {
+      expires: 700000000000000000000,
+    });
+    Cookies.set("token", response.data.token, {
+      expires: 7000000000000000000000,
+    });
+    //Cookies.set("userid", response.data, { expires: 7 });
 
     actions.resetForm();
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -57,7 +59,6 @@ export default function Login() {
     initialValues: {
       email: "",
       password: "",
-      confirmpassword: "",
     },
     onSubmit,
   });
@@ -66,7 +67,7 @@ export default function Login() {
     if (CheckLogin() === true) {
       navigate("/");
     }
-  });
+  }, []);
 
   return (
     <div>
