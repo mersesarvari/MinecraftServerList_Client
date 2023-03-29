@@ -12,22 +12,6 @@ instance.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get(
   "token"
 )}`;
 
-export async function CheckLogin() {
-  //Cookies.remove("email");
-  //Cookies.remove("token");
-  let email = Cookies.get("email");
-  let token = Cookies.get("token");
-
-  console.log("Checklogin cookies:", email, token);
-  if (email !== undefined && token !== undefined) {
-    var response = await instance.get(SERVERIP + "auth", {
-      Email: email,
-    });
-    console.log("Checklogin response: ", response);
-    console.log(response.data);
-    return true;
-  } else return false;
-}
 
 export const categories = [
   "survival",

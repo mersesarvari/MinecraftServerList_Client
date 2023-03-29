@@ -8,15 +8,15 @@ import {
 // pages
 import Home from "./pages/Home";
 import About from "./pages/About";
-import Login from "./pages/Login";
-import Logout from "./pages/Logout";
-import Register from "./pages/Register";
+import Login from "./pages/LoginForm";
+import Register from "./pages/RegisterForm";
 import NoMatch from "./pages/NoMatch";
 import {
   accountVerificationLoader,
   serverDetailsLoader,
   serverListLoader,
 } from "./Components/DataLoaders";
+import { ProtectedRoute } from "./ProtectedRoute";
 
 // layouts
 import RootLayout from "./layouts/RootLayout";
@@ -42,40 +42,46 @@ function App() {
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<RootLayout />}>
-      <Route
-        index
-        element={<Home />}
-        loader={serverListLoader}
-        errorElement={<ServerError />}
-      />
-      <Route path="about" element={<About />} />
-      <Route path="login" element={<Login />} />
-      <Route path="register" element={<Register />} />
-
-      <Route path="create" element={<CreateServer />} />
-
-      <Route path="Logout" element={<Logout />} />
-      <Route path="forgotpassword" element={<ForgotPasswordRequest />} />
-      <Route path="resetpassword">
-        <Route path=":token" element={<NewPasswordRequest />} />
-      </Route>
-      <Route
-        path="verify/:token"
-        element={<AccountVerificationRequest />}
-        loader={accountVerificationLoader}
-        errorElement={<ServerError />}
-      ></Route>
-      <Route path="server" element={<ServerDetailsLayout />}>
+    <>
+      <Route path="/" element={<RootLayout />}>
         <Route
-          path=":id"
-          element={<ServerDetails />}
-          loader={serverDetailsLoader}
+          index
+          element={<Home />}
+          loader={serverListLoader}
           errorElement={<ServerError />}
         />
+        <Route path="about" element={<About />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+
+        <Route path="create" element={<CreateServer />} />
+
+        <Route path="forgotpassword" element={<ForgotPasswordRequest />} />
+        <Route path="resetpassword">
+          <Route path=":token" element={<NewPasswordRequest />} />
+        </Route>
+        <Route
+          path="verify/:token"
+          element={<AccountVerificationRequest />}
+          loader={accountVerificationLoader}
+          errorElement={<ServerError />}
+        ></Route>
+        <Route path="server" element={<ServerDetailsLayout />}>
+          <Route
+            path=":id"
+            element={
+              <ProtectedRoute>
+                <ServerDetails />
+              </ProtectedRoute>
+            }
+            loader={serverDetailsLoader}
+            errorElement={<ServerError />}
+          />
+        </Route>
+        <Route path="*" element={<NoMatch />} />
       </Route>
-      <Route path="*" element={<NoMatch />} />
-    </Route>
+    </>
   )
 );
+
 export default App;

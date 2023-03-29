@@ -18,6 +18,7 @@ import { useFormik, withFormik } from "formik";
 import { SERVERIP } from "../LOCAL.js";
 
 import "../style/css/index.css";
+import Auth from "../Auth";
 const theme = createTheme();
 const fieldTheme = {
   backgroundColor: "#383636",
@@ -25,30 +26,10 @@ const fieldTheme = {
 };
 
 const onSubmit = async (values, actions) => {
-  console.log(values);
-  console.log(actions);
-  try {
-    let registrationObject = {
-      Email: values.email,
-      Password: values.password,
-      ConfirmPassword: values.confirmpassword,
-    };
-
-    const response = await axios.post(
-      `${SERVERIP}register`,
-      registrationObject
-    );
-    alert(
-      "Registration was succesfull! We sent you an activation email to your email address. Activate your account now"
-    );
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    actions.resetForm();
-  } catch (error) {
-    alert(error.request.response);
-  }
+  Auth.Register();
 };
 
-export default function Register() {
+export default function RegisterForm() {
   const {
     values,
     errors,

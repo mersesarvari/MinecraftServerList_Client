@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { SERVERIP, instance } from "../LOCAL";
+import { SERVERIP } from "../LOCAL";
 
 const Server = (props) => {
   const navigate = useNavigate();

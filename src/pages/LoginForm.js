@@ -18,34 +18,14 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { SERVERIP, CheckLogin } from "../LOCAL";
 import { useFormik } from "formik";
+import Auth from "../Auth";
 
 const theme = createTheme();
 
 const onSubmit = async (values, actions) => {
-  console.log(values);
-  console.log(actions);
-  try {
-    let loginObject = {
-      Email: values.email,
-      Password: values.password,
-    };
-    const response = await axios.post(`${SERVERIP}login`, loginObject);
-    console.log(response);
-    Cookies.set("email", response.data.email, {
-      expires: 700000000000000000000,
-    });
-    Cookies.set("token", response.data.token, {
-      expires: 7000000000000000000000,
-    });
-    //Cookies.set("userid", response.data, { expires: 7 });
-
-    actions.resetForm();
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  } catch (error) {
-    alert(error.request.response);
-  }
+  Auth.login(values);
 };
-export default function Login() {
+export default function LoginForm() {
   const navigate = useNavigate();
   const {
     values,
@@ -62,12 +42,6 @@ export default function Login() {
     },
     onSubmit,
   });
-
-  useEffect(() => {
-    if (CheckLogin() === true) {
-      navigate("/");
-    }
-  }, []);
 
   return (
     <div>
