@@ -1,8 +1,7 @@
-﻿import { useEffect, useState, useRef} from "react";
+﻿import { useEffect, useState, useRef } from "react";
 import Server from "../Components/Servers";
 import Grid from "@mui/material/Grid";
-import { SERVERIP } from "../LOCAL";
-import {useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 
 export default function Home() {
   const videoEl = useRef(null);

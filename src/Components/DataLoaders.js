@@ -1,13 +1,15 @@
 import axios from "axios";
 import { SERVERIP } from "../LOCAL";
 import Cookies from "js-cookie";
-import { useNavigate, useParams, Outlet } from "react-router-dom";
+import { instance } from "../LOCAL";
 
 //Loader function
 export const serverDetailsLoader = async ({ params }) => {
   const { id } = params;
+  let token = Cookies.get("token");
+
   console.log(SERVERIP + "server/" + id);
-  const response = await axios.get(SERVERIP + "server/" + id);
+  const response = await instance.get(SERVERIP + "server/" + id);
   console.log(response);
   if (response.status !== 200) {
     throw Error("Could not find the data");
@@ -18,7 +20,7 @@ export const serverDetailsLoader = async ({ params }) => {
 
 export const serverListLoader = async ({ params }) => {
   console.log(SERVERIP + "server");
-  const serverresponse = await axios.get(SERVERIP + "server/");
+  const serverresponse = await instance.get(SERVERIP + "server/");
   console.log(serverresponse);
   if (serverresponse.status !== 200) {
     throw Error("Could not find the data");

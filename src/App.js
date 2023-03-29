@@ -27,8 +27,16 @@ import ServerDetailsLayout from "./pages/server/ServerDetailsLayout";
 import ServerDetails from "./pages/server/ServerDetails";
 import ServerError from "./pages/server/ServerError";
 import CreateServer from "./pages/server/CreateServer";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 function App() {
+  function SetDefaultHeader() {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get(
+      "token"
+    )}`;
+  }
+  SetDefaultHeader();
   return <RouterProvider router={router} />;
 }
 
