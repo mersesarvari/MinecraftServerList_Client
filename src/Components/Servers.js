@@ -9,12 +9,12 @@ const Servers = (props) => {
   const navigate = useNavigate();
 
   return (
-    <div>
+    <>
       {props.servers &&
         props.servers.map((server) => (
           <Server key={server.id} server={server} />
         ))}
-    </div>
+    </>
   );
 };
 

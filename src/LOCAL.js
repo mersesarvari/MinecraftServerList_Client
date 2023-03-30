@@ -2,16 +2,12 @@
 import Cookies from "js-cookie";
 import axios from "axios";
 
-export const SERVERIP = "https://localhost:7296/";
-
-let https = "https://localhost:7296";
-let http = "http://localhost:5000";
+export const SERVERIP = "http://192.168.0.120:5270/";
 
 export const instance = axios.create();
 instance.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get(
   "token"
 )}`;
-
 
 export const categories = [
   "survival",
