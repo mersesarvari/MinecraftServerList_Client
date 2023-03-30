@@ -13,17 +13,10 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Cookies from "js-cookie";
+import Auth from "../Auth";
 import { useNavigate } from "react-router-dom";
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
-
-function CheckLogin() {
-  let email = Cookies.get("email");
-  let pwd = Cookies.get("password");
-  if (email !== undefined && pwd !== undefined) {
-    return true;
-  } else return false;
-}
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -45,7 +38,7 @@ const Navigation = () => {
     setAnchorElUser(null);
   };
   const NavItems = () => {
-    if (CheckLogin()) {
+    if (Auth.checklogin()) {
       return (
         <>
           <MenuItem>
@@ -82,7 +75,7 @@ const Navigation = () => {
             <Typography
               textAlign="center"
               onClick={() => {
-                navigate("logout");
+                Auth.logout();
               }}
             >
               Kilépés
@@ -158,7 +151,7 @@ const Navigation = () => {
     }
   };
   const ProfilePanel = () => {
-    if (CheckLogin()) {
+    if (Auth.checklogin()) {
       return (
         <>
           <Box sx={{ flexGrow: 0 }}>

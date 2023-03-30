@@ -1,9 +1,17 @@
 import { Navigate, Route } from "react-router-dom";
 import Auth from "./Auth";
 
-export const ProtectedRoute = ({ children }) => {
-  const l = Auth.CheckLogin(children);
-  if (l) {
+export const LoginRoute = ({ children }) => {
+  const l = Auth.checklogin(children);
+  if (l === true) {
+    return children;
+  }
+  return <Navigate to="/login" />;
+};
+
+export const LogoutRoute = ({ children }) => {
+  const l = Auth.checklogin(children);
+  if (!l === true) {
     return children;
   }
   return <Navigate to="/" />;

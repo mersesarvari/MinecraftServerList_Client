@@ -23,7 +23,12 @@ import Auth from "../Auth";
 const theme = createTheme();
 
 const onSubmit = async (values, actions) => {
-  Auth.login(values);
+  var logincheck = await Auth.login(values);
+  if (logincheck) {
+    window.location.href = "/";
+  } else {
+    return;
+  }
 };
 export default function LoginForm() {
   const navigate = useNavigate();

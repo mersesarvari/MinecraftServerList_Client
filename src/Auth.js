@@ -15,19 +15,25 @@ class Auth {
       };
       const response = await instance.post(`${SERVERIP}login`, loginObject);
       console.log(response);
-      Cookies.set("email", response.data.email, {
-        expires: 700000000000000000000,
-      });
-      Cookies.set("token", response.data.token, {
-        expires: 7000000000000000000000,
-      });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (response.status === 200) {
+        Cookies.set("email", response.data.email, {
+          expires: 700000000000000000000,
+        });
+        Cookies.set("token", response.data.token, {
+          expires: 7000000000000000000000,
+        });
+        console.log("Login was succesfull");
+        return true;
+      }
+      new Promise((resolve) => setTimeout(resolve, 1000));
+      return false;
     } catch (error) {
-      alert(error.request.response);
+      console.log(error.response.data);
+      return false;
     }
   }
 
-  async Register(values) {
+  async register(values) {
     console.log(values);
     try {
       let registrationObject = {
@@ -49,7 +55,7 @@ class Auth {
     }
   }
 
-  CheckLogin() {
+  checklogin() {
     if (
       Cookies.get("token") === "" ||
       Cookies.get("token") === null ||
@@ -60,9 +66,9 @@ class Auth {
     return true;
   }
 
-  async Logout() {
+  async logout() {
     Cookies.remove("email");
-    Cookies.remove("password");
+    Cookies.remove("token");
     console.log("You succesfully logged out");
     window.location.reload(false);
   }

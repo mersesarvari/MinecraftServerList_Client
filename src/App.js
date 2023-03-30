@@ -16,7 +16,7 @@ import {
   serverDetailsLoader,
   serverListLoader,
 } from "./Components/DataLoaders";
-import { ProtectedRoute } from "./ProtectedRoute";
+import { LoginRoute, LogoutRoute } from "./ProtectedRoute";
 
 // layouts
 import RootLayout from "./layouts/RootLayout";
@@ -29,6 +29,7 @@ import ServerError from "./pages/server/ServerError";
 import CreateServer from "./pages/server/CreateServer";
 import axios from "axios";
 import Cookies from "js-cookie";
+import Auth from "./Auth";
 
 function App() {
   function SetDefaultHeader() {
@@ -42,45 +43,57 @@ function App() {
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <>
-      <Route path="/" element={<RootLayout />}>
+    <Route path="/" element={<RootLayout />}>
+      <Route
+        index
+        element={<Home />}
+        loader={serverListLoader}
+        errorElement={<ServerError />}
+      />
+      <Route path="about" element={<About />} />
+      <Route
+        path="login"
+        element={
+          <LogoutRoute>
+            <Login />
+          </LogoutRoute>
+        }
+      />
+      <Route path="register" element={<Register />} />
+
+      <Route
+        path="create"
+        element={
+          <LoginRoute>
+            <CreateServer />
+          </LoginRoute>
+        }
+      />
+
+      <Route path="forgotpassword" element={<ForgotPasswordRequest />} />
+      <Route path="resetpassword">
+        <Route path=":token" element={<NewPasswordRequest />} />
+      </Route>
+      <Route
+        path="verify/:token"
+        element={<AccountVerificationRequest />}
+        loader={accountVerificationLoader}
+        errorElement={<ServerError />}
+      ></Route>
+      <Route path="server" element={<ServerDetailsLayout />}>
         <Route
-          index
-          element={<Home />}
-          loader={serverListLoader}
+          path=":id"
+          element={
+            <LoginRoute>
+              <ServerDetails />
+            </LoginRoute>
+          }
+          loader={serverDetailsLoader}
           errorElement={<ServerError />}
         />
-        <Route path="about" element={<About />} />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
-
-        <Route path="create" element={<CreateServer />} />
-
-        <Route path="forgotpassword" element={<ForgotPasswordRequest />} />
-        <Route path="resetpassword">
-          <Route path=":token" element={<NewPasswordRequest />} />
-        </Route>
-        <Route
-          path="verify/:token"
-          element={<AccountVerificationRequest />}
-          loader={accountVerificationLoader}
-          errorElement={<ServerError />}
-        ></Route>
-        <Route path="server" element={<ServerDetailsLayout />}>
-          <Route
-            path=":id"
-            element={
-              <ProtectedRoute>
-                <ServerDetails />
-              </ProtectedRoute>
-            }
-            loader={serverDetailsLoader}
-            errorElement={<ServerError />}
-          />
-        </Route>
-        <Route path="*" element={<NoMatch />} />
       </Route>
-    </>
+      <Route path="*" element={<NoMatch />} />
+    </Route>
   )
 );
 
