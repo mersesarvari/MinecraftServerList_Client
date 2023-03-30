@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -9,19 +8,31 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import Cookies from "js-cookie";
+
+//Own classes
 import Auth from "../Auth";
 import { useNavigate } from "react-router-dom";
 
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const pages = [
+  { title: "Home", url: "/" },
+  { title: "Servers", url: "/servers" },
+  { title: "Proba", url: "/" },
+];
 
-const Navigation = () => {
+const settings = [
+  { title: "Profile", url: "profile" },
+  { title: "Account", url: "account" },
+  { title: "Dashboard", url: "dashboard" },
+];
+
+function ResponsiveAppBar() {
   const navigate = useNavigate();
-  const [anchorElNav, setAnchorElNav] = useState(null);
-  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -37,288 +48,175 @@ const Navigation = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const NavItems = () => {
-    if (Auth.checklogin()) {
-      return (
-        <>
-          <MenuItem>
-            <Typography
-              textAlign="center"
-              onClick={() => {
-                navigate("");
-              }}
+
+  return (
+    <AppBar position="static">
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            EasyMinecraft
+          </Typography>
+          {/* Menu*/}
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
             >
-              Home
-            </Typography>
-          </MenuItem>
-          <MenuItem>
-            <Typography
-              textAlign="center"
-              onClick={() => {
-                navigate("");
-              }}
-            >
-              Szerverek
-            </Typography>
-          </MenuItem>
-          <MenuItem>
-            <Typography
-              textAlign="center"
-              onClick={() => {
-                navigate("rangsor");
-              }}
-            >
-              Rangsor
-            </Typography>
-          </MenuItem>
-          <MenuItem>
-            <Typography
-              textAlign="center"
-              onClick={() => {
-                Auth.logout();
-              }}
-            >
-              Kilépés
-            </Typography>
-          </MenuItem>
-          <MenuItem>
-            <Typography
-              textAlign="center"
-              onClick={() => {
-                navigate("changepassword");
-              }}
-            >
-              New Password
-            </Typography>
-          </MenuItem>
-          <MenuItem>
-            <Typography
-              textAlign="center"
-              onClick={() => {
-                navigate("/create");
-              }}
-            >
-              New Server
-            </Typography>
-          </MenuItem>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <MenuItem>
-            <Typography
-              textAlign="center"
-              onClick={() => {
-                navigate("");
-              }}
-            >
-              Home
-            </Typography>
-          </MenuItem>
-          <MenuItem>
-            <Typography
-              textAlign="center"
-              onClick={() => {
-                navigate("");
-              }}
-            >
-              Szerverek
-            </Typography>
-          </MenuItem>
-          <MenuItem>
-            <Typography
-              textAlign="center"
-              onClick={() => {
-                navigate("rangsor");
-              }}
-            >
-              Rangsor
-            </Typography>
-          </MenuItem>
-          <MenuItem>
-            <Typography
-              textAlign="center"
-              onClick={() => {
-                navigate("changepassword");
-              }}
-            >
-              New Password
-            </Typography>
-          </MenuItem>
-        </>
-      );
-    }
-  };
-  const ProfilePanel = () => {
-    if (Auth.checklogin()) {
-      return (
-        <>
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
+              <MenuIcon />
+            </IconButton>
             <Menu
-              sx={{ mt: "45px" }}
               id="menu-appbar"
-              anchorEl={anchorElUser}
+              anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: "bottom",
-                horizontal: "right",
+                horizontal: "left",
               }}
               keepMounted
               transformOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
+                vertical: "top",
+                horizontal: "left",
               }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: "block", md: "none" },
+              }}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+              {pages.map((page) => (
+                <MenuItem
+                  key={page.title}
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    navigate(page.url);
+                  }}
+                >
+                  <Typography textAlign="center">{page.title}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <MenuItem>
-            <Typography
-              textAlign="center"
-              onClick={() => {
-                navigate("login");
-              }}
-            >
-              Belépés
-            </Typography>
-          </MenuItem>
-          <MenuItem>
-            <Typography
-              textAlign="center"
-              onClick={() => {
-                navigate("register");
-              }}
-            >
-              Regisztráció
-            </Typography>
-          </MenuItem>
-        </>
-      );
-    }
-  };
-
-  return (
-    <div>
-      {
-        <AppBar position="static" style={{ backgroundColor: "#292826" }}>
-          <Container maxWidth="xl">
-            <Toolbar disableGutters>
-              <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-              <Typography
-                variant="h6"
-                noWrap
-                component="a"
-                href="/"
-                sx={{
-                  mr: 2,
-                  display: { xs: "none", md: "flex" },
-                  fontFamily: "monospace",
-                  fontWeight: 700,
-                  letterSpacing: ".3rem",
-                  color: "inherit",
-                  textDecoration: "none",
+          {/* App Logo*/}
+          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href=""
+            sx={{
+              mr: 2,
+              display: { xs: "flex", md: "none" },
+              flexGrow: 1,
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            LOGO
+          </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            {pages.map((page) => (
+              <Button
+                key={page.title}
+                onClick={() => {
+                  handleCloseNavMenu();
+                  navigate(page.url);
+                }}
+                sx={{ my: 2, color: "white", display: "block" }}
+              >
+                {page.title}
+              </Button>
+            ))}
+          </Box>
+          {/* User Logo*/}
+          {Auth.checklogin() === false && (
+            <>
+              <Button
+                color="inherit"
+                onClick={() => {
+                  navigate("login");
                 }}
               >
-                MCMania
-              </Typography>
-
-              <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleOpenNavMenu}
-                  color="inherit"
-                >
-                  <MenuIcon />
+                Login
+              </Button>
+              <Button
+                color="inherit"
+                onClick={() => {
+                  navigate("register");
+                }}
+              >
+                Create Account
+              </Button>
+            </>
+          )}
+          {Auth.checklogin() === true && (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
                 </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorElNav}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  open={Boolean(anchorElNav)}
-                  onClose={handleCloseNavMenu}
-                  sx={{
-                    display: { xs: "block", md: "none" },
-                  }}
-                >
-                  <NavItems />
-                </Menu>
-              </Box>
-              <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-
-              <Typography
-                variant="h5"
-                noWrap
-                component="a"
-                href=""
-                sx={{
-                  mr: 2,
-                  display: { xs: "flex", md: "none" },
-                  flexGrow: 1,
-                  fontFamily: "monospace",
-                  fontWeight: 700,
-                  letterSpacing: ".3rem",
-                  color: "inherit",
-                  textDecoration: "none",
-                }}
-              >
-                MCServers
-              </Typography>
-              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-                <NavItems />
-              </Box>
-              {/* Login rész és logo */}
-              <ProfilePanel />
+              </Tooltip>
               <Menu
+                sx={{ mt: "45px" }}
                 id="menu-appbar"
-                anchorEl={anchorElNav}
+                anchorEl={anchorElUser}
                 anchorOrigin={{
-                  vertical: "bottom",
+                  vertical: "top",
                   horizontal: "right",
                 }}
                 keepMounted
                 transformOrigin={{
                   vertical: "top",
-                  horizontal: "left",
+                  horizontal: "right",
                 }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{
-                  display: { xs: "block", md: "none" },
-                }}
-              />
-            </Toolbar>
-          </Container>
-        </AppBar>
-      }
-    </div>
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem
+                    key={setting.title}
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      navigate(setting.url);
+                    }}
+                  >
+                    <Typography textAlign="center">{setting.title}</Typography>
+                  </MenuItem>
+                ))}
+                <MenuItem
+                  onClick={() => {
+                    handleCloseUserMenu();
+                    Auth.logout();
+                  }}
+                >
+                  <Typography textAlign="center">Logout</Typography>
+                </MenuItem>
+              </Menu>
+            </Box>
+          )}
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
-};
-
-export default Navigation;
+}
+export default ResponsiveAppBar;

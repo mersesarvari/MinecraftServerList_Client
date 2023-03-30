@@ -6,7 +6,6 @@ import { instance } from "../LOCAL";
 //Loader function
 export const serverDetailsLoader = async ({ params }) => {
   const { id } = params;
-  let token = Cookies.get("token");
 
   console.log(SERVERIP + "server/" + id);
   const response = await instance.get(SERVERIP + "server/" + id);
@@ -19,13 +18,10 @@ export const serverDetailsLoader = async ({ params }) => {
 };
 
 export const serverListLoader = async ({ params }) => {
-  console.log(SERVERIP + "server");
   const serverresponse = await instance.get(SERVERIP + "server/");
-  console.log(serverresponse);
   if (serverresponse.status !== 200) {
     throw Error("Could not find the data");
   }
-  console.log(serverresponse.data);
   return serverresponse.data;
 };
 

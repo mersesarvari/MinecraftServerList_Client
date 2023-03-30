@@ -64,6 +64,8 @@ class Auth {
         Cookies.get("token") === null ||
         Cookies.get("token") === undefined
       ) {
+        Cookies.remove("email");
+        Cookies.remove("token");
         return false;
       }
       var tokenExpired = isJwtExpired(Cookies.get("token"));
@@ -82,7 +84,7 @@ class Auth {
     }
   }
 
-  async logout() {
+  logout() {
     Cookies.remove("email");
     Cookies.remove("token");
     console.log("You succesfully logged out");

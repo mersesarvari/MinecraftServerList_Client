@@ -67,7 +67,6 @@ const router = createBrowserRouter(
           </LogoutRoute>
         }
       />
-
       <Route
         path="create"
         element={
@@ -76,7 +75,13 @@ const router = createBrowserRouter(
           </LoginRoute>
         }
       />
-
+      <Route
+        path="logout"
+        element={<Home />}
+        onEnter={() => {
+          Auth.logout();
+        }}
+      />
       <Route path="forgotpassword" element={<ForgotPasswordRequest />} />
       <Route path="resetpassword">
         <Route path=":token" element={<NewPasswordRequest />} />
