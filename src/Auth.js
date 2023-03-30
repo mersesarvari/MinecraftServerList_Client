@@ -1,6 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { SERVERIP, instance } from "./LOCAL";
+import jwt_decode from "jwt-decode";
+import { isJwtExpired } from "jwt-check-expiration";
 
 class Auth {
   constructor() {
@@ -56,14 +58,28 @@ class Auth {
   }
 
   checklogin() {
-    if (
-      Cookies.get("token") === "" ||
-      Cookies.get("token") === null ||
-      Cookies.get("token") === undefined
-    ) {
+    try {
+      if (
+        Cookies.get("token") === "" ||
+        Cookies.get("token") === null ||
+        Cookies.get("token") === undefined
+      ) {
+        return false;
+      }
+      var tokenExpired = isJwtExpired(Cookies.get("token"));
+      if (tokenExpired === true) {
+        Cookies.remove("email");
+        Cookies.remove("token");
+        alert("Your sesson expired. Login again!");
+        return false;
+      }
+      return true;
+    } catch (error) {
+      Cookies.remove("token");
+      Cookies.remove("email");
+      console.log("Error:", error);
       return false;
     }
-    return true;
   }
 
   async logout() {

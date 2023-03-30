@@ -59,7 +59,14 @@ const router = createBrowserRouter(
           </LogoutRoute>
         }
       />
-      <Route path="register" element={<Register />} />
+      <Route
+        path="register"
+        element={
+          <LogoutRoute>
+            <Register />
+          </LogoutRoute>
+        }
+      />
 
       <Route
         path="create"
