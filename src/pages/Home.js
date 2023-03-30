@@ -25,7 +25,9 @@ export default function Home() {
       <Grid container spacing={0} alignItems="center" justifyContent="center">
         <Grid item xs={12} md={12}>
           Premium servers
-          <Server servers={serverlist} />
+          <Server
+            servers={serverlist.filter((server) => server.premium === true)}
+          />
         </Grid>
         <Grid item xs={12} md={12}>
           Minecraft servers
