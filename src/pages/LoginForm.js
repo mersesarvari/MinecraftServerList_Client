@@ -18,7 +18,7 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { SERVERIP, CheckLogin } from "../LOCAL";
 import { useFormik } from "formik";
-import Auth from "../Auth";
+import Auth from "../Classes/Auth";
 
 const theme = createTheme();
 

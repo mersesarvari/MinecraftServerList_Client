@@ -18,7 +18,7 @@ import { useFormik, withFormik } from "formik";
 import { SERVERIP } from "../LOCAL.js";
 
 import "../style/css/index.css";
-import Auth from "../Auth";
+import Auth from "../Classes/Auth";
 const theme = createTheme();
 const fieldTheme = {
   backgroundColor: "#383636",

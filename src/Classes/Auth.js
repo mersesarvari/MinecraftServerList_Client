@@ -1,6 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import { SERVERIP, instance } from "./LOCAL";
+import { SERVERIP, instance } from "../LOCAL";
 import jwt_decode from "jwt-decode";
 import { isJwtExpired } from "jwt-check-expiration";
 

@@ -86,13 +86,11 @@ export default function CreateServer() {
     formData.append("discord", d);
     formData.append("website", w);
 
-    for (const pair of formData.entries()) {
-      console.log(`${pair[0]}, ${pair[1]}`);
-    }
     try {
       const response = await axios.post(`${SERVERIP}server`, formData);
       console.log(response);
       alert(response.data);
+      navigate("/");
     } catch (error) {
       alert(error.request.response);
     }
@@ -100,14 +98,13 @@ export default function CreateServer() {
   const isLastStep = () => {
     return activeStep === totalSteps() - 1;
   };
-  const handleNext = () => {
+  async function handleNext() {
     if (!isLastStep()) {
       setActiveStep((nextActiveStep) => nextActiveStep + 1);
       return;
     }
-    PostData();
-    navigate("/");
-  };
+    await PostData();
+  }
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };

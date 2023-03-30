@@ -22,15 +22,16 @@ export default function Home() {
 
   return (
     <div className="home">
-      <Grid
-        container
-        spacing={0}
-        style={{ backgroundColor: "#3d4491" }}
-        width="120"
-      >
-        <Grid item xs={12} md={12}></Grid>
+      <Grid container spacing={0} alignItems="center" justifyContent="center">
+        <Grid item xs={12} md={12}>
+          Premium servers
+          <Server servers={serverlist} />
+        </Grid>
+        <Grid item xs={12} md={12}>
+          Minecraft servers
+          <Server servers={serverlist} />
+        </Grid>
       </Grid>
-      <Server servers={serverlist}></Server>
     </div>
   );
 }

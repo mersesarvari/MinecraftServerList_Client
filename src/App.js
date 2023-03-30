@@ -29,7 +29,7 @@ import ServerError from "./pages/server/ServerError";
 import CreateServer from "./pages/server/CreateServer";
 import axios from "axios";
 import Cookies from "js-cookie";
-import Auth from "./Auth";
+import Auth from "./Classes/Auth";
 
 function App() {
   function SetDefaultHeader() {

@@ -14,7 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 
 //Own classes
-import Auth from "../Auth";
+import Auth from "../Classes/Auth";
 import { useNavigate } from "react-router-dom";
 
 const pages = [
