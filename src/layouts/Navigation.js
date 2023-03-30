@@ -21,6 +21,7 @@ const pages = [
   { title: "Home", url: "/" },
   { title: "Servers", url: "/servers" },
   { title: "Proba", url: "/" },
+  { title: "Add server", url: "/create" },
 ];
 
 const settings = [
@@ -50,7 +51,7 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" style={{ backgroundColor: "rgb(41, 40, 38)" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
@@ -134,6 +135,7 @@ function ResponsiveAppBar() {
           >
             LOGO
           </Typography>
+          {/* Menu items*/}
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
@@ -207,6 +209,7 @@ function ResponsiveAppBar() {
                   onClick={() => {
                     handleCloseUserMenu();
                     Auth.logout();
+                    navigate("home");
                   }}
                 >
                   <Typography textAlign="center">Logout</Typography>
