@@ -14,8 +14,9 @@ const Server = (props) => {
       sx={{
         backgroundColor: "red",
         color: "black",
-        height: { xs: "200px", sm: "120px" },
+        height: { xs: "230px", sm: "120px" },
         marginTop: { xs: "15px", sm: "20px" },
+        marginBottom: { xs: "px", sm: "20px" },
       }}
     >
       <Grid
@@ -40,10 +41,11 @@ const Server = (props) => {
         sx={{
           backgroundColor: "white",
           color: "black",
-          padding: "0",
+          padding: "0px",
           margin: "0",
           display: { xs: "none", sm: "block" },
-          height: { sm: "100%" },
+          height: { sm: "100%", xs: "60%" },
+          marginTop: { xs: "0px" },
         }}
         onClick={() => {
           navigate("server/" + props.server.id);
@@ -51,6 +53,11 @@ const Server = (props) => {
       >
         <video
           style={{ height: "50%", width: "90%", margin: "30px 20px" }}
+          sx={{
+            width: { xs: "100%" },
+            margin: { xs: "0px" },
+            padding: { xs: "0px" },
+          }}
           autoPlay
           playsInline
           loop
@@ -83,8 +90,17 @@ const Server = (props) => {
             marginBottom: "8px",
             fontWeight: "800",
           }}
+          sx={{
+            textAlign: { xs: "center", sm: "left" },
+            height: { xs: "30px" },
+          }}
         >
-          {props.server.servername}
+          <Typography
+            noWrap
+            sx={{ fontWeight: { xs: "700" }, fontSize: { xs: "20px" } }}
+          >
+            {props.server.servername}
+          </Typography>
         </Grid>
         <Grid
           item
@@ -92,7 +108,9 @@ const Server = (props) => {
           height="15px"
           style={{ color: "black", fontSize: "14px" }}
         >
-          {props.server.currentPlayers}/{props.server.maxPlayer} playing now
+          <Typography noWrap>
+            {props.server.currentPlayers}/{props.server.maxPlayer} playing now
+          </Typography>
         </Grid>
         <Grid
           item
@@ -100,7 +118,7 @@ const Server = (props) => {
           height="15px"
           style={{ color: "black", fontSize: "14px" }}
         >
-          {props.server.serverVersion}
+          <Typography noWrap>{props.server.serverVersion}</Typography>
         </Grid>
         <Grid
           item
@@ -108,6 +126,31 @@ const Server = (props) => {
           height="15px"
           style={{ color: "black", fontSize: "14px" }}
         ></Grid>
+        <Grid
+          item
+          xs={12}
+          sx={{
+            display: { xs: "block", sm: "none" },
+          }}
+        >
+          <video
+            style={{ height: "50%", width: "100%" }}
+            sx={{
+              width: { xs: "100%" },
+              margin: { xs: "0px" },
+              padding: { xs: "0px" },
+              display: { xs: "block", sm: "none" },
+            }}
+            autoPlay
+            playsInline
+            loop
+            muted
+            alt="All the devices"
+            src={
+              SERVERIP + "Files/ServerThumbnails/" + props.server.thumbnailPath
+            }
+          />
+        </Grid>
       </Grid>
       <Grid
         item
@@ -156,7 +199,7 @@ const Server = (props) => {
             height: { xs: "100%", sm: "50%" },
           }}
         >
-          COPY
+          <Typography noWrap>COPY</Typography>
         </Grid>
       </Grid>
     </Grid>

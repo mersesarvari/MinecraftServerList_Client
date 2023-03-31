@@ -88,11 +88,7 @@ const router = createBrowserRouter(
       <Route path="server" element={<ServerDetailsLayout />}>
         <Route
           path=":id"
-          element={
-            <LoginRoute>
-              <ServerDetails />
-            </LoginRoute>
-          }
+          element={<ServerDetails />}
           loader={serverDetailsLoader}
           errorElement={<ServerError />}
         />
