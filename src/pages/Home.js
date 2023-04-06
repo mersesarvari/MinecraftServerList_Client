@@ -1,5 +1,5 @@
 ﻿import { useEffect, useState, useRef } from "react";
-import Server from "../Components/Servers";
+import ServerList from "../Components/ServerListPanel";
 import Grid from "@mui/material/Grid";
 import { Typography } from "@mui/material";
 import { useContext } from "react";
@@ -51,32 +51,37 @@ export default function Home() {
         >
           <Typography>Premium servers</Typography>
         </Grid>
-        <Grid item xs={12} style={{ paddingBottom: "10px" }}>
-          <Server
-            servers={context.data.filter((server) => server.premium === true)}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Grid
-            item
-            xs={12}
-            md={12}
-            alignItems="center"
-            justifyContent="center"
-            style={{
-              marginBottom: "20px",
-              backgroundColor: "#292826",
-              height: "50px",
-            }}
-            sx={{
-              display: { xs: "none", sm: "block" },
-              marginTop: { sm: "20px" },
-            }}
-          >
-            <Typography>Premium servers</Typography>
+        <ServerList
+          servers={context.data.filter((server) => server.premium === true)}
+        />
+        <Grid
+          item
+          xs={12}
+          md={12}
+          style={{
+            marginBottom: "20px",
+            backgroundColor: "#292826",
+            height: "50px",
+          }}
+          sx={{
+            display: { xs: "none", sm: "block" },
+            marginTop: { sm: "20px" },
+          }}
+        >
+          <Grid item xs={1}>
+            Logo
           </Grid>
-          <Server servers={context.data} />
+          <Grid item xs={5}>
+            Video
+          </Grid>
+          <Grid item xs={4}>
+            Info
+          </Grid>
+          <Grid item xs={2}>
+            Ip
+          </Grid>
         </Grid>
+        <ServerList servers={context.data} />
       </Grid>
     </div>
   );

@@ -800,7 +800,7 @@ export default function CreateServer() {
   return (
     <Container component="main" maxWidth="sm">
       <CssBaseline />
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ width: "100%", paddingTop: { md: "50px", xs: "20px" } }}>
         <Stepper nonLinear activeStep={activeStep}>
           {steps.map((label, index) => (
             <Step key={label} completed={completed[index]}>

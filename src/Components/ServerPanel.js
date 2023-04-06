@@ -2,7 +2,7 @@ import { Grid, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { SERVERIP } from "../LOCAL";
 
-const Server = (props) => {
+const ServerPanel = (props) => {
   const navigate = useNavigate();
   return (
     <Grid
@@ -19,6 +19,7 @@ const Server = (props) => {
         marginBottom: { xs: "px", sm: "20px" },
       }}
     >
+      {/* Grid 1 - Logo*/}
       <Grid
         item
         xs={1}
@@ -34,6 +35,7 @@ const Server = (props) => {
           style={{ margin: "30px 20px", width: "60%" }}
         />
       </Grid>
+      {/* Grid 5 - Video*/}
       <Grid
         item
         xs={12}
@@ -68,6 +70,7 @@ const Server = (props) => {
           }
         />
       </Grid>
+      {/* Grid 4 - Information*/}
       <Grid
         item
         xs={12}
@@ -152,6 +155,7 @@ const Server = (props) => {
           />
         </Grid>
       </Grid>
+      {/* Grid 2 - Ipaddress */}
       <Grid
         item
         xs={12}
@@ -206,4 +210,4 @@ const Server = (props) => {
   );
 };
 
-export default Server;
+export default ServerPanel;
