@@ -1,13 +1,14 @@
 ﻿import { useEffect, useState, useRef } from "react";
 import Server from "../Components/Servers";
 import Grid from "@mui/material/Grid";
-import { useLoaderData } from "react-router-dom";
 import { Typography } from "@mui/material";
+import { useContext } from "react";
+import { serverContext } from "../App";
 
 export default function Home() {
   const videoEl = useRef(null);
   const [loaded, setloaded] = useState(false);
-  const serverlist = useLoaderData();
+  const context = useContext(serverContext);
 
   const attemptPlay = () => {
     videoEl &&
@@ -52,7 +53,7 @@ export default function Home() {
         </Grid>
         <Grid item xs={12} style={{ paddingBottom: "10px" }}>
           <Server
-            servers={serverlist.filter((server) => server.premium === true)}
+            servers={context.data.filter((server) => server.premium === true)}
           />
         </Grid>
         <Grid item xs={12}>
@@ -74,7 +75,7 @@ export default function Home() {
           >
             <Typography>Premium servers</Typography>
           </Grid>
-          <Server servers={serverlist} />
+          <Server servers={context.data} />
         </Grid>
       </Grid>
     </div>

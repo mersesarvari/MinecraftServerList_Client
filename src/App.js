@@ -1,3 +1,4 @@
+import React, { createContext } from "react";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -30,26 +31,44 @@ import CreateServer from "./pages/server/CreateServer";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Auth from "./Classes/Auth";
+import { useEffect } from "react";
+import { useState } from "react";
+import Server from "./Classes/Server";
+
+export const serverContext = createContext();
 
 function App() {
+  const [servers, setServers] = useState([]);
   function SetDefaultHeader() {
     axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get(
       "token"
     )}`;
   }
+  useEffect(() => {
+    async function fetchData() {
+      var data = await Server.LoadServerList();
+      setServers(data);
+      console.log("Data loaded from the server");
+    }
+    fetchData();
+  }, []);
+
   SetDefaultHeader();
-  return <RouterProvider router={router} />;
+  return (
+    servers.length > 0 && (
+      <serverContext.Provider
+        value={{ data: servers, updateServers: setServers }}
+      >
+        <RouterProvider router={router} />
+      </serverContext.Provider>
+    )
+  );
 }
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<RootLayout />}>
-      <Route
-        index
-        element={<Home />}
-        loader={serverListLoader}
-        errorElement={<ServerError />}
-      />
+    <Route path="/" element={<RootLayout />} errorElement={<ServerError />}>
+      <Route index element={<Home />} errorElement={<ServerError />} />
       <Route path="about" element={<About />} />
       <Route
         path="login"
@@ -86,12 +105,7 @@ const router = createBrowserRouter(
         errorElement={<ServerError />}
       ></Route>
       <Route path="server" element={<ServerDetailsLayout />}>
-        <Route
-          path=":id"
-          element={<ServerDetails />}
-          loader={serverDetailsLoader}
-          errorElement={<ServerError />}
-        />
+        <Route path=":id" element={<ServerDetails />} />
       </Route>
       <Route path="*" element={<NoMatch />} />
     </Route>
