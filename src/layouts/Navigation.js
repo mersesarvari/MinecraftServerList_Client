@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 
 const pages = [
   { title: "Home", url: "/" },
-  { title: "Servers", url: "/servers" },
+  { title: "My servers", url: "/myservers" },
   { title: "Proba", url: "/" },
   { title: "Add server", url: "/create" },
 ];

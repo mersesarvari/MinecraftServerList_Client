@@ -178,9 +178,9 @@ const ServerPanel = (props) => {
         >
           <Button
             variant="contained"
-            color="success"
+            style={{ width: "80%" }}
             onClick={() => {
-              navigate("/modifyserver");
+              navigate(`/modifyserver/${props.server.id}`);
             }}
           >
             MODIFY
@@ -221,8 +221,13 @@ export function DeleteDialog(props) {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Delete server
+      <Button
+        style={{ width: "80%" }}
+        variant="contained"
+        color="error"
+        onClick={handleClickOpen}
+      >
+        Delete
       </Button>
       <Dialog
         open={open}

@@ -8,6 +8,7 @@ export const instance = axios.create();
 instance.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get(
   "token"
 )}`;
+instance.defaults.headers.common["Access-Control-Allow-Origin"] = `*`;
 
 export const categories = [
   "survival",

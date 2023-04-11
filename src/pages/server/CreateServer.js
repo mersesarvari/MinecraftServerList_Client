@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Alert,
@@ -31,39 +31,106 @@ import {
   ServerFormDescriptionScheme,
   ServerFormSocialScheme,
 } from "../../validations/ValidationSchemes";
-import { SERVERIP } from "../../LOCAL";
+import { instance, SERVERIP } from "../../LOCAL";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useRef } from "react";
 
 export default function CreateServer() {
+  const [loaded, setLoaded] = React.useState(false);
+  const { id } = useParams();
   const steps = ["Information", "Description", "Social"];
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
 
   //formVariables
-  const [thumb, setthumb] = React.useState({});
+  const [thumb, setthumb] = React.useState(null);
   const [ico, setico] = React.useState({});
   const [short, setshort] = React.useState({});
   const [long, setlong] = React.useState({});
 
   //formVariables
-  const [n, setn] = React.useState({});
-  const [jip, setjip] = React.useState({});
-  const [jp, setjp] = React.useState({});
-  const [bip, setbip] = React.useState({});
-  const [bp, setbp] = React.useState({});
-  const [c, setC] = React.useState({});
+  const [n, setn] = React.useState("");
+  const [jip, setjip] = React.useState("");
+  const [jp, setjp] = React.useState("25565");
+  const [bip, setbip] = React.useState("");
+  const [bp, setbp] = React.useState("19132");
+  const [c, setC] = React.useState("United States");
   var country = useRef("United States");
+
+  function loadIcon(file) {
+    // Get a reference to our file input
+    const fileInput = document.querySelectorAll('input[type="file"]')[1];
+
+    // Create a new File object
+    const myFile = new File(["icon"], file, {
+      type: "image/webp",
+      lastModified: new Date(),
+    });
+
+    // Now let's create a DataTransfer to get a FileList
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(myFile);
+    fileInput.files = dataTransfer.files;
+  }
+  function loadVideo(file) {
+    // Get a reference to our file input
+    const fileInput = document.querySelectorAll('input[type="file"]')[0];
+
+    // Create a new File object
+    const myFile = new File(["thumbnail"], file, {
+      type: "video/pmp4",
+      lastModified: new Date(),
+    });
+
+    // Now let's create a DataTransfer to get a FileList
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(myFile);
+    fileInput.files = dataTransfer.files;
+  }
+
   useEffect(() => {
+    async function setServerData(id) {
+      try {
+        const response = await instance.get(`${SERVERIP}server/${id}`);
+        if (response.status === 200) {
+          //Setting up data
+          console.log(response.data);
+          setn(response.data.servername);
+          setjip(response.data.javaIp);
+          setC(response.data.country);
+          setshort(response.data.shortDescription);
+          setlong(response.data.longDescription);
+          let thumbdata = await instance.get(
+            SERVERIP + "Files/ServerThumbnails/" + response.data.thumbnailPath
+          );
+          let icodata = await instance.get(
+            SERVERIP + "Files/ServerLogos/" + response.data.logoPath
+          );
+          loadVideo(
+            SERVERIP + "Files/ServerThumbnails/" + response.data.thumbnailPath
+          );
+          loadIcon(SERVERIP + "Files/ServerLogos/" + response.data.logoPath);
+        }
+      } catch (error) {
+        console.log(error.response.data);
+      }
+    }
+    //Checking state status (create or modify state)
+    if (id === "" || id === undefined || id === null) {
+      console.log("Create state");
+    } else {
+      setServerData(id);
+    }
+    setLoaded(true);
     // 👇️ only runs once
     country.current = "United States";
   }, []); // 👈️ empty dependencies array
 
   //formVariables
-  const [y, sety] = React.useState({});
-  const [d, setd] = React.useState({});
-  const [w, setw] = React.useState({});
+  const [y, sety] = React.useState("");
+  const [d, setd] = React.useState("");
+  const [w, setw] = React.useState("");
   const navigate = useNavigate();
   var formData = new FormData();
 
@@ -77,7 +144,7 @@ export default function CreateServer() {
     formData.append("javaPort", jp);
     formData.append("bedrockIp", bip);
     formData.append("bedrockPort", bp);
-    formData.append("country", country);
+    formData.append("country", c);
     formData.append("thumbnail", thumb);
     formData.append("logo", ico);
     formData.append("shortDescription", short);
@@ -134,9 +201,12 @@ export default function CreateServer() {
     } = useForm({
       resolver: yupResolver(ServerFormDetailsScheme),
       defaultValues: {
-        javaport: "25565",
-        bedrockport: "19132",
-        country: "United States",
+        name: n,
+        javaip: jip,
+        bedrockip: bip,
+        javaport: jp,
+        bedrockport: bp,
+        country: c,
       },
     });
     const onSubmit = async (data) => {
@@ -199,6 +269,7 @@ export default function CreateServer() {
               <Grid item xs={12}>
                 <TextField
                   fullWidth
+                  value={n}
                   label="Server name"
                   id="name"
                   {...register("name")}
@@ -240,7 +311,13 @@ export default function CreateServer() {
       handleSubmit,
       formState: { errors },
     } = useForm({
-      resolver: yupResolver(ServerFormDescriptionScheme),
+      resolver: yupResolver(ServerFormDetailsScheme),
+      defaultValues: {
+        shortdesc: short,
+        longdesc: long,
+        thumb: thumb,
+        logo: ico,
+      },
     });
     const onSubmit = (data) => {
       console.log("Submitting");
@@ -798,20 +875,26 @@ export default function CreateServer() {
     );
   };
   return (
-    <Container component="main" maxWidth="sm">
-      <CssBaseline />
-      <Box sx={{ width: "100%", paddingTop: { md: "50px", xs: "20px" } }}>
-        <Stepper nonLinear activeStep={activeStep}>
-          {steps.map((label, index) => (
-            <Step key={label} completed={completed[index]}>
-              <StepButton color="inherit">{label}</StepButton>
-            </Step>
-          ))}
-        </Stepper>
-        <React.Fragment>{activeStep === 0 && <Details />}</React.Fragment>
-        <React.Fragment>{activeStep === 1 && <Description />}</React.Fragment>
-        <React.Fragment>{activeStep === 2 && <Social />}</React.Fragment>
-      </Box>
-    </Container>
+    <>
+      {loaded === true && (
+        <Container component="main" maxWidth="sm">
+          <CssBaseline />
+          <Box sx={{ width: "100%", paddingTop: { md: "50px", xs: "20px" } }}>
+            <Stepper nonLinear activeStep={activeStep}>
+              {steps.map((label, index) => (
+                <Step key={label} completed={completed[index]}>
+                  <StepButton color="inherit">{label}</StepButton>
+                </Step>
+              ))}
+            </Stepper>
+            <React.Fragment>{activeStep === 0 && <Details />}</React.Fragment>
+            <React.Fragment>
+              {activeStep === 1 && <Description />}
+            </React.Fragment>
+            <React.Fragment>{activeStep === 2 && <Social />}</React.Fragment>
+          </Box>
+        </Container>
+      )}
+    </>
   );
 }

@@ -16,6 +16,7 @@ import {
   accountVerificationLoader,
   serverDetailsLoader,
   serverListLoader,
+  serverLoader,
 } from "./Components/DataLoaders";
 import { LoginRoute, LogoutRoute } from "./ProtectedRoute";
 
@@ -72,7 +73,11 @@ const router = createBrowserRouter(
       <Route index element={<Home />} errorElement={<ServerError />} />
       <Route
         path="myservers"
-        element={<MyServers />}
+        element={
+          <LoginRoute>
+            <MyServers />
+          </LoginRoute>
+        }
         errorElement={<ServerError />}
       />
       <Route path="about" element={<About />} />
@@ -97,6 +102,17 @@ const router = createBrowserRouter(
         element={
           <LoginRoute>
             <CreateServer />
+          </LoginRoute>
+        }
+      />
+      <Route
+        path="modifyserver/:id"
+        element={
+          <LoginRoute>
+            <CreateServer
+              loader={serverLoader}
+              errorElement={<ServerError />}
+            />
           </LoginRoute>
         }
       />

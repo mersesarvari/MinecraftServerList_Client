@@ -4,7 +4,9 @@ import Cookies from "js-cookie";
 import { instance } from "../LOCAL";
 
 //Loader function
-export const serverDetailsLoader = async ({ params }) => {
+export const serverDetailsLoader = async ({ params }) => {};
+
+export const serverLoader = async ({ params }) => {
   
 };
 export const accountVerificationLoader = async ({ params }) => {
