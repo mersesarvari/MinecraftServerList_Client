@@ -58,6 +58,12 @@ export default function CreateServer() {
   const [c, setC] = React.useState("United States");
   var country = useRef("United States");
 
+  //formVariables
+  const [y, sety] = React.useState("");
+  const [d, setd] = React.useState("");
+  const [w, setw] = React.useState("");
+  const navigate = useNavigate();
+
   function loadIcon(file) {
     // Get a reference to our file input
     const fileInput = document.querySelectorAll('input[type="file"]')[1];
@@ -101,16 +107,21 @@ export default function CreateServer() {
           setC(response.data.country);
           setshort(response.data.shortDescription);
           setlong(response.data.longDescription);
+          /*
           let thumbdata = await instance.get(
             SERVERIP + "Files/ServerThumbnails/" + response.data.thumbnailPath
           );
           let icodata = await instance.get(
             SERVERIP + "Files/ServerLogos/" + response.data.logoPath
           );
+          */
           loadVideo(
             SERVERIP + "Files/ServerThumbnails/" + response.data.thumbnailPath
           );
           loadIcon(SERVERIP + "Files/ServerLogos/" + response.data.logoPath);
+          sety(response.data.youtube);
+          setw(response.data.website);
+          setd(response.data.discord);
         }
       } catch (error) {
         console.log(error.response.data);
@@ -127,11 +138,6 @@ export default function CreateServer() {
     country.current = "United States";
   }, []); // 👈️ empty dependencies array
 
-  //formVariables
-  const [y, sety] = React.useState("");
-  const [d, setd] = React.useState("");
-  const [w, setw] = React.useState("");
-  const navigate = useNavigate();
   var formData = new FormData();
 
   const totalSteps = () => {
@@ -418,6 +424,11 @@ export default function CreateServer() {
       formState: { errors },
     } = useForm({
       resolver: yupResolver(ServerFormSocialScheme),
+      defaultValues: {
+        discord: d,
+        youtube: y,
+        website: w,
+      },
     });
     const SaveData = (data) => {
       console.log("Submitting");
