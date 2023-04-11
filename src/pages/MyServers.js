@@ -1,10 +1,11 @@
 ﻿import { useEffect, useState, useRef } from "react";
-import ServerList from "../Components/ServerListPanel";
+import MyServerList from "../Components/MyServerListPanel";
 import Grid from "@mui/material/Grid";
 import { useContext } from "react";
 import { serverContext } from "../App";
+import Auth from "../Classes/Auth";
 
-export default function Home() {
+export default function MyServers() {
   const videoEl = useRef(null);
   const [loaded, setloaded] = useState(false);
   const context = useContext(serverContext);
@@ -22,7 +23,7 @@ export default function Home() {
   }, [loaded]);
 
   return (
-    <div className="home">
+    <div className="myservers">
       <Grid
         container
         spacing={0}
@@ -33,11 +34,10 @@ export default function Home() {
           paddingTop: { md: "60px" },
         }}
       >
-        <ServerList
-          servers={context.data.filter((server) => server.premium === true)}
-        />
-        <ServerList
-          servers={context.data.filter((server) => server.premium === false)}
+        <MyServerList
+          servers={context.data.filter(
+            (server) => server.publisherid === Auth.getUserId()
+          )}
         />
       </Grid>
     </div>

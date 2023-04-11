@@ -1,6 +1,28 @@
-import { Grid, Typography } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  Typography,
+} from "@mui/material";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Server from "../Classes/Server";
 import { SERVERIP } from "../LOCAL";
+
+const MyServerListPanel = (props) => {
+  return (
+    <>
+      {props.servers &&
+        props.servers.map((server) => (
+          <ServerPanel key={server.id} server={server} />
+        ))}
+    </>
+  );
+};
 
 const ServerPanel = (props) => {
   const navigate = useNavigate();
@@ -14,9 +36,9 @@ const ServerPanel = (props) => {
       sx={{
         backgroundColor: "red",
         color: "black",
-        height: { xs: "230px", sm: "120px" },
-        marginTop: { xs: "15px", sm: "20px" },
-        marginBottom: { xs: "px", sm: "20px" },
+        height: { xs: "230px", sm: "110px" },
+        marginTop: { xs: "13px", sm: "18px" },
+        marginBottom: { xs: "13px", sm: "18px" },
       }}
     >
       {/* Grid 1 - Logo*/}
@@ -35,15 +57,15 @@ const ServerPanel = (props) => {
           style={{ margin: "30px 20px", width: "60%" }}
         />
       </Grid>
-      {/* Grid 5 - Video*/}
+      {/* Grid 6 - Video*/}
       <Grid
         item
         xs={12}
-        sm={5}
+        sm={6}
         sx={{
           backgroundColor: "white",
           color: "black",
-          padding: "0px",
+          padding: "25px 15px",
           margin: "0",
           display: { xs: "none", sm: "block" },
           height: { sm: "100%", xs: "60%" },
@@ -54,9 +76,8 @@ const ServerPanel = (props) => {
         }}
       >
         <video
-          style={{ height: "50%", width: "90%", margin: "30px 20px" }}
+          style={{ width: "100%" }}
           sx={{
-            width: { xs: "100%" },
             margin: { xs: "0px" },
             padding: { xs: "0px" },
           }}
@@ -70,74 +91,47 @@ const ServerPanel = (props) => {
           }
         />
       </Grid>
-      {/* Grid 4 - Information*/}
+      {/* Grid 3 - Information*/}
       <Grid
         item
         xs={12}
-        sm={4}
-        style={{ backgroundColor: "white", color: "black" }}
+        sm={3}
+        style={{
+          backgroundColor: "white",
+          color: "black",
+          padding: "25px 0",
+        }}
         sx={{
           height: { xs: "80%", sm: "100%" },
+          padding: { xs: "0%" },
         }}
         onClick={() => {
           navigate("server/" + props.server.id);
         }}
       >
-        <Grid
-          item
-          xs={12}
-          height="20px"
-          style={{
-            color: "black",
-            fontSize: "20px",
-            marginBottom: "8px",
-            fontWeight: "800",
-          }}
-          sx={{
-            textAlign: { xs: "center", sm: "left" },
-            height: { xs: "30px" },
-          }}
+        <Typography
+          noWrap
+          m={0}
+          style={{ fontSize: "17px", fontWeight: "600" }}
         >
-          <Typography
-            noWrap
-            sx={{ fontWeight: { xs: "700" }, fontSize: { xs: "20px" } }}
-          >
-            {props.server.servername}
-          </Typography>
-        </Grid>
+          {props.server.servername}
+        </Typography>
+        <Typography noWrap m={0}>
+          {props.server.currentPlayers}/{props.server.maxPlayer} playing now
+        </Typography>
+        <Typography noWrap m={0}>
+          {props.server.serverVersion}
+        </Typography>
         <Grid
           item
           xs={12}
-          height="15px"
-          style={{ color: "black", fontSize: "14px" }}
-        >
-          <Typography noWrap>
-            {props.server.currentPlayers}/{props.server.maxPlayer} playing now
-          </Typography>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          height="15px"
-          style={{ color: "black", fontSize: "14px" }}
-        >
-          <Typography noWrap>{props.server.serverVersion}</Typography>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          height="15px"
-          style={{ color: "black", fontSize: "14px" }}
-        ></Grid>
-        <Grid
-          item
-          xs={12}
+          sm={0}
           sx={{
             display: { xs: "block", sm: "none" },
           }}
         >
           <video
-            style={{ height: "50%", width: "100%" }}
+            style={{ height: "100%", width: "100%" }}
             sx={{
               width: { xs: "100%" },
               margin: { xs: "0px" },
@@ -170,10 +164,10 @@ const ServerPanel = (props) => {
           sm={12}
           xs={12}
           style={{
-            backgroundColor: "#292826",
+            backgroundColor: "white",
             textAlign: "center",
             fontSize: "14px",
-            paddingTop: "20px",
+            paddingTop: "10px",
             fontWeight: "560",
             color: "white",
           }}
@@ -182,20 +176,25 @@ const ServerPanel = (props) => {
             height: { xs: "0px", sm: "50%" },
           }}
         >
-          <Typography noWrap>
-            {props.server.javaIp !== "" && props.server.javaIp}
-            {props.server.javaIp === "" && props.server.bedrockIp}
-          </Typography>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              navigate("/modifyserver");
+            }}
+          >
+            MODIFY
+          </Button>
         </Grid>
         <Grid
           item
           sm={12}
           xs={12}
           style={{
-            backgroundColor: "#128f0b",
+            backgroundColor: "white",
             textAlign: "center",
             fontSize: "18px",
-            paddingTop: "15px",
+            paddingTop: "10px",
             fontWeight: "800",
           }}
           sx={{
@@ -203,11 +202,59 @@ const ServerPanel = (props) => {
             height: { xs: "100%", sm: "50%" },
           }}
         >
-          <Typography noWrap>COPY</Typography>
+          <DeleteDialog serverid={props.server.id} />
         </Grid>
       </Grid>
     </Grid>
   );
 };
+export function DeleteDialog(props) {
+  const [open, setOpen] = useState(false);
 
-export default ServerPanel;
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <div>
+      <Button variant="outlined" onClick={handleClickOpen}>
+        Delete server
+      </Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Server deleting confirmation"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            id: {props.serverid + " "}
+            Are you sure that you want to delete this server? After the delete,
+            you cannot undo this change. Please confirm if you want to remove
+            this server from our system!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button
+            onClick={() => {
+              handleClose();
+              Server.deleteServer(props.serverid);
+            }}
+            autoFocus
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+}
+export default MyServerListPanel;

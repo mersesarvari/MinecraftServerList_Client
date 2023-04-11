@@ -25,5 +25,17 @@ class Server {
     console.log(response.data);
     return response.data;
   }
+
+  async deleteServer(id) {
+    try {
+      const response = await instance.delete(`${SERVERIP}server?id=${id}`);
+      if (response.status === 200) {
+        console.log("You succesfully deleted your server!");
+        window.location.reload(false);
+      }
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  }
 }
 export default new Server();

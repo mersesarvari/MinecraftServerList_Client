@@ -1,8 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { SERVERIP, instance } from "../LOCAL";
-import jwt_decode from "jwt-decode";
 import { isJwtExpired } from "jwt-check-expiration";
+import jwt_decode from "jwt-decode";
 
 class Auth {
   constructor() {
@@ -89,6 +89,12 @@ class Auth {
     Cookies.remove("token");
     console.log("You succesfully logged out");
     window.location.reload(false);
+  }
+  getUserId() {
+    var token = Cookies.get("token");
+    var tokenObject = jwt_decode(token);
+    console.log("Id:", tokenObject.id);
+    return tokenObject.id;
   }
 }
 export default new Auth();

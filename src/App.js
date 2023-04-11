@@ -34,6 +34,7 @@ import Auth from "./Classes/Auth";
 import { useEffect } from "react";
 import { useState } from "react";
 import Server from "./Classes/Server";
+import MyServers from "./pages/MyServers";
 
 export const serverContext = createContext();
 
@@ -69,6 +70,11 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />} errorElement={<ServerError />}>
       <Route index element={<Home />} errorElement={<ServerError />} />
+      <Route
+        path="myservers"
+        element={<MyServers />}
+        errorElement={<ServerError />}
+      />
       <Route path="about" element={<About />} />
       <Route
         path="login"
