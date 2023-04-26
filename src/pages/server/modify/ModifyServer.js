@@ -23,20 +23,18 @@ import {
   Stepper,
 } from "@mui/material";
 
-// icons
-//https://www.youtube.com/watch?v=C3hGMDVo_ec
-
 import {
   ServerFormDetailsScheme,
   ServerFormDescriptionScheme,
   ServerFormSocialScheme,
-} from "../../validations/ValidationSchemes";
-import { instance, SERVERIP } from "../../LOCAL";
+  ModifyServerFormDescriptionScheme,
+} from "../../../validations/ValidationSchemes";
+import { instance, SERVERIP } from "../../../LOCAL";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useRef } from "react";
 
-export default function CreateServer() {
+export default function ModifyServer() {
   const [loaded, setLoaded] = React.useState(false);
   const { id } = useParams();
   const steps = ["Information", "Description", "Social"];
@@ -317,7 +315,7 @@ export default function CreateServer() {
       handleSubmit,
       formState: { errors },
     } = useForm({
-      resolver: yupResolver(ServerFormDetailsScheme),
+      resolver: yupResolver(ModifyServerFormDescriptionScheme),
       defaultValues: {
         shortdesc: short,
         longdesc: long,
@@ -326,9 +324,14 @@ export default function CreateServer() {
     const onSubmit = (data) => {
       console.log("Submitting");
       console.log(data);
-
-      setico(data.icon[0]);
-      setthumb(data.thumbnail[0]);
+      //checking if the image or the thumbnail is empty
+      console.log(data.icon);
+      if (data.icon !== undefined && data.icon !== null) {
+        setico(data.icon[0]);
+      }
+      if (data.thumbnail !== undefined && data.thumbnail !== null) {
+        setthumb(data.thumbnail[0]);
+      }
       setshort(data.shortdesc);
       setlong(data.longdesc);
       handleNext();

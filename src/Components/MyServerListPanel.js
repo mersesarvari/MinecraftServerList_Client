@@ -180,7 +180,7 @@ const ServerPanel = (props) => {
             variant="contained"
             style={{ width: "80%" }}
             onClick={() => {
-              navigate(`/modifyserver/${props.server.id}`);
+              navigate(`/modify/${props.server.id}`);
             }}
           >
             MODIFY

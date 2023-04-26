@@ -36,6 +36,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import Server from "./Classes/Server";
 import MyServers from "./pages/MyServers";
+import ModifyServer from "./pages/server/modify/ModifyServer";
 
 export const serverContext = createContext();
 
@@ -106,10 +107,10 @@ const router = createBrowserRouter(
         }
       />
       <Route
-        path="modifyserver/:id"
+        path="modify/:id"
         element={
           <LoginRoute>
-            <CreateServer
+            <ModifyServer
               loader={serverLoader}
               errorElement={<ServerError />}
             />

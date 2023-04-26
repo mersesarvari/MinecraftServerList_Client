@@ -67,8 +67,8 @@ export const ServerFormDetailsScheme = yup.object().shape({
 });
 
 export const ServerFormDescriptionScheme = yup.object().shape({
-  shortdesc: yup.string().min(10).max(30).required(),
-  longdesc: yup.string().min(50).max(5000).required(),
+  shortdesc: yup.string().min(10).max(30).required("Description is required"),
+  longdesc: yup.string().min(50).max(5000).required("Description is required"),
   thumbnail: yup
     .mixed()
     .required("File is required")
@@ -94,6 +94,10 @@ export const ServerFormDescriptionScheme = yup.object().shape({
     .test("EmptyCheck", "Please", (value) =>
       ["image/jpg", "image/png", "image/gif"].includes(value[0]?.type)
     ),
+});
+export const ModifyServerFormDescriptionScheme = yup.object().shape({
+  shortdesc: yup.string().min(10).max(30).required("Description is required"),
+  longdesc: yup.string().min(50).max(5000).required("Description is required"),
 });
 export const ServerFormSocialScheme = yup.object().shape({
   youtube: yup
