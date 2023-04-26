@@ -123,7 +123,7 @@ export default function ModifyServer() {
     formData.append("website", w);
 
     try {
-      const response = await axios.post(`${SERVERIP}server`, formData);
+      const response = await axios.put(`${SERVERIP}server`, formData);
       console.log(response);
       alert(response.data);
       navigate("/");

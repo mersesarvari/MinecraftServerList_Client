@@ -5,6 +5,8 @@ const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$/;
 const domainRule =
   /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$/;
 
+const urlformat =
+  /^(?=.{4,2048}$)((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]{1,63}(\.[a-zA-Z]{1,63}){1,5}(\/)?.([\w\?[a-zA-Z-_%\/@?]+)*([^\/\w\?[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/;
 export const RegistrationScheme = yup.object().shape({
   email: yup
     .string()
@@ -95,30 +97,43 @@ export const ServerFormDescriptionScheme = yup.object().shape({
       ["image/jpg", "image/png", "image/gif"].includes(value[0]?.type)
     ),
 });
+export const ServerFormSocialScheme = yup.object().shape(
+  {
+    youtube: yup.string().when("youtube", (val, schema) => {
+      console.log("youtube value:", val);
+      if (val?.length > 0 && val[0] !== null && val[0] !== undefined) {
+        //if address exist then apply min max else not
+        return yup.string().matches(urlformat, "Enter correct url!");
+      } else {
+        return yup.string().notRequired();
+      }
+    }),
+    discord: yup.string().when("discord", (val, schema) => {
+      console.log("discord value:", val);
+      if (val?.length > 0 && val[0] !== null && val[0] !== undefined) {
+        //if address exist then apply min max else not
+        return yup.string().matches(urlformat, "Enter correct url!");
+      } else {
+        return yup.string().notRequired();
+      }
+    }),
+    website: yup.string().when("website", (val, schema) => {
+      console.log("website value:", val);
+      if (val?.length > 0 && val[0] !== null && val[0] !== undefined) {
+        //if address exist then apply min max else not
+        return yup.string().matches(urlformat, "Enter correct url!");
+      } else {
+        return yup.string().notRequired();
+      }
+    }),
+  },
+  [
+    ["website", "website"],
+    ["discord", "discord"],
+    ["youtube", "youtube"],
+  ]
+);
 export const ModifyServerFormDescriptionScheme = yup.object().shape({
   shortdesc: yup.string().min(10).max(30).required("Description is required"),
   longdesc: yup.string().min(50).max(5000).required("Description is required"),
-});
-export const ServerFormSocialScheme = yup.object().shape({
-  youtube: yup
-    .string()
-    .matches(
-      /^(?=.{4,2048}$)((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]{1,63}(\.[a-zA-Z]{1,63}){1,5}(\/)?.([\w\?[a-zA-Z-_%\/@?]+)*([^\/\w\?[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/,
-      "Enter correct url!"
-    )
-    .required("Please enter website"),
-  discord: yup
-    .string()
-    .matches(
-      /^(?=.{4,2048}$)((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]{1,63}(\.[a-zA-Z]{1,63}){1,5}(\/)?.([\w\?[a-zA-Z-_%\/@?]+)*([^\/\w\?[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/,
-      "Enter correct url!"
-    )
-    .required("Please enter website"),
-  website: yup
-    .string()
-    .matches(
-      /^(?=.{4,2048}$)((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]{1,63}(\.[a-zA-Z]{1,63}){1,5}(\/)?.([\w\?[a-zA-Z-_%\/@?]+)*([^\/\w\?[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/,
-      "Enter correct url!"
-    )
-    .required("Please enter website"),
 });
