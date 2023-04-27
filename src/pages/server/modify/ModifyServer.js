@@ -6,7 +6,6 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Cookies from "js-cookie";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -25,7 +24,6 @@ import {
 
 import {
   ServerFormDetailsScheme,
-  ServerFormDescriptionScheme,
   ServerFormSocialScheme,
   ModifyServerFormDescriptionScheme,
 } from "../../../validations/ValidationSchemes";
@@ -82,9 +80,15 @@ export default function ModifyServer() {
           setIcoPreview(
             `${SERVERIP}Files/ServerLogos/${response.data.logoPath}`
           );
-          sety(response.data.youtube);
-          setw(response.data.website);
-          setd(response.data.discord);
+          if (response.data.youtube !== null) {
+            sety(response.data.youtube);
+          }
+          if (response.data.website !== null) {
+            setw(response.data.website);
+          }
+          if (response.data.discord !== null) {
+            setd(response.data.discord);
+          }
         }
       } catch (error) {
         console.log(error);
@@ -107,15 +111,17 @@ export default function ModifyServer() {
     return steps.length;
   };
   async function PostData() {
-    formData.append("publisherid", Cookies.get("userid"));
+    formData.append("id", id);
     formData.append("servername", n);
     formData.append("javaIp", jip);
     formData.append("javaPort", jp);
     formData.append("bedrockIp", bip);
     formData.append("bedrockPort", bp);
     formData.append("country", c);
-    formData.append("thumbnail", thumb);
+    console.log("icon", ico);
     formData.append("logo", ico);
+    console.log("thumbnail", thumb);
+    formData.append("thumbnail", thumb);
     formData.append("shortDescription", short);
     formData.append("longDescription", long);
     formData.append("youtube", y);
@@ -164,6 +170,7 @@ export default function ModifyServer() {
   }
 
   const Details = (props) => {
+    console.log("loading details");
     const [showMissingIpError, setSHowMissingIpError] = useState("");
     const {
       register,
@@ -277,39 +284,9 @@ export default function ModifyServer() {
   };
   const Description = (props) => {
     const [tError, setTError] = React.useState("");
-    const [iError, setIError] = React.useState("");
+    const t = useRef({});
+    const i = useRef({});
 
-    function validateThumbnailType() {
-      if (id === "" || id === undefined || id === null) {
-        var inputElement = document.getElementById("thumbnail");
-        var files = inputElement.files;
-        if (files.length == 0) {
-          setTError("You have to upload a thumbnail");
-          return false;
-        } else {
-          var filename = files[0].name;
-
-          /* getting file extenstion eg- .jpg,.png, etc */
-          var extension = filename.substr(filename.lastIndexOf("."));
-
-          /* define allowed file types */
-          var allowedExtensionsRegx = /(\.mp4|\.mov|\.ogg|\.gif)$/i;
-
-          /* testing extension with regular expression */
-          var isAllowed = allowedExtensionsRegx.test(extension);
-
-          if (isAllowed) {
-            setTError("");
-            /* file upload logic goes here... */
-          } else {
-            setTError("File type is invalid");
-            return false;
-          }
-        }
-      } else {
-        return;
-      }
-    }
     const {
       register,
       handleSubmit,
@@ -326,16 +303,27 @@ export default function ModifyServer() {
       console.log(data);
       //checking if the image or the thumbnail is empty
       console.log(data.icon);
-      if (data.icon !== undefined && data.icon !== null) {
-        setico(data.icon[0]);
+
+      if (t !== undefined && t !== null) {
+        setthumb(t.current);
       }
-      if (data.thumbnail !== undefined && data.thumbnail !== null) {
-        setthumb(data.thumbnail[0]);
+      if (i !== undefined && i !== null) {
+        setico(i.current);
       }
       setshort(data.shortdesc);
       setlong(data.longdesc);
       handleNext();
     };
+
+    const onThumbnailChange = (event) => {
+      // Update the state
+      t.current = event.target.files[0];
+    };
+    const onIconChange = (event) => {
+      // Update the state
+      i.current = event.target.files[0];
+    };
+
     return (
       <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
         <Box
@@ -351,9 +339,10 @@ export default function ModifyServer() {
               <Grid item xs={6}>
                 <TextField
                   type="file"
+                  accept=".mp4 .ogg .mov"
                   id="thumbnail"
                   hidden
-                  onChange={validateThumbnailType}
+                  onChange={onThumbnailChange}
                 />
                 {tError && <Alert severity="error">{tError}</Alert>}
               </Grid>
@@ -373,13 +362,19 @@ export default function ModifyServer() {
                 />
               </Grid>
               <Grid item xs={6}>
-                <TextField type="file" id="icon" hidden />
+                <TextField
+                  type="file"
+                  id="icon"
+                  accept=".png .jpg .gif"
+                  hidden
+                  onChange={onIconChange}
+                />
                 {errors.icon && (
                   <Alert severity="error">{errors.icon?.message}</Alert>
                 )}
               </Grid>
               <Grid item xs={6}>
-                <img src={icoPreview} style={{ height: "80%" }} />
+                <img src={icoPreview} alt="" style={{ height: "80%" }} />
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -433,18 +428,6 @@ export default function ModifyServer() {
     );
   };
   const Social = (props) => {
-    const {
-      register,
-      handleSubmit,
-      formState: { errors },
-    } = useForm({
-      resolver: yupResolver(ServerFormSocialScheme),
-      defaultValues: {
-        discord: d,
-        youtube: y,
-        website: w,
-      },
-    });
     const SaveData = (data) => {
       console.log("Submitting");
       console.log(data);
@@ -454,6 +437,18 @@ export default function ModifyServer() {
       setw(data.website);
       handleNext();
     };
+    const {
+      register,
+      handleSubmit,
+      formState: { errors },
+    } = useForm({
+      defaultValues: {
+        discord: d,
+        youtube: y,
+        website: w,
+      },
+    });
+
     return (
       <form
         onSubmit={handleSubmit(SaveData)}

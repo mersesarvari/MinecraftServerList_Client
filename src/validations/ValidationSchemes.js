@@ -97,6 +97,7 @@ export const ServerFormDescriptionScheme = yup.object().shape({
       ["image/jpg", "image/png", "image/gif"].includes(value[0]?.type)
     ),
 });
+/*
 export const ServerFormSocialScheme = yup.object().shape(
   {
     youtube: yup.string().when("youtube", (val, schema) => {
@@ -133,6 +134,7 @@ export const ServerFormSocialScheme = yup.object().shape(
     ["youtube", "youtube"],
   ]
 );
+*/
 export const ModifyServerFormDescriptionScheme = yup.object().shape({
   shortdesc: yup.string().min(10).max(30).required("Description is required"),
   longdesc: yup.string().min(50).max(5000).required("Description is required"),

@@ -435,7 +435,7 @@ export default function CreateServer() {
       handleSubmit,
       formState: { errors },
     } = useForm({
-      resolver: yupResolver(ServerFormSocialScheme),
+      resolver: yupResolver(),
       defaultValues: {
         discord: d,
         youtube: y,

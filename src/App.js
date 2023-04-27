@@ -31,7 +31,6 @@ import ServerError from "./pages/server/ServerError";
 import CreateServer from "./pages/server/CreateServer";
 import axios from "axios";
 import Cookies from "js-cookie";
-import Auth from "./Classes/Auth";
 import { useEffect } from "react";
 import { useState } from "react";
 import Server from "./Classes/Server";
@@ -98,6 +97,7 @@ const router = createBrowserRouter(
           </LogoutRoute>
         }
       />
+
       <Route
         path="create"
         element={
@@ -130,7 +130,7 @@ const router = createBrowserRouter(
       <Route path="server" element={<ServerDetailsLayout />}>
         <Route path=":id" element={<ServerDetails />} />
       </Route>
-      <Route path="*" element={<NoMatch />} />
+      <Route path="*" element={<RootLayout />} />
     </Route>
   )
 );
