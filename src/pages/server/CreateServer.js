@@ -278,46 +278,23 @@ export default function CreateServer() {
     );
   };
   const Description = (props) => {
+    const t = useRef({});
+    const i = useRef({});
     const [tError, setTError] = React.useState("");
-    const [iError, setIError] = React.useState("");
 
-    function validateThumbnailType() {
-      if (id === "" || id === undefined || id === null) {
-        var inputElement = document.getElementById("thumbnail");
-        var files = inputElement.files;
-        if (files.length == 0) {
-          setTError("You have to upload a thumbnail");
-          return false;
-        } else {
-          var filename = files[0].name;
-
-          /* getting file extenstion eg- .jpg,.png, etc */
-          var extension = filename.substr(filename.lastIndexOf("."));
-
-          /* define allowed file types */
-          var allowedExtensionsRegx = /(\.mp4|\.mov|\.ogg|\.gif)$/i;
-
-          /* testing extension with regular expression */
-          var isAllowed = allowedExtensionsRegx.test(extension);
-
-          if (isAllowed) {
-            setTError("");
-            /* file upload logic goes here... */
-          } else {
-            setTError("File type is invalid");
-            return false;
-          }
-        }
-      } else {
-        return;
-      }
-    }
+    const onThumbnailChange = (event) => {
+      // Update the state
+      t.current = event.target.files[0];
+    };
+    const onIconChange = (event) => {
+      // Update the state
+      i.current = event.target.files[0];
+    };
     const {
       register,
       handleSubmit,
       formState: { errors },
     } = useForm({
-      resolver: yupResolver(ServerFormDetailsScheme),
       defaultValues: {
         shortdesc: short,
         longdesc: long,
@@ -327,8 +304,16 @@ export default function CreateServer() {
       console.log("Submitting");
       console.log(data);
 
-      setico(data.icon[0]);
-      setthumb(data.thumbnail[0]);
+      if (t !== undefined && t !== null) {
+        setthumb(t.current);
+      } else {
+        alert("Thumbnail is required");
+      }
+      if (i !== undefined && i !== null) {
+        setico(i.current);
+      } else {
+        alert("Logo is required");
+      }
       setshort(data.shortdesc);
       setlong(data.longdesc);
       handleNext();
@@ -350,7 +335,7 @@ export default function CreateServer() {
                   type="file"
                   id="thumbnail"
                   hidden
-                  onChange={validateThumbnailType}
+                  onChange={onThumbnailChange}
                 />
                 {tError && <Alert severity="error">{tError}</Alert>}
               </Grid>
@@ -370,7 +355,12 @@ export default function CreateServer() {
                 />
               </Grid>
               <Grid item xs={6}>
-                <TextField type="file" id="icon" hidden />
+                <TextField
+                  type="file"
+                  id="icon"
+                  hidden
+                  onChange={onIconChange}
+                />
                 {errors.icon && (
                   <Alert severity="error">{errors.icon?.message}</Alert>
                 )}
@@ -435,7 +425,6 @@ export default function CreateServer() {
       handleSubmit,
       formState: { errors },
     } = useForm({
-      resolver: yupResolver(),
       defaultValues: {
         discord: d,
         youtube: y,
