@@ -7,7 +7,9 @@ const ServerListPanel = (props) => {
     <>
       {props.servers &&
         props.servers.map((server) => (
-          <ServerPanel key={server.id} server={server} />
+          <ServerPanel key={server.id} server={server} sx={{
+            display: { xs: "none", sm: "block" },
+          }}/>
         ))}
     </>
   );
@@ -25,9 +27,9 @@ const ServerPanel = (props) => {
       sx={{
         backgroundColor: "red",
         color: "black",
-        height: { xs: "230px", sm: "110px" },
-        marginTop: { xs: "13px", sm: "18px" },
-        marginBottom: { xs: "13px", sm: "18px" },
+        height: {sm: "120px" },
+        marginTop: {sm: "18px" },
+        marginBottom: {sm: "18px" },
       }}
     >
       {/* Grid 1 - Logo*/}
@@ -65,7 +67,7 @@ const ServerPanel = (props) => {
         }}
       >
         <video
-          style={{ width: "100%" }}
+          style={{ width: "500px", height: "64px" }}
           sx={{
             margin: { xs: "0px" },
             padding: { xs: "0px" },

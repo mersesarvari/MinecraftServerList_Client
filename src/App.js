@@ -36,6 +36,7 @@ import { useState } from "react";
 import Server from "./Classes/Server";
 import MyServers from "./pages/MyServers";
 import ModifyServer from "./pages/server/modify/ModifyServer";
+import Navigation from "./layouts/Navigation"
 
 export const serverContext = createContext();
 
